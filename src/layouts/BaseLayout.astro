@@ -6,6 +6,7 @@ interface Props {
   description?: string;
 }
 const { title, description = 'Wir setzen uns dafür ein, mit Hilfe Privater die Mittel zur Verfügung zu stellen, um grosse Solaranlagen in Bonstetten zu bauen und lokal produzierten Strom im Dorf zu verkaufen.' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <!doctype html>
 <html lang="de">
@@ -17,21 +18,21 @@ const { title, description = 'Wir setzen uns dafür ein, mit Hilfe Privater die 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href={`${base}/favicon.ico`} type="image/x-icon" />
   </head>
   <body>
 
     <header class="navbar" id="navbar">
       <div class="nav-container">
-        <a href="/" class="logo-link">
-          <img src="/images/logo.png" alt="solarbonstetten Logo" class="logo" />
+        <a href={`${base}/`} class="logo-link">
+          <img src={`${base}/images/logo.png`} alt="solarbonstetten Logo" class="logo" />
         </a>
         <nav class="nav-links">
-          <a href="/#aktuell" class="nav-item">Aktuell</a>
-          <a href="/#solaranlagen" class="nav-item">Solaranlagen</a>
-          <a href="/#verein" class="nav-item">Der Verein</a>
-          <a href="/#kontakt" class="nav-item">Kontakt</a>
-          <a href="/#shop" class="nav-item btn-outline">Shop</a>
+          <a href={`${base}/#aktuell`} class="nav-item">Aktuell</a>
+          <a href={`${base}/#solaranlagen`} class="nav-item">Solaranlagen</a>
+          <a href={`${base}/#verein`} class="nav-item">Der Verein</a>
+          <a href={`${base}/#kontakt`} class="nav-item">Kontakt</a>
+          <a href={`${base}/#shop`} class="nav-item btn-outline">Shop</a>
         </nav>
         <button class="mobile-toggle" aria-label="Menu">
           <span></span>
@@ -46,16 +47,16 @@ const { title, description = 'Wir setzen uns dafür ein, mit Hilfe Privater die 
     <footer class="footer">
       <div class="container footer-grid">
         <div class="footer-brand">
-          <img src="/images/logo.png" alt="solarbonstetten Logo" class="footer-logo" />
+          <img src={`${base}/images/logo.png`} alt="solarbonstetten Logo" class="footer-logo" />
           <p>Mit lokal produziertem Strom in eine nachhaltige und unabhängige Zukunft für Bonstetten.</p>
         </div>
         <div class="footer-links">
           <h4>Navigation</h4>
           <ul>
-            <li><a href="/#aktuell">Aktuell</a></li>
-            <li><a href="/news">News</a></li>
-            <li><a href="/projekte">Projekte</a></li>
-            <li><a href="/#verein">Der Verein</a></li>
+            <li><a href={`${base}/#aktuell`}>Aktuell</a></li>
+            <li><a href={`${base}/news`}>News</a></li>
+            <li><a href={`${base}/projekte`}>Projekte</a></li>
+            <li><a href={`${base}/#verein`}>Der Verein</a></li>
           </ul>
         </div>
         <div class="footer-links">
