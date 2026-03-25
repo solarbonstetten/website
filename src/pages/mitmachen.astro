@@ -1,0 +1,379 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Mitmachen"
+  description="Werde Mitglied bei solarbonstetten und unterstütze Solarenergie in Bonstetten."
+>
+
+  <div class="page-hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">Dabei sein</span>
+      <h1>Mitglied werden</h1>
+      <p class="lead">
+        Unterstütze Solarenergie in Bonstetten – als Aktivmitglied oder Gönnermitglied.
+        Fülle das Formular aus und dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung.
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="form-layout">
+
+        <!-- Formular -->
+        <div class="form-wrapper">
+          <form id="beitrittsform" novalidate>
+
+            <fieldset>
+              <legend>Persönliche Angaben</legend>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="vorname">Vorname <span class="required">*</span></label>
+                  <input type="text" id="vorname" name="vorname" required autocomplete="given-name" />
+                </div>
+                <div class="form-group">
+                  <label for="name">Name <span class="required">*</span></label>
+                  <input type="text" id="name" name="name" required autocomplete="family-name" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="strasse">Strasse <span class="required">*</span></label>
+                <input type="text" id="strasse" name="strasse" required autocomplete="street-address" />
+              </div>
+              <div class="form-row">
+                <div class="form-group form-group--plz">
+                  <label for="plz">PLZ <span class="required">*</span></label>
+                  <input type="text" id="plz" name="plz" required autocomplete="postal-code" maxlength="4" />
+                </div>
+                <div class="form-group">
+                  <label for="ort">Ort <span class="required">*</span></label>
+                  <input type="text" id="ort" name="ort" required autocomplete="address-level2" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="telefon">Telefon</label>
+                  <input type="tel" id="telefon" name="telefon" autocomplete="tel" />
+                </div>
+                <div class="form-group">
+                  <label for="email">E-Mail <span class="required">*</span></label>
+                  <input type="email" id="email" name="email" required autocomplete="email" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Mitgliedschaft</legend>
+              <div class="mitglied-options">
+                <label class="mitglied-option">
+                  <input type="radio" name="mitgliedschaft" value="Aktivmitglied (CHF 40.– / Jahr)" required />
+                  <div class="option-card">
+                    <div class="option-top">
+                      <span class="option-title">Aktivmitglied</span>
+                      <span class="option-price">CHF 40.– / Jahr</span>
+                    </div>
+                    <p class="option-desc">Mit Stimmberechtigung an der Generalversammlung</p>
+                  </div>
+                </label>
+                <label class="mitglied-option">
+                  <input type="radio" name="mitgliedschaft" value="Gönnermitglied (CHF 100.– / Jahr)" />
+                  <div class="option-card">
+                    <div class="option-top">
+                      <span class="option-title">Gönnermitglied</span>
+                      <span class="option-price">CHF 100.– / Jahr</span>
+                    </div>
+                    <p class="option-desc">Unterstützung ohne Stimmberechtigung</p>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Optionale Angaben</legend>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="solarstrom" id="solarstrom" />
+                  <span>Ich möchte von solarbonstetten Solarstrom beziehen.</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="aktiv" id="aktiv" />
+                  <span>Ich möchte im Verein solarbonstetten aktiv mitarbeiten.</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div id="form-error" class="form-error" hidden>
+              Bitte fülle alle Pflichtfelder aus und wähle eine Mitgliedschaft.
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-submit">
+              📧 Beitrittserklärung per E-Mail senden
+            </button>
+            <p class="form-hint">
+              Dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung –
+              du kannst den Text vor dem Senden noch überprüfen.
+            </p>
+
+          </form>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="form-sidebar">
+          <div class="sidebar-info">
+            <h3>So funktioniert es</h3>
+            <ol class="steps">
+              <li><span class="step-nr">1</span> Formular ausfüllen</li>
+              <li><span class="step-nr">2</span> «Per E-Mail senden» klicken</li>
+              <li><span class="step-nr">3</span> E-Mail-Programm öffnet sich mit vorausgefüllter Beitrittserklärung</li>
+              <li><span class="step-nr">4</span> Absenden – fertig!</li>
+            </ol>
+          </div>
+
+          <div class="sidebar-info sidebar-info--outline">
+            <h3>Fragen?</h3>
+            <p>Bei Fragen zur Mitgliedschaft erreichst du uns unter:</p>
+            <a href="mailto:info@solarbonstetten.ch" class="mail-link">
+              info@solarbonstetten.ch
+            </a>
+          </div>
+
+          <div class="sidebar-info sidebar-info--outline">
+            <h3>Statuten</h3>
+            <p>Mehr über Rechte und Pflichten der Mitglieder:</p>
+            <a href="/statuten" class="btn-link">Statuten lesen →</a>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding: 11rem 0 5rem;
+    overflow: hidden;
+  }
+  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
+  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 600px; }
+
+  .form-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* Form */
+  .form-wrapper form { display: flex; flex-direction: column; gap: 2rem; }
+
+  fieldset {
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem 1.75rem;
+  }
+  legend {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    padding: 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; }
+  .form-group--plz { max-width: 100px; }
+
+  label { font-size: 0.875rem; font-weight: 500; color: var(--color-secondary); }
+  .required { color: var(--color-primary); }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"] {
+    padding: 0.6rem 0.875rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    background: #fff;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(251,168,3,0.15);
+  }
+  input.invalid { border-color: #ef4444; }
+
+  /* Mitgliedschaft */
+  .mitglied-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+  .mitglied-option { cursor: pointer; }
+  .mitglied-option input[type="radio"] { display: none; }
+  .option-card {
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.25rem;
+    transition: all 0.2s;
+  }
+  .mitglied-option input:checked + .option-card {
+    border-color: var(--color-primary);
+    background: #fffbeb;
+  }
+  .option-card:hover { border-color: var(--color-primary); }
+  .option-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
+  .option-title { font-weight: 600; color: var(--color-secondary); font-size: 0.95rem; }
+  .option-price { font-weight: 700; color: var(--color-primary); font-size: 0.9rem; }
+  .option-desc { font-size: 0.8rem; color: var(--color-text-light); margin: 0; }
+
+  /* Checkboxes */
+  .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+  }
+  .checkbox-label input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.1rem;
+    accent-color: var(--color-primary);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  /* Submit */
+  .btn-submit { width: 100%; justify-content: center; font-size: 1rem; padding: 0.9rem; }
+  .form-hint { font-size: 0.82rem; color: var(--color-text-light); text-align: center; margin-top: 0.5rem; }
+  .form-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    color: #dc2626;
+    font-size: 0.875rem;
+  }
+
+  /* Sidebar */
+  .form-sidebar { display: flex; flex-direction: column; gap: 1.25rem; position: sticky; top: 6rem; }
+  .sidebar-info {
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+  }
+  .sidebar-info h3 { color: #fff; font-size: 1rem; margin-bottom: 0.75rem; }
+  .sidebar-info p { font-size: 0.875rem; opacity: 0.9; line-height: 1.6; margin-bottom: 0.75rem; }
+  .sidebar-info--outline {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+  }
+  .sidebar-info--outline h3 { color: var(--color-secondary); }
+  .sidebar-info--outline p { color: var(--color-text-light); }
+
+  .steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+  .steps li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; opacity: 0.95; }
+  .step-nr {
+    width: 1.5rem; height: 1.5rem;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .mail-link { color: var(--color-primary); font-weight: 600; font-size: 0.875rem; word-break: break-all; }
+  .sidebar-info .mail-link { color: #fff; text-decoration: underline; }
+  .btn-link { color: var(--color-primary); font-weight: 600; font-size: 0.875rem; }
+
+  @media (max-width: 900px) {
+    .form-layout { grid-template-columns: 1fr; }
+    .form-sidebar { position: static; }
+  }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .mitglied-options { grid-template-columns: 1fr; }
+    .form-group--plz { max-width: 100%; }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('beitrittsform') as HTMLFormElement;
+  const errorBox = document.getElementById('form-error') as HTMLElement;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorBox.hidden = true;
+
+    // Validierung
+    const required = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email'];
+    let valid = true;
+
+    required.forEach(id => {
+      const el = form.elements.namedItem(id) as HTMLInputElement;
+      if (!el.value.trim()) {
+        el.classList.add('invalid');
+        valid = false;
+      } else {
+        el.classList.remove('invalid');
+      }
+    });
+
+    const mitgliedschaft = (form.elements.namedItem('mitgliedschaft') as RadioNodeList).value;
+    if (!mitgliedschaft) valid = false;
+
+    if (!valid) {
+      errorBox.hidden = false;
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Daten sammeln
+    const get = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).value.trim();
+    const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).checked;
+
+    const optionen: string[] = [];
+    if (checked('solarstrom')) optionen.push('Solarstrom beziehen: Ja');
+    if (checked('aktiv'))      optionen.push('Aktive Mitarbeit: Ja');
+
+    const body = [
+      'Beitrittserklärung solarbonstetten',
+      '─'.repeat(35),
+      '',
+      `Vorname:        ${get('vorname')}`,
+      `Name:           ${get('name')}`,
+      `Strasse:        ${get('strasse')}`,
+      `PLZ / Ort:      ${get('plz')} ${get('ort')}`,
+      `Telefon:        ${get('telefon') || '–'}`,
+      `E-Mail:         ${get('email')}`,
+      '',
+      `Mitgliedschaft: ${mitgliedschaft}`,
+      ...(optionen.length ? ['', ...optionen] : []),
+      '',
+      '─'.repeat(35),
+      'Diese Beitrittserklärung wurde über poc.solarbonstetten.ch ausgefüllt.',
+    ].join('\n');
+
+    const subject = 'Beitrittserklärung solarbonstetten';
+    window.location.href =
+      `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
+  // Fehlerstatus bei Eingabe zurücksetzen
+  form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', () => input.classList.remove('invalid'));
+  });
+</script>
