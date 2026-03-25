@@ -25,7 +25,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           src={article.data.image}
           alt={article.data.title}
           loading="lazy"
-          style="max-width:100%;border-radius:12px;margin:1.5rem 0;height:auto;width:100%;"
+          class="article-hero-image"
         />
       )}
       <div class="article-body">
@@ -35,3 +35,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .article-hero-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    display: block;
+  }
+</style>
