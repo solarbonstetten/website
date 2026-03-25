@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Impressum" description="Impressum des Vereins solarbonstetten – rechtliche Angaben und Kontaktinformationen.">
+
+  <div class="page-hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">Rechtliches</span>
+      <h1>Impressum</h1>
+      <p class="lead">Angaben gemäss Transparenzgebot und Datenschutzgesetz (nDSG).</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="impressum-grid">
+
+        <div class="impressum-block">
+          <h2>Herausgeber</h2>
+          <p>
+            Verein solarbonstetten<br />
+            [Strasse Nr.]<br />
+            8906 Bonstetten<br />
+            Schweiz
+          </p>
+        </div>
+
+        <div class="impressum-block">
+          <h2>Kontakt</h2>
+          <p>
+            E-Mail: <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a><br />
+            Web: <a href="https://solarbonstetten.ch" target="_blank" rel="noopener noreferrer">solarbonstetten.ch</a>
+          </p>
+        </div>
+
+        <div class="impressum-block">
+          <h2>Verantwortlich für den Inhalt</h2>
+          <p>
+            [Name Präsident/in]<br />
+            Vorstand Verein solarbonstetten<br />
+            8906 Bonstetten
+          </p>
+        </div>
+
+        <div class="impressum-block">
+          <h2>Vereinszweck</h2>
+          <p>
+            Der Verein solarbonstetten ist nicht gewinnstrebig. Wir sind ein lokal verankerter Verein,
+            wo Persönlichkeiten aus Bonstetten sich ehrenamtlich für eine ökologische Entwicklung engagieren.
+          </p>
+        </div>
+
+        <div class="impressum-block impressum-block--wide">
+          <h2>Haftungsausschluss</h2>
+          <p>
+            Der Verein solarbonstetten übernimmt keine Gewähr für die Aktualität, Richtigkeit und Vollständigkeit
+            der auf dieser Website bereitgestellten Informationen. Haftungsansprüche gegen den Verein wegen
+            materieller oder ideeller Schäden, die durch die Nutzung oder Nichtnutzung der dargebotenen
+            Informationen verursacht wurden, sind grundsätzlich ausgeschlossen.
+          </p>
+          <p>
+            Diese Website enthält Links zu externen Websites Dritter. Auf deren Inhalte hat der Verein
+            solarbonstetten keinen Einfluss und übernimmt dafür keine Haftung. Für die Inhalte der
+            verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.
+          </p>
+        </div>
+
+        <div class="impressum-block impressum-block--wide">
+          <h2>Urheberrecht</h2>
+          <p>
+            Die durch den Verein solarbonstetten erstellten Inhalte und Werke auf dieser Website unterliegen
+            dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der
+            Verwertung ausserhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung
+            des Vereins.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding: 120px 0 80px;
+    background: linear-gradient(135deg, var(--color-bg-light) 0%, #fff 100%);
+    overflow: hidden;
+  }
+
+  .hero-bg-shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+
+  .shape-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--color-primary);
+    top: -100px;
+    right: -100px;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .shape-2 {
+    width: 200px;
+    height: 200px;
+    background: var(--color-secondary);
+    bottom: -50px;
+    left: 10%;
+    animation: float 8s ease-in-out infinite reverse;
+  }
+
+  .page-hero .badge {
+    display: inline-block;
+    background: var(--color-primary);
+    color: white;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 16px;
+  }
+
+  .page-hero .lead {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    max-width: 600px;
+  }
+
+  .impressum-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 900px;
+  }
+
+  .impressum-block {
+    background: var(--color-bg-light);
+    border-radius: 12px;
+    padding: 1.75rem;
+    border-left: 4px solid var(--color-primary);
+  }
+
+  .impressum-block--wide {
+    grid-column: 1 / -1;
+  }
+
+  .impressum-block h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .impressum-block p {
+    color: var(--color-text);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .impressum-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .impressum-block a {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+  }
+
+  .impressum-block a:hover {
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 640px) {
+    .impressum-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .impressum-block--wide {
+      grid-column: 1;
+    }
+  }
+</style>
