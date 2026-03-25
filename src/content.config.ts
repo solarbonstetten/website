@@ -3,10 +3,10 @@ import { glob } from 'astro/loaders';
 
 const news = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     date: z.coerce.date(),
-    image: z.string().optional(),
+    image: image().optional(),
   }),
 });
 

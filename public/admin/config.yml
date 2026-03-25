@@ -9,6 +9,8 @@ collections:
     label: News
     folder: src/content/news
     create: true
+    media_folder: /src/assets/news
+    public_folder: ../../assets/news
     fields:
       - { label: Titel, name: title, widget: string }
       - { label: Datum, name: date, widget: datetime }
