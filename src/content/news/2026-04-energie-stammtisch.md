@@ -1,7 +1,7 @@
 ---
 title: Nächster Energie-Stammtisch
 date: 2026-04-01
-image: /images/news/energie-stammtisch.webp
+image: ''
 ---
 
 Am Energie-Stammtisch tauschen sich Interessierte mit Fachleuten und Teilnehmern aus, die bereits Erfahrungen mit PV-Anlagen, Batterien und Anwendung haben.
