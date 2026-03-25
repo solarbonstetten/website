@@ -30,6 +30,7 @@ const solaranlagen = defineCollection({
     leistung: z.string(),
     jahresertrag: z.string(),
     module: z.string(),
+    umsetzungspartner: z.string().optional(),
     monitoring_url: z.string().optional(),
   }),
 });

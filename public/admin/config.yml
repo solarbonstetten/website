@@ -35,6 +35,7 @@ collections:
       - { label: Leistung, name: leistung, widget: string, hint: "z.B. 28.08 kWp" }
       - { label: Jahresertrag, name: jahresertrag, widget: string, hint: "z.B. ~25'000 kWh" }
       - { label: Module, name: module, widget: string }
+      - { label: Umsetzungspartner, name: umsetzungspartner, widget: string, required: false, hint: "z.B. SolarSpar oder Solarify" }
       - { label: Monitoring URL, name: monitoring_url, widget: string, required: false }
       - { label: Zusatzinfos, name: body, widget: markdown, required: false }
   - name: links

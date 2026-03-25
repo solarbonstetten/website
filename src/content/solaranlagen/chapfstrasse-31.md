@@ -8,6 +8,7 @@ ausrichtung: Südost / Nordwest
 leistung: "30.40 kWp (16.80 + 13.60)"
 jahresertrag: "~29'300 kWh"
 module: "78 bifaziale Glas-Glas-Module, 400 Wp (Megasol)"
+umsetzungspartner: Solarify
 ---
 
 ## Messdaten Nov 2023 – Nov 2024
