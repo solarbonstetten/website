@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projekte = await getCollection('projekte');
+---
+<BaseLayout title="Projekte">
+  <h1>Projekte</h1>
+  {projekte.length === 0 && <p>Noch keine Projekte vorhanden.</p>}
+  <ul>
+    {projekte.map((projekt) => (
+      <li>
+        <a href={`/projekte/${projekt.slug}`}>
+          <strong>{projekt.data.title}</strong>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

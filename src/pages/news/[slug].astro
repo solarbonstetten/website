@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('news');
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+---
+<BaseLayout title={article.data.title}>
+  <article>
+    <h1>{article.data.title}</h1>
+    <time datetime={article.data.date.toISOString()}>
+      {article.data.date.toLocaleDateString('de-CH')}
+    </time>
+    {article.data.image && <img src={article.data.image} alt={article.data.title} />}
+    <Content />
+  </article>
+  <a href="/news">← Zurück zur Übersicht</a>
+</BaseLayout>

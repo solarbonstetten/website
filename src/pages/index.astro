@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const latestNews = (await getCollection('news'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const latestProjekte = (await getCollection('projekte')).slice(0, 3);
+---
+<BaseLayout title="Willkommen" description="Die Solargenossenschaft Bonstetten – gemeinsam für erneuerbare Energie.">
+  <section>
+    <h1>Solargenossenschaft Bonstetten</h1>
+    <p>Gemeinsam für erneuerbare Energie in unserer Gemeinde.</p>
+  </section>
+
+  <section>
+    <h2>Aktuelles</h2>
+    {latestNews.length === 0 && <p>Noch keine News vorhanden.</p>}
+    <ul>
+      {latestNews.map((article) => (
+        <li>
+          <a href={`/news/${article.slug}`}>{article.data.title}</a>
+          <time datetime={article.data.date.toISOString()}>
+            {article.data.date.toLocaleDateString('de-CH')}
+          </time>
+        </li>
+      ))}
+    </ul>
+    <a href="/news">Alle News →</a>
+  </section>
+
+  <section>
+    <h2>Unsere Projekte</h2>
+    {latestProjekte.length === 0 && <p>Noch keine Projekte vorhanden.</p>}
+    <ul>
+      {latestProjekte.map((projekt) => (
+        <li>
+          <a href={`/projekte/${projekt.slug}`}>{projekt.data.title}</a>
+        </li>
+      ))}
+    </ul>
+    <a href="/projekte">Alle Projekte →</a>
+  </section>
+</BaseLayout>
