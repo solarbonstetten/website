@@ -23,7 +23,7 @@ Der Inhalt wird über [Sveltia CMS](https://github.com/sveltia/sveltia-cms) verw
 
 Da die Site auf GitHub Pages gehostet wird (kein Netlify-OAuth-Server), erfolgt der Login über ein **Fine-grained Personal Access Token** – dieser erlaubt den Zugriff gezielt auf ein einzelnes Repository.
 
-**1. Token erstellen:** [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
+**1. Token erstellen:** [github.com/settings/personal-access-tokens](https://github.com/settings/personal-access-tokens)
 
 - **Token name:** z. B. `sveltia-cms-solarbonstetten`
 - **Expiration:** nach Bedarf wählen
