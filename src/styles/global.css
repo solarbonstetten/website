@@ -262,7 +262,10 @@ ul { list-style: none; }
 .footer ul li a:hover { color: var(--color-primary); }
 .footer-contact p { color: #94a3b8; font-size: 0.95rem; margin-bottom: 1rem; }
 .mail-link { color: var(--color-primary); font-weight: 500; }
-.footer-bottom { background: var(--color-secondary-light); padding: 1.5rem 0; text-align: center; color: #64748b; font-size: 0.9rem; }
+.footer-bottom { background: var(--color-secondary-light); padding: 1.5rem 0; color: #64748b; font-size: 0.9rem; }
+.footer-bottom-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.cookie-free-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 500; color: #64748b; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 0.3rem 0.75rem; border-radius: 999px; cursor: default; transition: var(--transition); }
+.cookie-free-badge:hover { color: var(--color-primary); border-color: var(--color-primary); }
 
 /* Animations */
 @keyframes float {
