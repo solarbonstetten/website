@@ -20,7 +20,7 @@ const latestProjekte = (await getCollection('projekte')).slice(0, 3);
     <ul>
       {latestNews.map((article) => (
         <li>
-          <a href={`/news/${article.slug}`}>{article.data.title}</a>
+          <a href={`/news/${article.id}`}>{article.data.title}</a>
           <time datetime={article.data.date.toISOString()}>
             {article.data.date.toLocaleDateString('de-CH')}
           </time>
@@ -36,7 +36,7 @@ const latestProjekte = (await getCollection('projekte')).slice(0, 3);
     <ul>
       {latestProjekte.map((projekt) => (
         <li>
-          <a href={`/projekte/${projekt.slug}`}>{projekt.data.title}</a>
+          <a href={`/projekte/${projekt.id}`}>{projekt.data.title}</a>
         </li>
       ))}
     </ul>

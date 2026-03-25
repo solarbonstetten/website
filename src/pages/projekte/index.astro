@@ -10,7 +10,7 @@ const projekte = await getCollection('projekte');
   <ul>
     {projekte.map((projekt) => (
       <li>
-        <a href={`/projekte/${projekt.slug}`}>
+        <a href={`/projekte/${projekt.id}`}>
           <strong>{projekt.data.title}</strong>
         </a>
       </li>

@@ -12,7 +12,7 @@ const articles = (await getCollection('news')).sort(
   <ul>
     {articles.map((article) => (
       <li>
-        <a href={`/news/${article.slug}`}>
+        <a href={`/news/${article.id}`}>
           <strong>{article.data.title}</strong>
         </a>
         <time datetime={article.data.date.toISOString()}>
