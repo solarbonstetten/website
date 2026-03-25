@@ -5,34 +5,63 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const articles = (await getCollection('news')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
-const gradients = ['bg-gradient-1', 'bg-gradient-2', 'bg-gradient-3'];
+const gradients = [
+  'bg-gradient-to-br from-amber-100 to-amber-200',
+  'bg-gradient-to-br from-sky-100 to-sky-200',
+  'bg-gradient-to-br from-slate-100 to-slate-200',
+];
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<BaseLayout title="News">
-  <div class="content-page">
+<BaseLayout title="News" description="Aktuelles und News von solarbonstetten.">
+
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
     <div class="container">
-      <h1>Aktuelles & News</h1>
-      <p class="lead">Was uns aktuell bewegt und beschäftigt</p>
+      <span class="badge">Aktuell</span>
+      <h1 class="mb-4">Aktuelles & News</h1>
+      <p class="text-lg text-slate-500 max-w-lg leading-relaxed">
+        Was uns aktuell bewegt und beschäftigt.
+      </p>
+    </div>
+  </div>
+
+  <!-- Artikel -->
+  <section class="section">
+    <div class="container">
       {articles.length === 0 ? (
-        <p>Noch keine Artikel vorhanden.</p>
+        <p class="text-slate-500">Noch keine Artikel vorhanden.</p>
       ) : (
-        <div class="article-grid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article, i) => (
-            <article class="news-card">
-              <div class={`card-image ${!article.data.image ? gradients[i % 3] : ''}`}>
+            <article class="news-card bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
+
+              <!-- Bild / Gradient (auf Mobile ausgeblendet) -->
+              <div class={`h-[200px] w-full overflow-hidden hidden sm:block ${!article.data.image ? gradients[i % 3] : ''}`}>
                 {article.data.image && (
-                  <img src={article.data.image} alt={article.data.title} loading="lazy" />
+                  <img src={article.data.image} alt={article.data.title} loading="lazy" class="w-full h-full object-cover block" />
                 )}
               </div>
-              <div class="card-content">
-                <span class="news-date">{article.data.date.toLocaleDateString('de-CH', { month: 'long', year: 'numeric' })}</span>
-                <h3>{article.data.title}</h3>
-                <a href={`${base}/news/${article.id}`} class="read-more">Artikel lesen →</a>
+
+              <!-- Inhalt -->
+              <div class="p-8 flex flex-col flex-1 gap-3">
+                <span class="text-xs text-amber-500 font-semibold uppercase tracking-wide">
+                  {article.data.date.toLocaleDateString('de-CH', { month: 'long', year: 'numeric' })}
+                </span>
+                <h3 class="text-slate-900 leading-snug">{article.data.title}</h3>
+                <a href={`${base}/news/${article.id}`} class="mt-auto pt-2 font-semibold text-sm text-slate-700 hover:text-amber-500 transition-colors">
+                  Artikel lesen →
+                </a>
               </div>
+
             </article>
           ))}
         </div>
       )}
     </div>
-  </div>
+  </section>
+
 </BaseLayout>

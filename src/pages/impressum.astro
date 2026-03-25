@@ -3,25 +3,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 <BaseLayout title="Impressum" description="Impressum des Vereins solarbonstetten – rechtliche Angaben und Kontaktinformationen.">
 
-  <div class="page-hero">
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
     </div>
     <div class="container">
       <span class="badge">Rechtliches</span>
-      <h1>Impressum</h1>
-      <p class="lead">Angaben gemäss Transparenzgebot und Datenschutzgesetz (nDSG).</p>
+      <h1 class="mb-4">Impressum</h1>
+      <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
+        Angaben gemäss Transparenzgebot und Datenschutzgesetz (nDSG).
+      </p>
     </div>
   </div>
 
+  <!-- Inhalt -->
   <section class="section">
     <div class="container">
-      <div class="impressum-grid">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl">
 
-        <div class="impressum-block">
-          <h2>Herausgeber</h2>
-          <p>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Herausgeber</h2>
+          <p class="text-slate-600 leading-relaxed">
             solarbonstetten<br />
             Dorfstrasse 24<br />
             8906 Bonstetten<br />
@@ -29,17 +33,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
         </div>
 
-        <div class="impressum-block">
-          <h2>Kontakt</h2>
-          <p>
-            E-Mail: <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a><br />
-            Web: <a href="https://solarbonstetten.ch" target="_blank" rel="noopener noreferrer">solarbonstetten.ch</a>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Kontakt</h2>
+          <p class="text-slate-600 leading-relaxed">
+            E-Mail: <a href="mailto:info@solarbonstetten.ch" class="text-amber-600 underline hover:text-amber-500 transition-colors">info@solarbonstetten.ch</a><br />
+            Web: <a href="https://solarbonstetten.ch" target="_blank" rel="noopener noreferrer" class="text-amber-600 underline hover:text-amber-500 transition-colors">solarbonstetten.ch</a>
           </p>
         </div>
 
-        <div class="impressum-block">
-          <h2>Vorstand</h2>
-          <p>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Vorstand</h2>
+          <p class="text-slate-600 leading-relaxed">
             Guido von Rotz, Präsident<br />
             Manuel Stocker, Aktuar<br />
             Roger Schuhmacher, Finanzen<br />
@@ -49,32 +53,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
         </div>
 
-        <div class="impressum-block">
-          <h2>Vereinszweck</h2>
-          <p>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Vereinszweck</h2>
+          <p class="text-slate-600 leading-relaxed">
             Der Verein solarbonstetten ist nicht gewinnorientiert. Wir sind ein lokal verankerter Verein,
             wo Persönlichkeiten aus Bonstetten sich ehrenamtlich für eine ökologische Entwicklung engagieren.
           </p>
         </div>
 
-        <div class="impressum-block impressum-block--wide">
-          <h2>Haftungsausschluss</h2>
-          <p>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400 col-span-full">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Haftungsausschluss</h2>
+          <p class="text-slate-600 leading-relaxed mb-3">
             Der Verein solarbonstetten übernimmt keine Gewähr für die Aktualität, Richtigkeit und Vollständigkeit
             der auf dieser Website bereitgestellten Informationen. Haftungsansprüche gegen den Verein wegen
             materieller oder ideeller Schäden, die durch die Nutzung oder Nichtnutzung der dargebotenen
             Informationen verursacht wurden, sind grundsätzlich ausgeschlossen.
           </p>
-          <p>
+          <p class="text-slate-600 leading-relaxed">
             Diese Website enthält Links zu externen Websites Dritter. Auf deren Inhalte hat der Verein
             solarbonstetten keinen Einfluss und übernimmt dafür keine Haftung. Für die Inhalte der
             verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.
           </p>
         </div>
 
-        <div class="impressum-block impressum-block--wide">
-          <h2>Urheberrecht</h2>
-          <p>
+        <div class="bg-slate-50 rounded-xl p-7 border-l-4 border-amber-400 col-span-full">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Urheberrecht</h2>
+          <p class="text-slate-600 leading-relaxed">
             Die durch den Verein solarbonstetten erstellten Inhalte und Werke auf dieser Website unterliegen
             dem Schweizer Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der
             Verwertung ausserhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung
@@ -87,122 +91,3 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
 </BaseLayout>
-
-<style>
-  .page-hero {
-    position: relative;
-    padding: 120px 0 80px;
-    background: linear-gradient(135deg, var(--color-bg-light) 0%, #fff 100%);
-    overflow: hidden;
-  }
-
-  .hero-bg-shapes {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .shape {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.15;
-  }
-
-  .shape-1 {
-    width: 400px;
-    height: 400px;
-    background: var(--color-primary);
-    top: -100px;
-    right: -100px;
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .shape-2 {
-    width: 200px;
-    height: 200px;
-    background: var(--color-secondary);
-    bottom: -50px;
-    left: 10%;
-    animation: float 8s ease-in-out infinite reverse;
-  }
-
-  .page-hero .badge {
-    display: inline-block;
-    background: var(--color-primary);
-    color: white;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 16px;
-  }
-
-  .page-hero h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 16px;
-  }
-
-  .page-hero .lead {
-    font-size: 1.1rem;
-    color: var(--color-text-light);
-    max-width: 600px;
-  }
-
-  .impressum-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    max-width: 900px;
-  }
-
-  .impressum-block {
-    background: var(--color-bg-light);
-    border-radius: 12px;
-    padding: 1.75rem;
-    border-left: 4px solid var(--color-primary);
-  }
-
-  .impressum-block--wide {
-    grid-column: 1 / -1;
-  }
-
-  .impressum-block h2 {
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-text-light);
-    margin-bottom: 0.75rem;
-  }
-
-  .impressum-block p {
-    color: var(--color-text);
-    line-height: 1.7;
-    margin-bottom: 0.75rem;
-  }
-
-  .impressum-block p:last-child {
-    margin-bottom: 0;
-  }
-
-  .impressum-block a {
-    color: var(--color-primary-dark);
-    text-decoration: underline;
-  }
-
-  .impressum-block a:hover {
-    color: var(--color-primary);
-  }
-
-  @media (max-width: 640px) {
-    .impressum-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .impressum-block--wide {
-      grid-column: 1;
-    }
-  }
-</style>
