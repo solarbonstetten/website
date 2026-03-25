@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Datenschutz" description="Datenschutzerklärung des Vereins solarbonstetten gemäss Schweizer Datenschutzgesetz (DSG).">
+
+  <div class="page-hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">Rechtliches</span>
+      <h1>Datenschutzerklärung</h1>
+      <p class="lead">Informationen zum Umgang mit Personendaten gemäss Schweizer Datenschutzgesetz (DSG).</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="legal-content">
+
+        <div class="legal-highlight">
+          <span class="highlight-icon">🍪</span>
+          <div>
+            <strong>Cookie-free</strong>
+            <p>Diese Website setzt keine Cookies und verwendet kein Tracking. Es werden keine Nutzerdaten an Werbetreibende oder Analysedienste weitergegeben.</p>
+          </div>
+        </div>
+
+        <h2>1. Verantwortliche Stelle</h2>
+        <p>Verantwortlich für die Datenbearbeitung auf dieser Website ist:</p>
+        <address>
+          Verein solarbonstetten<br />
+          8906 Bonstetten<br />
+          Schweiz<br />
+          <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a>
+        </address>
+
+        <h2>2. Hosting – GitHub Pages</h2>
+        <p>
+          Diese Website wird über <strong>GitHub Pages</strong> gehostet, einen Dienst der GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA.
+        </p>
+        <p>
+          Beim Aufruf dieser Website werden durch GitHub technische Zugriffsdaten in Server-Logfiles gespeichert, insbesondere:
+        </p>
+        <ul>
+          <li>IP-Adresse des anfragenden Geräts</li>
+          <li>Datum und Uhrzeit des Zugriffs</li>
+          <li>Aufgerufene Seite / Dateiname</li>
+          <li>Übertragene Datenmenge</li>
+          <li>Browsertyp und Betriebssystem</li>
+        </ul>
+        <p>
+          Diese Daten werden von GitHub zur Sicherstellung des Betriebs und zur Erkennung von Missbrauch verarbeitet. Wir haben keinen Zugriff auf diese Logfiles.
+          Weitere Informationen entnehmen Sie der <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von GitHub</a>.
+        </p>
+
+        <h2>3. Keine Cookies, kein Tracking</h2>
+        <p>
+          Diese Website verwendet <strong>keine Cookies</strong> und keine Analyse- oder Tracking-Werkzeuge (wie Google Analytics, Matomo o. ä.).
+          Es werden keine Nutzerprofile erstellt und keine Daten an Werbenetzwerke übermittelt.
+        </p>
+
+        <h2>4. Schriften</h2>
+        <p>
+          Diese Website verwendet die Schriftart <strong>Inter</strong>, die selbst gehostet wird. Es findet keine Verbindung zu externen Servern (z. B. Google Fonts) statt.
+        </p>
+
+        <h2>5. Externe Links</h2>
+        <p>
+          Diese Website enthält Links zu externen Websites Dritter. Für deren Inhalte und Datenschutzpraktiken sind die jeweiligen Betreiber verantwortlich. Wir haben keinen Einfluss auf diese externen Seiten.
+        </p>
+
+        <h2>6. Kontaktformular / E-Mail</h2>
+        <p>
+          Wenn Sie uns per E-Mail kontaktieren, werden die von Ihnen mitgeteilten Daten (Name, E-Mail-Adresse, Nachricht) ausschliesslich zur Bearbeitung Ihrer Anfrage verwendet und nicht an Dritte weitergegeben.
+        </p>
+
+        <h2>7. Ihre Rechte</h2>
+        <p>Gemäss Schweizer Datenschutzgesetz (DSG) haben Sie das Recht auf:</p>
+        <ul>
+          <li><strong>Auskunft</strong> über die bei uns gespeicherten Personendaten</li>
+          <li><strong>Berichtigung</strong> unrichtiger Daten</li>
+          <li><strong>Löschung</strong> Ihrer Daten (soweit keine gesetzliche Aufbewahrungspflicht besteht)</li>
+          <li><strong>Datenherausgabe</strong> in einem gängigen Format</li>
+        </ul>
+        <p>
+          Für Datenschutzanfragen wenden Sie sich an: <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a>
+        </p>
+
+        <h2>8. Änderungen dieser Datenschutzerklärung</h2>
+        <p>
+          Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen. Die jeweils aktuelle Version ist auf dieser Seite abrufbar.
+        </p>
+
+        <p class="legal-date"><em>Stand: März 2026</em></p>
+
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding: 11rem 0 5rem;
+    overflow: hidden;
+  }
+  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
+  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 560px; }
+
+  .legal-content {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .legal-content h2 {
+    font-size: 1.3rem;
+    color: var(--color-secondary);
+    margin: 2.5rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    display: inline-block;
+  }
+  .legal-content p, .legal-content li {
+    color: var(--color-text-light);
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
+  }
+  .legal-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .legal-content ul li { margin-bottom: 0.4rem; }
+  .legal-content a { color: var(--color-primary); }
+  .legal-content address {
+    font-style: normal;
+    background: #f8fafc;
+    border-left: 3px solid var(--color-primary);
+    padding: 1rem 1.25rem;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    margin: 1rem 0 1.5rem;
+    line-height: 1.8;
+    color: var(--color-text-light);
+  }
+  .legal-date { margin-top: 3rem; font-size: 0.9rem; color: #94a3b8; }
+
+  .legal-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--border-radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .highlight-icon { font-size: 1.75rem; flex-shrink: 0; }
+  .legal-highlight strong { display: block; color: var(--color-secondary); margin-bottom: 0.25rem; }
+  .legal-highlight p { margin: 0; font-size: 0.95rem; }
+</style>
