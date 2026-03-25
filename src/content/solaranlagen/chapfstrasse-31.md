@@ -2,7 +2,7 @@
 title: Chapfstrasse 31, Bonstetten
 badge: Privathaus
 reihenfolge: 3
-finanzierung: durch private Panelkäufer(:innen)
+finanzierung: durch private Panelkäufer:innen
 typ: Schrägdach-PV-Anlage (beidseitig)
 ausrichtung: Südost / Nordwest
 leistung: 30.40 kWp (16.80 + 13.60)
