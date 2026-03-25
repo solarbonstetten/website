@@ -6,126 +6,128 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Werde Mitglied bei solarbonstetten und unterstütze Solarenergie in Bonstetten."
 >
 
-  <div class="page-hero">
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
     </div>
     <div class="container">
       <span class="badge">Dabei sein</span>
-      <h1>Mitglied werden</h1>
-      <p class="lead">
+      <h1 class="mb-4">Mitglied werden</h1>
+      <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
         Unterstütze Solarenergie in Bonstetten – als Aktivmitglied oder Gönnermitglied.
         Fülle das Formular aus und dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung.
       </p>
     </div>
   </div>
 
+  <!-- Inhalt -->
   <section class="section">
     <div class="container">
-      <div class="form-layout">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12 items-start">
 
         <!-- Formular -->
-        <div class="form-wrapper">
-          <form id="beitrittsform" novalidate>
+        <div>
+          <form id="beitrittsform" novalidate class="flex flex-col gap-8">
 
-            <fieldset>
-              <legend>Persönliche Angaben</legend>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="vorname">Vorname <span class="required">*</span></label>
-                  <input type="text" id="vorname" name="vorname" required autocomplete="given-name" />
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="vorname" class="text-sm font-medium text-slate-900">Vorname <span class="text-amber-500">*</span></label>
+                  <input type="text" id="vorname" name="vorname" required autocomplete="given-name" class="input-field" />
                 </div>
-                <div class="form-group">
-                  <label for="name">Name <span class="required">*</span></label>
-                  <input type="text" id="name" name="name" required autocomplete="family-name" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="strasse">Strasse <span class="required">*</span></label>
-                <input type="text" id="strasse" name="strasse" required autocomplete="street-address" />
-              </div>
-              <div class="form-row">
-                <div class="form-group form-group--plz">
-                  <label for="plz">PLZ <span class="required">*</span></label>
-                  <input type="text" id="plz" name="plz" required autocomplete="postal-code" maxlength="4" />
-                </div>
-                <div class="form-group">
-                  <label for="ort">Ort <span class="required">*</span></label>
-                  <input type="text" id="ort" name="ort" required autocomplete="address-level2" />
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-500">*</span></label>
+                  <input type="text" id="name" name="name" required autocomplete="family-name" class="input-field" />
                 </div>
               </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="telefon">Telefon</label>
-                  <input type="tel" id="telefon" name="telefon" autocomplete="tel" />
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="strasse" class="text-sm font-medium text-slate-900">Strasse <span class="text-amber-500">*</span></label>
+                <input type="text" id="strasse" name="strasse" required autocomplete="street-address" class="input-field" />
+              </div>
+              <div class="grid grid-cols-[100px_1fr] gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-500">*</span></label>
+                  <input type="text" id="plz" name="plz" required autocomplete="postal-code" maxlength="4" class="input-field" />
                 </div>
-                <div class="form-group">
-                  <label for="email">E-Mail <span class="required">*</span></label>
-                  <input type="email" id="email" name="email" required autocomplete="email" />
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-500">*</span></label>
+                  <input type="text" id="ort" name="ort" required autocomplete="address-level2" class="input-field" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="telefon" class="text-sm font-medium text-slate-900">Telefon</label>
+                  <input type="tel" id="telefon" name="telefon" autocomplete="tel" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-500">*</span></label>
+                  <input type="email" id="email" name="email" required autocomplete="email" class="input-field" />
                 </div>
               </div>
             </fieldset>
 
-            <fieldset>
-              <legend>Mitgliedschaft</legend>
-              <div class="mitglied-options">
-                <label class="mitglied-option">
-                  <input type="radio" name="mitgliedschaft" value="Aktivmitglied (CHF 40.– / Jahr)" required />
-                  <div class="option-card">
-                    <div class="option-top">
-                      <span class="option-title">Aktivmitglied</span>
-                      <span class="option-price">CHF 40.– / Jahr</span>
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Mitgliedschaft</legend>
+              <div class="grid grid-cols-2 gap-4 mt-4 max-sm:grid-cols-1">
+                <label class="cursor-pointer">
+                  <input type="radio" name="mitgliedschaft" value="Aktivmitglied (CHF 40.– / Jahr)" required class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="font-semibold text-slate-900 text-sm">Aktivmitglied</span>
+                      <span class="font-bold text-amber-500 text-sm">CHF 40.– / Jahr</span>
                     </div>
-                    <p class="option-desc">Mit Stimmberechtigung an der Generalversammlung</p>
+                    <p class="text-xs text-slate-500 m-0">Mit Stimmberechtigung an der Generalversammlung</p>
                   </div>
                 </label>
-                <label class="mitglied-option">
-                  <input type="radio" name="mitgliedschaft" value="Gönnermitglied (CHF 100.– / Jahr)" />
-                  <div class="option-card">
-                    <div class="option-top">
-                      <span class="option-title">Gönnermitglied</span>
-                      <span class="option-price">CHF 100.– / Jahr</span>
+                <label class="cursor-pointer">
+                  <input type="radio" name="mitgliedschaft" value="Gönnermitglied (CHF 100.– / Jahr)" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="font-semibold text-slate-900 text-sm">Gönnermitglied</span>
+                      <span class="font-bold text-amber-500 text-sm">CHF 100.– / Jahr</span>
                     </div>
-                    <p class="option-desc">Unterstützung ohne Stimmberechtigung</p>
+                    <p class="text-xs text-slate-500 m-0">Unterstützung ohne Stimmberechtigung</p>
                   </div>
                 </label>
               </div>
             </fieldset>
 
-            <fieldset>
-              <legend>Optionale Angaben</legend>
-              <div class="checkbox-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" name="solarstrom" id="solarstrom" />
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Optionale Angaben</legend>
+              <div class="flex flex-col gap-3 mt-4">
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-500">
+                  <input type="checkbox" name="solarstrom" id="solarstrom" class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
                   <span>Ich möchte von solarbonstetten Solarstrom beziehen.</span>
                 </label>
-                <label class="checkbox-label">
-                  <input type="checkbox" name="aktiv" id="aktiv" />
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-500">
+                  <input type="checkbox" name="aktiv" id="aktiv" class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
                   <span>Ich möchte im Verein solarbonstetten aktiv mitarbeiten.</span>
                 </label>
               </div>
             </fieldset>
 
-            <div id="form-error" class="form-error" hidden>
+            <div id="form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden>
               Bitte fülle alle Pflichtfelder aus und wähle eine Mitgliedschaft.
             </div>
 
-            <button type="submit" class="btn btn-primary btn-submit">
+            <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
               📧 Beitrittserklärung per E-Mail senden
             </button>
-            <p class="form-hint">
+            <p class="text-xs text-slate-400 text-center -mt-6">
               Dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung –
               du kannst den Text vor dem Senden noch überprüfen.
             </p>
 
-            <div class="pdf-download">
-              <span class="pdf-icon">🖨️</span>
-              <div>
-                <strong>Lieber per Post?</strong>
-                <p>Beitrittserklärung als PDF herunterladen, ausdrucken und an <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a> senden oder per Post an: solarbonstetten, Dorfstrasse 24, 8906 Bonstetten.</p>
+            <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4">
+              <span class="text-2xl shrink-0">🖨️</span>
+              <div class="flex-1 min-w-0">
+                <strong class="block text-sm text-slate-900 mb-0.5">Lieber per Post?</strong>
+                <p class="text-xs text-slate-500 leading-relaxed m-0">Beitrittserklärung als PDF herunterladen, ausdrucken und an <a href="mailto:info@solarbonstetten.ch" class="text-amber-500">info@solarbonstetten.ch</a> senden oder per Post an: solarbonstetten, Dorfstrasse 24, 8906 Bonstetten.</p>
               </div>
-              <a href="/downloads/beitrittserklarung.pdf" download class="btn btn-outline btn-pdf">
+              <a href="/downloads/beitrittserklarung.pdf" download class="btn btn-outline text-sm shrink-0">
                 PDF ↓
               </a>
             </div>
@@ -134,32 +136,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <!-- Sidebar -->
-        <aside class="form-sidebar">
-          <div class="sidebar-info">
-            <h3>So funktioniert es</h3>
-            <ol class="steps">
-              <li><span class="step-nr">1</span> Formular ausfüllen</li>
-              <li><span class="step-nr">2</span> «Per E-Mail senden» klicken</li>
-              <li><span class="step-nr">3</span> E-Mail-Programm öffnet sich mit vorausgefüllter Beitrittserklärung</li>
-              <li><span class="step-nr">4</span> Absenden – fertig!</li>
+        <aside class="flex flex-col gap-5 lg:sticky top-24">
+
+          <!-- So funktioniert es -->
+          <div class="bg-amber-400 text-white rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-4 text-white">So funktioniert es</h3>
+            <ol class="list-none p-0 flex flex-col gap-2.5">
+              {[
+                'Formular ausfüllen',
+                '«Per E-Mail senden» klicken',
+                'E-Mail-Programm öffnet sich mit vorausgefüllter Beitrittserklärung',
+                'Absenden – fertig!',
+              ].map((step, i) => (
+                <li class="flex items-start gap-3 text-sm opacity-95">
+                  <span class="w-6 h-6 bg-white/25 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  {step}
+                </li>
+              ))}
             </ol>
           </div>
 
-          <div class="sidebar-info sidebar-info--outline">
-            <h3>Fragen?</h3>
-            <p>Bei Fragen zur Mitgliedschaft erreichst du uns unter:</p>
-            <a href="mailto:info@solarbonstetten.ch" class="mail-link">
-              info@solarbonstetten.ch
-            </a>
+          <!-- Fragen -->
+          <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-2 text-slate-900">Fragen?</h3>
+            <p class="text-sm text-slate-500 leading-relaxed mb-3">Bei Fragen zur Mitgliedschaft erreichst du uns unter:</p>
+            <a href="mailto:info@solarbonstetten.ch" class="text-amber-500 font-semibold text-sm break-all">info@solarbonstetten.ch</a>
           </div>
 
-          <div class="sidebar-info sidebar-info--outline">
-            <h3>Statuten</h3>
-            <p>Mehr über Rechte und Pflichten der Mitglieder:</p>
-            <a href="/statuten" class="btn-link">Statuten lesen →</a>
+          <!-- Statuten -->
+          <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-2 text-slate-900">Statuten</h3>
+            <p class="text-sm text-slate-500 leading-relaxed mb-3">Mehr über Rechte und Pflichten der Mitglieder:</p>
+            <a href="/statuten" class="text-amber-500 font-semibold text-sm hover:underline">Statuten lesen →</a>
           </div>
+
         </aside>
-
       </div>
     </div>
   </section>
@@ -167,174 +178,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <style>
-  .page-hero {
-    position: relative;
-    padding: 11rem 0 5rem;
-    overflow: hidden;
-  }
-  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
-  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 600px; }
-
-  .form-layout {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 3rem;
-    align-items: start;
-  }
-
-  /* Form */
-  .form-wrapper form { display: flex; flex-direction: column; gap: 2rem; }
-
-  fieldset {
-    border: 1px solid #e2e8f0;
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem 1.75rem;
-  }
-  legend {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--color-secondary);
-    padding: 0 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.8rem;
-  }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; }
-  .form-group--plz { max-width: 100px; }
-
-  label { font-size: 0.875rem; font-weight: 500; color: var(--color-secondary); }
-  .required { color: var(--color-primary); }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"] {
+  .input-field {
+    width: 100%;
     padding: 0.6rem 0.875rem;
     border: 1.5px solid #e2e8f0;
-    border-radius: var(--border-radius);
+    border-radius: 12px;
     font-size: 0.95rem;
     color: var(--color-secondary);
     background: #fff;
     transition: border-color 0.2s;
-    width: 100%;
   }
-  input:focus {
+  .input-field:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(251,168,3,0.15);
+    box-shadow: 0 0 0 3px rgba(251, 168, 3, 0.15);
   }
-  input.invalid { border-color: #ef4444; }
-
-  /* Mitgliedschaft */
-  .mitglied-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-  .mitglied-option { cursor: pointer; }
-  .mitglied-option input[type="radio"] { display: none; }
-  .option-card {
-    border: 2px solid #e2e8f0;
-    border-radius: var(--border-radius);
-    padding: 1rem 1.25rem;
-    transition: all 0.2s;
-  }
-  .mitglied-option input:checked + .option-card {
-    border-color: var(--color-primary);
-    background: #fffbeb;
-  }
-  .option-card:hover { border-color: var(--color-primary); }
-  .option-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; }
-  .option-title { font-weight: 600; color: var(--color-secondary); font-size: 0.95rem; }
-  .option-price { font-weight: 700; color: var(--color-primary); font-size: 0.9rem; }
-  .option-desc { font-size: 0.8rem; color: var(--color-text-light); margin: 0; }
-
-  /* Checkboxes */
-  .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
-  .checkbox-label {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--color-text-light);
-  }
-  .checkbox-label input[type="checkbox"] {
-    width: 1.1rem;
-    height: 1.1rem;
-    margin-top: 0.1rem;
-    accent-color: var(--color-primary);
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-
-  /* Submit */
-  .btn-submit { width: 100%; justify-content: center; font-size: 1rem; padding: 0.9rem; }
-  .form-hint { font-size: 0.82rem; color: var(--color-text-light); text-align: center; margin-top: 0.5rem; }
-
-  .pdf-download {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--border-radius);
-    padding: 1rem 1.25rem;
-    margin-top: 1rem;
-  }
-  .pdf-icon { font-size: 1.5rem; flex-shrink: 0; }
-  .pdf-download strong { font-size: 0.9rem; color: var(--color-secondary); display: block; margin-bottom: 0.2rem; }
-  .pdf-download p { font-size: 0.82rem; color: var(--color-text-light); margin: 0; line-height: 1.5; }
-  .pdf-download a:not(.btn-pdf) { color: var(--color-primary); }
-  .btn-pdf { white-space: nowrap; flex-shrink: 0; font-size: 0.875rem; padding: 0.4rem 1rem; }
-  .form-error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: var(--border-radius);
-    padding: 0.75rem 1rem;
-    color: #dc2626;
-    font-size: 0.875rem;
-  }
-
-  /* Sidebar */
-  .form-sidebar { display: flex; flex-direction: column; gap: 1.25rem; position: sticky; top: 6rem; }
-  .sidebar-info {
-    background: var(--color-primary);
-    color: #fff;
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-  }
-  .sidebar-info h3 { color: #fff; font-size: 1rem; margin-bottom: 0.75rem; }
-  .sidebar-info p { font-size: 0.875rem; opacity: 0.9; line-height: 1.6; margin-bottom: 0.75rem; }
-  .sidebar-info--outline {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    box-shadow: var(--shadow-sm);
-  }
-  .sidebar-info--outline h3 { color: var(--color-secondary); }
-  .sidebar-info--outline p { color: var(--color-text-light); }
-
-  .steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
-  .steps li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; opacity: 0.95; }
-  .step-nr {
-    width: 1.5rem; height: 1.5rem;
-    background: rgba(255,255,255,0.25);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .mail-link { color: var(--color-primary); font-weight: 600; font-size: 0.875rem; word-break: break-all; }
-  .sidebar-info .mail-link { color: #fff; text-decoration: underline; }
-  .btn-link { color: var(--color-primary); font-weight: 600; font-size: 0.875rem; }
-
-  @media (max-width: 900px) {
-    .form-layout { grid-template-columns: 1fr; }
-    .form-sidebar { position: static; }
-  }
-  @media (max-width: 600px) {
-    .form-row { grid-template-columns: 1fr; }
-    .mitglied-options { grid-template-columns: 1fr; }
-    .form-group--plz { max-width: 100%; }
-  }
+  .input-field.invalid { border-color: #ef4444; }
 </style>
 
 <script>
@@ -345,7 +204,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     e.preventDefault();
     errorBox.hidden = true;
 
-    // Validierung
     const required = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email'];
     let valid = true;
 
@@ -368,7 +226,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       return;
     }
 
-    // Daten sammeln
     const get = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).value.trim();
     const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).checked;
 
@@ -399,7 +256,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 
-  // Fehlerstatus bei Eingabe zurücksetzen
   form.querySelectorAll('input').forEach(input => {
     input.addEventListener('input', () => input.classList.remove('invalid'));
   });
