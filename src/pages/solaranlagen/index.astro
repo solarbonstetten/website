@@ -85,6 +85,12 @@ const icons: Record<string, string> = { Schulanlage: '🏫', Privathaus: '🏠' 
                     <span class="spec-label">Finanzierung</span>
                     <span class="spec-value">{anlage.data.finanzierung}</span>
                   </div>
+                  {anlage.data.umsetzungspartner && (
+                    <div class="spec-block">
+                      <span class="spec-label">Umsetzungspartner</span>
+                      <span class="spec-value">{anlage.data.umsetzungspartner}</span>
+                    </div>
+                  )}
                 </div>
 
                 <!-- Markdown-Body (z.B. Messdaten-Tabelle) -->

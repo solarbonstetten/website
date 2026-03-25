@@ -1,0 +1,202 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const entries = await getCollection('derVerein');
+const page = entries[0];
+const { Content } = await render(page);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout
+  title="Der Verein"
+  description="solarbonstetten – ein Verein für Solarenergie in Bonstetten. Gegründet 2011, nicht gewinnorientiert, ehrenamtlich."
+>
+
+  <div class="page-hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">Über uns</span>
+      <h1>{page.data.title}</h1>
+      <p class="lead">{page.data.untertitel}</p>
+      <div class="hero-meta">
+        <span class="meta-pill">📅 Gegründet {page.data.gruendungsdatum}</span>
+        <span class="meta-pill">🤝 Nicht gewinnorientiert</span>
+        <span class="meta-pill">🌱 Ehrenamtlich</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="verein-layout">
+
+        <!-- Hauptinhalt (Markdown) -->
+        <div class="verein-content">
+          <Content />
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="verein-sidebar">
+          <div class="sidebar-card">
+            <h3>Mitglied werden</h3>
+            <p>Unterstütze Solarenergie in Bonstetten – als Aktivmitglied oder Gönnermitglied.</p>
+            <ul class="mitglied-liste">
+              <li>
+                <span class="betrag">CHF 40</span>
+                <span class="typ">Aktivmitglied / Jahr</span>
+              </li>
+              <li>
+                <span class="betrag">CHF 100</span>
+                <span class="typ">Gönnermitglied / Jahr</span>
+              </li>
+            </ul>
+            <a href={`${base}/mitmachen`} class="btn btn-primary" style="width:100%; text-align:center; display:block;">
+              Jetzt beitreten
+            </a>
+          </div>
+
+          <div class="sidebar-card sidebar-card-outline">
+            <h3>Statuten</h3>
+            <p>Die Organisationsform des Vereins ist in den Statuten festgehalten.</p>
+            <a href={`${base}/statuten`} class="btn-link">Statuten lesen →</a>
+          </div>
+
+          <div class="sidebar-card sidebar-card-outline">
+            <h3>Kontakt</h3>
+            <address>
+              solarbonstetten<br />
+              Dorfstrasse 24<br />
+              8906 Bonstetten<br />
+              <a href="mailto:info@solarbonstetten.ch">info@solarbonstetten.ch</a>
+            </address>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding: 11rem 0 5rem;
+    overflow: hidden;
+  }
+  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
+  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 560px; margin-bottom: 1.75rem; }
+
+  .hero-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid #e2e8f0;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    color: var(--color-secondary);
+  }
+
+  /* Two-column layout */
+  .verein-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* Markdown content */
+  .verein-content :global(h2) {
+    font-size: 1.35rem;
+    color: var(--color-secondary);
+    margin: 2.5rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    display: inline-block;
+  }
+  .verein-content :global(p),
+  .verein-content :global(li) {
+    color: var(--color-text-light);
+    line-height: 1.8;
+    margin-bottom: 0.6rem;
+  }
+  .verein-content :global(ul) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .verein-content :global(strong) { color: var(--color-secondary); }
+
+  /* Sidebar */
+  .verein-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: sticky;
+    top: 6rem;
+  }
+  .sidebar-card {
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+  }
+  .sidebar-card h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: #fff; }
+  .sidebar-card p { font-size: 0.9rem; opacity: 0.9; margin-bottom: 1.25rem; line-height: 1.6; }
+
+  .sidebar-card-outline {
+    background: var(--color-background);
+    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+  }
+  .sidebar-card-outline h3 { color: var(--color-secondary); }
+  .sidebar-card-outline p { color: var(--color-text-light); }
+
+  .mitglied-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .mitglied-liste li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .betrag { font-weight: 700; }
+  .typ { opacity: 0.85; font-size: 0.82rem; }
+
+  .btn-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .btn-link:hover { text-decoration: underline; }
+
+  address {
+    font-style: normal;
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.8;
+  }
+  address a { color: var(--color-primary); }
+
+  @media (max-width: 900px) {
+    .verein-layout { grid-template-columns: 1fr; }
+    .verein-sidebar { position: static; }
+  }
+</style>

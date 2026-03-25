@@ -8,5 +8,6 @@ ausrichtung: Süd
 leistung: "45.76 kWp"
 jahresertrag: "~41'000 kWh"
 module: "260 Wp, monokristallin"
+umsetzungspartner: SolarSpar
 monitoring_url: http://solarspar.solarlog-web.ch/31567.html
 ---

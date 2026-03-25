@@ -30,6 +30,7 @@ const solaranlagen = defineCollection({
     leistung: z.string(),
     jahresertrag: z.string(),
     module: z.string(),
+    umsetzungspartner: z.string().optional(),
     monitoring_url: z.string().optional(),
   }),
 });
@@ -45,4 +46,21 @@ const links = defineCollection({
   }),
 });
 
-export const collections = { news, projekte, solaranlagen, links };
+const statuten = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/statuten' }),
+  schema: z.object({
+    title: z.string(),
+    stand: z.string(),
+  }),
+});
+
+const derVerein = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/der-verein' }),
+  schema: z.object({
+    title: z.string(),
+    untertitel: z.string(),
+    gruendungsdatum: z.string(),
+  }),
+});
+
+export const collections = { news, projekte, solaranlagen, links, statuten, derVerein };

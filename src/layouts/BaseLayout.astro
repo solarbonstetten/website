@@ -31,10 +31,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <nav class="nav-links">
           <a href={`${base}/#aktuell`} class="nav-item">Aktuell</a>
           <a href={`${base}/solaranlagen`} class="nav-item">Solaranlagen</a>
-          <a href={`${base}/#verein`} class="nav-item">Der Verein</a>
+          <a href={`${base}/der-verein`} class="nav-item">Der Verein</a>
           <a href={`${base}/#kontakt`} class="nav-item">Kontakt</a>
           <a href={`${base}/links`} class="nav-item">Links</a>
-          <a href={`${base}/#shop`} class="nav-item btn-outline">Shop</a>
+          <a href={`${base}/mitmachen`} class="nav-item btn-outline">Mitmachen</a>
         </nav>
         <button class="mobile-toggle" aria-label="Menu">
           <span></span>
@@ -65,14 +65,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <h4>Wichtiges</h4>
           <ul>
             <li><a href="#">Dokumente</a></li>
-            <li><a href="#">Statuten</a></li>
-            <li><a href="#">Datenschutz</a></li>
+            <li><a href={`${base}/statuten`}>Statuten</a></li>
+            <li><a href={`${base}/datenschutz`}>Datenschutz</a></li>
             <li><a href={`${base}/impressum`}>Impressum</a></li>
           </ul>
         </div>
         <div class="footer-contact">
           <h4>Kontakt</h4>
-          <p>solarbonstetten<br />8906 Bonstetten<br />Schweiz</p>
+          <p>solarbonstetten<br />Dorfstrasse 24<br />8906 Bonstetten<br />Schweiz</p>
           <a href="mailto:info@solarbonstetten.ch" class="mail-link">info@solarbonstetten.ch</a>
         </div>
       </div>
