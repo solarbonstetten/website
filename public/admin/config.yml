@@ -2,7 +2,6 @@ backend:
   name: github
   repo: enbieri/solarbonstetten_poc
   branch: main
-  base_url: https://api.netlify.com
 media_folder: public/images
 public_folder: /images
 collections:
