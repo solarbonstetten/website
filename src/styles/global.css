@@ -11,7 +11,7 @@
   --color-bg-light: #f8fafc;
   --color-text: #334155;
   --color-text-light: #64748b;
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-main: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   --border-radius: 12px;
   --border-radius-lg: 24px;
   --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);

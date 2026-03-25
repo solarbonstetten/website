@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import '../styles/global.css';
+import globalCSS from '../styles/global.css?raw';
+import '@fontsource-variable/inter';
 import logo from '../assets/logo.png';
 
 interface Props {
@@ -17,9 +18,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | solarbonstetten</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style set:html={globalCSS}></style>
     <link rel="icon" href={`${base}/favicon.ico`} type="image/x-icon" />
   </head>
   <body>
