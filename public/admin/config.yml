@@ -54,3 +54,13 @@ collections:
           - Energie & Solar
           - Region & Gemeinde
       - { label: Reihenfolge, name: reihenfolge, widget: number, default: 99 }
+  - name: statuten
+    label: Statuten
+    files:
+      - label: Vereinsstatuten
+        name: statuten
+        file: src/content/statuten/statuten.md
+        fields:
+          - { label: Titel, name: title, widget: string }
+          - { label: Stand (Datum), name: stand, widget: string, hint: "z.B. 1. Oktober 2011" }
+          - { label: Inhalt, name: body, widget: markdown }

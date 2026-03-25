@@ -45,4 +45,12 @@ const links = defineCollection({
   }),
 });
 
-export const collections = { news, projekte, solaranlagen, links };
+const statuten = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/statuten' }),
+  schema: z.object({
+    title: z.string(),
+    stand: z.string(),
+  }),
+});
+
+export const collections = { news, projekte, solaranlagen, links, statuten };
