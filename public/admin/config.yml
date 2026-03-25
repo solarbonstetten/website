@@ -21,3 +21,19 @@ collections:
     fields:
       - { label: Titel, name: title, widget: string }
       - { label: Beschreibung, name: body, widget: markdown }
+  - name: solaranlagen
+    label: Solaranlagen
+    folder: src/content/solaranlagen
+    create: true
+    fields:
+      - { label: Titel, name: title, widget: string }
+      - { label: Kategorie, name: badge, widget: string, hint: "z.B. Schulanlage oder Privathaus" }
+      - { label: Reihenfolge, name: reihenfolge, widget: number, default: 99 }
+      - { label: Finanzierung, name: finanzierung, widget: string }
+      - { label: Anlagetyp, name: typ, widget: string }
+      - { label: Ausrichtung, name: ausrichtung, widget: string }
+      - { label: Leistung, name: leistung, widget: string, hint: "z.B. 28.08 kWp" }
+      - { label: Jahresertrag, name: jahresertrag, widget: string, hint: "z.B. ~25'000 kWh" }
+      - { label: Module, name: module, widget: string }
+      - { label: Monitoring URL, name: monitoring_url, widget: string, required: false }
+      - { label: Zusatzinfos, name: body, widget: markdown, required: false }

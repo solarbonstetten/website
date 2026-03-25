@@ -1,51 +1,11 @@
 ---
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const anlagen = [
-  {
-    id: 'schachenmatten-2',
-    name: 'Schulhaus Schachenmatten 2',
-    badge: 'Schulanlage',
-    finanzierung: 'Vollständig durch private Darlehen',
-    typ: 'Schrägdach-PV-Anlage',
-    ausrichtung: 'Ost-Ost-Süd',
-    leistung: '28.08 kWp',
-    jahresertrag: '~25\'000 kWh',
-    module: '260 Wp, monokristallin (Deutschland)',
-    monitoring: 'http://solarspar.solarlog-web.ch/33238.html?c=',
-    gradient: 'bg-gradient-1',
-    icon: '🏫',
-  },
-  {
-    id: 'schachenmatten-4',
-    name: 'Schulhaus Schachenmatten 4',
-    badge: 'Schulanlage',
-    finanzierung: 'Vollständig durch private Darlehen',
-    typ: 'Flachdach-PV-Anlage (aufgeständert)',
-    ausrichtung: 'Süd',
-    leistung: '45.76 kWp',
-    jahresertrag: '~41\'000 kWh',
-    module: '260 Wp, monokristallin',
-    monitoring: 'http://solarspar.solarlog-web.ch/31567.html',
-    gradient: 'bg-gradient-2',
-    icon: '🏫',
-  },
-  {
-    id: 'chapfstrasse',
-    name: 'Chapfstrasse 31, Bonstetten',
-    badge: 'Privathaus',
-    finanzierung: 'Durch private Darlehen',
-    typ: 'Schrägdach-PV-Anlage (beidseitig)',
-    ausrichtung: 'Südost / Nordwest',
-    leistung: '30.40 kWp (16.80 + 13.60)',
-    jahresertrag: '~29\'300 kWh',
-    module: '78 bifaziale Glas-Glas-Module, 400 Wp (Megasol)',
-    monitoring: null,
-    gradient: 'bg-gradient-3',
-    icon: '🏠',
-  },
-];
+const alleAnlagen = await getCollection('solaranlagen');
+const anlagen = alleAnlagen.sort((a, b) => a.data.reihenfolge - b.data.reihenfolge);
+const gradients = ['bg-gradient-1', 'bg-gradient-2', 'bg-gradient-3'];
+const icons: Record<string, string> = { Schulanlage: '🏫', Privathaus: '🏠' };
 ---
 <BaseLayout title="Solaranlagen" description="Unsere Solaranlagen in Bonstetten – Schulhaus Schachenmatten 2 & 4 sowie Chapfstrasse 31.">
 
@@ -86,84 +46,65 @@ const anlagen = [
   <section class="section">
     <div class="container">
       <div class="anlagen-list">
-        {anlagen.map((anlage, i) => (
-          <article class="anlage-card">
-            <!-- Farbiger Header-Streifen -->
-            <div class={`anlage-header ${anlage.gradient}`}>
-              <span class="anlage-icon">{anlage.icon}</span>
-              <div>
-                <span class="anlage-badge">{anlage.badge}</span>
-                <h2 class="anlage-title">{anlage.name}</h2>
-              </div>
-            </div>
-
-            <div class="anlage-body">
-              <!-- Technische Specs -->
-              <div class="specs-grid">
-                <div class="spec-block">
-                  <span class="spec-label">Leistung</span>
-                  <span class="spec-value highlight">{anlage.leistung}</span>
-                </div>
-                <div class="spec-block">
-                  <span class="spec-label">Jahresertrag</span>
-                  <span class="spec-value highlight">{anlage.jahresertrag}</span>
-                </div>
-                <div class="spec-block">
-                  <span class="spec-label">Ausrichtung</span>
-                  <span class="spec-value">{anlage.ausrichtung}</span>
-                </div>
-                <div class="spec-block">
-                  <span class="spec-label">Anlagetyp</span>
-                  <span class="spec-value">{anlage.typ}</span>
-                </div>
-                <div class="spec-block">
-                  <span class="spec-label">Module</span>
-                  <span class="spec-value">{anlage.module}</span>
-                </div>
-                <div class="spec-block">
-                  <span class="spec-label">Finanzierung</span>
-                  <span class="spec-value">{anlage.finanzierung}</span>
+        {await Promise.all(anlagen.map(async (anlage, i) => {
+          const { Content } = await render(anlage);
+          const icon = icons[anlage.data.badge] ?? '⚡';
+          return (
+            <article class="anlage-card">
+              <div class={`anlage-header ${gradients[i % 3]}`}>
+                <span class="anlage-icon">{icon}</span>
+                <div>
+                  <span class="anlage-badge">{anlage.data.badge}</span>
+                  <h2 class="anlage-title">{anlage.data.title}</h2>
                 </div>
               </div>
 
-              <!-- Chapfstrasse: Messdaten -->
-              {anlage.id === 'chapfstrasse' && (
-                <div class="messdaten">
-                  <h3>Messdaten Nov 2023 – Nov 2024</h3>
-                  <div class="messdaten-grid">
-                    <div class="messdaten-item">
-                      <span class="messdaten-value">27'682 kWh</span>
-                      <span class="messdaten-label">Jahresproduktion</span>
-                    </div>
-                    <div class="messdaten-item">
-                      <span class="messdaten-value">4'386 kWh</span>
-                      <span class="messdaten-label">Bester Monat (Juli 2024)</span>
-                    </div>
-                    <div class="messdaten-item">
-                      <span class="messdaten-value">458 kWh</span>
-                      <span class="messdaten-label">Schwächster Monat (Dez. 2023)</span>
-                    </div>
-                    <div class="messdaten-item">
-                      <span class="messdaten-value">4'828 kWh</span>
-                      <span class="messdaten-label">Eigenverbrauch (~17%)</span>
-                    </div>
+              <div class="anlage-body">
+                <div class="specs-grid">
+                  <div class="spec-block">
+                    <span class="spec-label">Leistung</span>
+                    <span class="spec-value highlight">{anlage.data.leistung}</span>
+                  </div>
+                  <div class="spec-block">
+                    <span class="spec-label">Jahresertrag</span>
+                    <span class="spec-value highlight">{anlage.data.jahresertrag}</span>
+                  </div>
+                  <div class="spec-block">
+                    <span class="spec-label">Ausrichtung</span>
+                    <span class="spec-value">{anlage.data.ausrichtung}</span>
+                  </div>
+                  <div class="spec-block">
+                    <span class="spec-label">Anlagetyp</span>
+                    <span class="spec-value">{anlage.data.typ}</span>
+                  </div>
+                  <div class="spec-block">
+                    <span class="spec-label">Module</span>
+                    <span class="spec-value">{anlage.data.module}</span>
+                  </div>
+                  <div class="spec-block">
+                    <span class="spec-label">Finanzierung</span>
+                    <span class="spec-value">{anlage.data.finanzierung}</span>
                   </div>
                 </div>
-              )}
 
-              <!-- Monitoring Link -->
-              <div class="anlage-footer">
-                {anlage.monitoring ? (
-                  <a href={anlage.monitoring} target="_blank" rel="noopener" class="btn btn-primary monitoring-btn">
-                    📊 Live-Monitoring →
-                  </a>
-                ) : (
-                  <span class="no-monitoring">Kein Live-Monitoring verfügbar</span>
-                )}
+                <!-- Markdown-Body (z.B. Messdaten-Tabelle) -->
+                <div class="article-body">
+                  <Content />
+                </div>
+
+                <div class="anlage-footer">
+                  {anlage.data.monitoring_url ? (
+                    <a href={anlage.data.monitoring_url} target="_blank" rel="noopener" class="btn btn-primary monitoring-btn">
+                      📊 Live-Monitoring →
+                    </a>
+                  ) : (
+                    <span class="no-monitoring">Kein Live-Monitoring verfügbar</span>
+                  )}
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        }))}
       </div>
     </div>
   </section>

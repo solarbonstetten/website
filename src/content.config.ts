@@ -18,4 +18,20 @@ const projekte = defineCollection({
   }),
 });
 
-export const collections = { news, projekte };
+const solaranlagen = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/solaranlagen' }),
+  schema: z.object({
+    title: z.string(),
+    badge: z.string(),
+    reihenfolge: z.number(),
+    finanzierung: z.string(),
+    typ: z.string(),
+    ausrichtung: z.string(),
+    leistung: z.string(),
+    jahresertrag: z.string(),
+    module: z.string(),
+    monitoring_url: z.string().optional(),
+  }),
+});
+
+export const collections = { news, projekte, solaranlagen };
