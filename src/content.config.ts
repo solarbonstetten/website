@@ -71,6 +71,7 @@ const dokumente = defineCollection({
     datum: z.coerce.date(),
     url: z.string(),
     quelle: z.string().optional(),
+    reihenfolge: z.number().optional(),
   }),
 });
 

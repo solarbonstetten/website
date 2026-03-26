@@ -17,7 +17,12 @@ const grouped = Object.fromEntries(
     kat,
     alle
       .filter(d => d.data.kategorie === kat)
-      .sort((a, b) => b.data.datum.getTime() - a.data.datum.getTime()),
+      .sort((a, b) => {
+        const ra = a.data.reihenfolge ?? 99;
+        const rb = b.data.reihenfolge ?? 99;
+        if (ra !== rb) return ra - rb;
+        return b.data.datum.getTime() - a.data.datum.getTime();
+      }),
   ])
 );
 
