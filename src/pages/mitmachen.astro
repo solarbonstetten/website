@@ -35,25 +35,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
               <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="vorname" class="text-sm font-medium text-slate-900">Vorname <span class="text-amber-500">*</span></label>
+                  <label for="vorname" class="text-sm font-medium text-slate-900">Vorname <span class="text-amber-700">*</span></label>
                   <input type="text" id="vorname" name="vorname" required autocomplete="given-name" class="input-field" />
                 </div>
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-500">*</span></label>
+                  <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-700">*</span></label>
                   <input type="text" id="name" name="name" required autocomplete="family-name" class="input-field" />
                 </div>
               </div>
               <div class="flex flex-col gap-1.5 mt-4">
-                <label for="strasse" class="text-sm font-medium text-slate-900">Strasse <span class="text-amber-500">*</span></label>
+                <label for="strasse" class="text-sm font-medium text-slate-900">Strasse <span class="text-amber-700">*</span></label>
                 <input type="text" id="strasse" name="strasse" required autocomplete="street-address" class="input-field" />
               </div>
               <div class="grid grid-cols-[100px_1fr] gap-4 max-sm:grid-cols-1">
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-500">*</span></label>
+                  <label for="plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-700">*</span></label>
                   <input type="text" id="plz" name="plz" required autocomplete="postal-code" maxlength="4" class="input-field" />
                 </div>
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-500">*</span></label>
+                  <label for="ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-700">*</span></label>
                   <input type="text" id="ort" name="ort" required autocomplete="address-level2" class="input-field" />
                 </div>
               </div>
@@ -63,7 +63,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <input type="tel" id="telefon" name="telefon" autocomplete="tel" class="input-field" />
                 </div>
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-500">*</span></label>
+                  <label for="email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-700">*</span></label>
                   <input type="email" id="email" name="email" required autocomplete="email" class="input-field" />
                 </div>
               </div>
@@ -77,7 +77,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
                     <div class="flex justify-between items-center mb-1">
                       <span class="font-semibold text-slate-900 text-sm">Aktivmitglied</span>
-                      <span class="font-bold text-amber-500 text-sm">CHF 40.– / Jahr</span>
+                      <span class="font-bold text-amber-700 text-sm">CHF 40.– / Jahr</span>
                     </div>
                     <p class="text-xs text-slate-500 m-0">Mit Stimmberechtigung an der Generalversammlung</p>
                   </div>
@@ -87,7 +87,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
                     <div class="flex justify-between items-center mb-1">
                       <span class="font-semibold text-slate-900 text-sm">Gönnermitglied</span>
-                      <span class="font-bold text-amber-500 text-sm">CHF 100.– / Jahr</span>
+                      <span class="font-bold text-amber-700 text-sm">CHF 100.– / Jahr</span>
                     </div>
                     <p class="text-xs text-slate-500 m-0">Unterstützung ohne Stimmberechtigung</p>
                   </div>
@@ -125,7 +125,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span class="text-2xl shrink-0">🖨️</span>
               <div class="flex-1 min-w-0">
                 <strong class="block text-sm text-slate-900 mb-0.5">Lieber per Post?</strong>
-                <p class="text-xs text-slate-500 leading-relaxed m-0">Beitrittserklärung als PDF herunterladen, ausdrucken und an <a href="mailto:info@solarbonstetten.ch" class="text-amber-500">info@solarbonstetten.ch</a> senden oder per Post an: solarbonstetten, Dorfstrasse 24, 8906 Bonstetten.</p>
+                <p class="text-xs text-slate-500 leading-relaxed m-0">Beitrittserklärung als PDF herunterladen, ausdrucken und an <a href="mailto:info@solarbonstetten.ch" class="text-amber-700">info@solarbonstetten.ch</a> senden oder per Post an: solarbonstetten, Dorfstrasse 24, 8906 Bonstetten.</p>
               </div>
               <a href="/downloads/beitrittserklarung.pdf" download class="btn btn-outline text-sm shrink-0">
                 PDF ↓
@@ -160,14 +160,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
             <h3 class="text-base font-bold mb-2 text-slate-900">Fragen?</h3>
             <p class="text-sm text-slate-500 leading-relaxed mb-3">Bei Fragen zur Mitgliedschaft erreichst du uns unter:</p>
-            <a href="mailto:info@solarbonstetten.ch" class="text-amber-500 font-semibold text-sm break-all">info@solarbonstetten.ch</a>
+            <a href="mailto:info@solarbonstetten.ch" class="text-amber-700 font-semibold text-sm break-all">info@solarbonstetten.ch</a>
           </div>
 
           <!-- Statuten -->
           <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
             <h3 class="text-base font-bold mb-2 text-slate-900">Statuten</h3>
             <p class="text-sm text-slate-500 leading-relaxed mb-3">Mehr über Rechte und Pflichten der Mitglieder:</p>
-            <a href="/statuten" class="text-amber-500 font-semibold text-sm hover:underline">Statuten lesen →</a>
+            <a href="/statuten" class="text-amber-700 font-semibold text-sm hover:underline">Statuten lesen →</a>
           </div>
 
         </aside>
