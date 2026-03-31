@@ -3,29 +3,48 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const projekte = await getCollection('projekte');
-const gradients = ['bg-gradient-1', 'bg-gradient-2', 'bg-gradient-3'];
+const gradients = [
+  'bg-gradient-to-br from-amber-100 to-amber-200',
+  'bg-gradient-to-br from-sky-100 to-sky-200',
+  'bg-gradient-to-br from-slate-100 to-slate-200',
+];
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <BaseLayout title="Projekte">
-  <div class="content-page">
+
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
     <div class="container">
-      <h1>Unsere Projekte</h1>
-      <p class="lead">Solaranlagen in Bonstetten</p>
+      <span class="badge">Projekte</span>
+      <h1 class="mb-4">Unsere Projekte</h1>
+      <p class="text-lg text-slate-500 max-w-lg leading-relaxed">Solaranlagen in Bonstetten</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
       {projekte.length === 0 ? (
-        <p>Noch keine Projekte vorhanden.</p>
+        <p class="text-slate-500">Noch keine Projekte vorhanden.</p>
       ) : (
-        <div class="article-grid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {projekte.map((projekt, i) => (
-            <article class="news-card">
-              <div class={`card-image ${gradients[i % 3]}`}></div>
-              <div class="card-content">
-                <h3>{projekt.data.title}</h3>
-                <a href={`${base}/projekte/${projekt.id}`} class="read-more">Mehr erfahren →</a>
+            <article class="news-card bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
+              <div class={`h-[200px] w-full hidden sm:block ${gradients[i % 3]}`}></div>
+              <div class="p-8 flex flex-col flex-1 gap-3">
+                <h3 class="text-slate-900 leading-snug">{projekt.data.title}</h3>
+                <a href={`${base}/projekte/${projekt.id}`} class="mt-auto pt-2 font-semibold text-sm text-slate-700 hover:text-amber-700 transition-colors">
+                  Mehr erfahren →
+                </a>
               </div>
             </article>
           ))}
         </div>
       )}
     </div>
-  </div>
+  </section>
+
 </BaseLayout>

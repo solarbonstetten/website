@@ -63,4 +63,16 @@ const derVerein = defineCollection({
   }),
 });
 
-export const collections = { news, projekte, solaranlagen, links, statuten, derVerein };
+const dokumente = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/dokumente' }),
+  schema: z.object({
+    title: z.string(),
+    kategorie: z.enum(['Statuten', 'Formulare', 'Sachtexte', 'Protokolle & Jahresberichte']),
+    datum: z.coerce.date(),
+    url: z.string(),
+    quelle: z.string().optional(),
+    reihenfolge: z.number().optional(),
+  }),
+});
+
+export const collections = { news, projekte, solaranlagen, links, statuten, derVerein, dokumente };

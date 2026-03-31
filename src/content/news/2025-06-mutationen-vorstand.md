@@ -1,6 +1,7 @@
 ---
 title: Mutationen im Vorstand
 date: 2025-06-01
+image: /images/news/stock_people.webp
 ---
 
 Neu im Vorstand arbeiten **Manuel Stocker** als Aktuar und **Enrico Bieri** als Minister ohne Portefeuille mit. Willkommen in der Truppe!

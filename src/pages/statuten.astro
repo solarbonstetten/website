@@ -9,35 +9,44 @@ const { Content } = await render(statuten);
 ---
 <BaseLayout title="Statuten" description="Vereinsstatuten des Vereins solarbonstetten, gegründet am 1. Oktober 2011 in Bonstetten ZH.">
 
-  <div class="page-hero">
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
     </div>
     <div class="container">
       <span class="badge">Der Verein</span>
-      <h1>{statuten.data.title}</h1>
-      <p class="lead">Angenommen an der Gründungsversammlung vom 1. Oktober 2011.</p>
+      <h1 class="mb-4">{statuten.data.title}</h1>
+      <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
+        Angenommen an der Gründungsversammlung vom 1. Oktober 2011.
+      </p>
     </div>
   </div>
 
+  <!-- Inhalt -->
   <section class="section">
     <div class="container">
-      <div class="statuten-content">
-        <div class="statuten-meta">
+      <div class="max-w-3xl">
+
+        <!-- Meta-Bar -->
+        <div class="flex items-center justify-between gap-4 flex-wrap bg-slate-50 border-l-4 border-amber-400 rounded-r-xl px-5 py-4 mb-10 text-sm text-slate-500">
           <span>📄 Stand: {statuten.data.stand}</span>
           <a
-            href="https://files.wbk.kreativmedia.ch/43/10/431078b2-e441-47e7-85d7-b56988acfd00.pdf"
+            href="/dokumente/vereinsstatuten.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-outline-sm"
+            class="text-sm font-medium text-amber-700 border border-amber-700 px-3 py-1 rounded-full hover:bg-amber-700 hover:text-white transition-colors"
           >
             PDF herunterladen ↓
           </a>
         </div>
+
+        <!-- Markdown-Inhalt -->
         <div class="statuten-body">
           <Content />
         </div>
+
       </div>
     </div>
   </section>
@@ -45,44 +54,7 @@ const { Content } = await render(statuten);
 </BaseLayout>
 
 <style>
-  .page-hero {
-    position: relative;
-    padding: 11rem 0 5rem;
-    overflow: hidden;
-  }
-  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
-  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 560px; }
-
-  .statuten-content { max-width: 760px; margin: 0 auto; }
-
-  .statuten-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    padding: 1rem 1.25rem;
-    background: #f8fafc;
-    border-radius: var(--border-radius);
-    border-left: 3px solid var(--color-primary);
-    margin-bottom: 2.5rem;
-    font-size: 0.9rem;
-    color: var(--color-text-light);
-  }
-  .btn-outline-sm {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    transition: var(--transition);
-  }
-  .btn-outline-sm:hover {
-    background: var(--color-primary);
-    color: #fff;
-  }
-
+  /* Scoped styles für gerenderten Markdown-Inhalt */
   .statuten-body :global(h2) {
     font-size: 1.2rem;
     color: var(--color-secondary);

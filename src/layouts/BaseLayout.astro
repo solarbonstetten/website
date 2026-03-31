@@ -1,7 +1,6 @@
 ---
-import { Image } from 'astro:assets';
-import globalCSS from '../styles/global.css?raw';
-import '@fontsource-variable/inter';
+import { Image, Font } from 'astro:assets';
+import '../styles/global.css';
 import logo from '../assets/logo.png';
 
 interface Props {
@@ -18,8 +17,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | solarbonstetten</title>
     <meta name="description" content={description} />
-    <style set:html={globalCSS}></style>
     <link rel="icon" href={`${base}/favicon.ico`} type="image/x-icon" />
+    <Font cssVariable="--font-inter" preload />
   </head>
   <body>
 
@@ -64,7 +63,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="footer-links">
           <h4>Wichtiges</h4>
           <ul>
-            <li><a href="#">Dokumente</a></li>
+            <li><a href={`${base}/dokumente`}>Dokumente</a></li>
             <li><a href={`${base}/statuten`}>Statuten</a></li>
             <li><a href={`${base}/datenschutz`}>Datenschutz</a></li>
             <li><a href={`${base}/impressum`}>Impressum</a></li>

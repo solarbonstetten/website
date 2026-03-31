@@ -4,7 +4,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const alleLinks = await getCollection('links');
 
-// Gruppieren nach Kategorie, innerhalb jeder Gruppe nach Reihenfolge sortieren
 const kategorien = [
   'Behörden & Verbände',
   'Umwelt & Nachhaltigkeit',
@@ -29,41 +28,63 @@ const gruppiertLinks = kategorien.map(kat => ({
 ---
 <BaseLayout title="Links" description="Nützliche Links rund um Solarenergie, Umwelt und die Region Bonstetten.">
 
-  <div class="page-hero">
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
     </div>
     <div class="container">
       <span class="badge">Weiterführende Infos</span>
-      <h1>Links</h1>
-      <p class="lead">Nützliche Links rund um Solarenergie, Umwelt und die Region Bonstetten.</p>
+      <h1 class="mb-4">Links</h1>
+      <p class="text-lg text-slate-500 max-w-lg leading-relaxed">
+        Nützliche Links rund um Solarenergie, Umwelt und die Region Bonstetten.
+      </p>
     </div>
   </div>
 
+  <!-- Links -->
   <section class="section">
     <div class="container">
-      <div class="links-grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
         {gruppiertLinks.map(gruppe => (
-          <div class="link-gruppe">
-            <h2 class="gruppe-titel">
-              <span class="gruppe-icon">{gruppe.icon}</span>
+          <div class="flex flex-col gap-4">
+
+            <!-- Kategorie-Titel -->
+            <h2 class="flex items-center gap-3 text-xl font-bold pb-3 border-b-2 border-amber-400 mb-2">
+              <span class="text-2xl">{gruppe.icon}</span>
               {gruppe.name}
             </h2>
-            <ul class="link-liste">
+
+            <!-- Link-Liste -->
+            <ul class="flex flex-col gap-3 list-none p-0 m-0">
               {gruppe.links.map(link => (
                 <li>
-                  <a href={link.data.url} target="_blank" rel="noopener noreferrer" class="link-card">
-                    <div class="link-card-content">
-                      <span class="link-title">{link.data.title}</span>
-                      <span class="link-desc">{link.data.beschreibung}</span>
-                      <span class="link-url">{link.data.url.replace(/^https?:\/\/(www\.)?/, '')}</span>
+                  <a
+                    href={link.data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex items-center justify-between gap-4 px-5 py-4 rounded-xl border border-slate-100 bg-white shadow-sm no-underline transition-all duration-300 hover:border-amber-400 hover:shadow-md hover:translate-x-1"
+                  >
+                    <div class="flex flex-col gap-0.5 overflow-hidden min-w-0">
+                      <span class="font-semibold text-slate-900 text-[0.95rem]">
+                        {link.data.title}
+                      </span>
+                      <span class="text-sm text-slate-500">
+                        {link.data.beschreibung}
+                      </span>
+                      <span class="text-xs text-amber-700 truncate">
+                        {link.data.url.replace(/^https?:\/\/(www\.)?/, '')}
+                      </span>
                     </div>
-                    <span class="link-arrow">→</span>
+                    <span class="text-lg text-amber-700 shrink-0 transition-transform duration-300 group-hover:translate-x-1">
+                      →
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
+
           </div>
         ))}
       </div>
@@ -71,73 +92,3 @@ const gruppiertLinks = kategorien.map(kat => ({
   </section>
 
 </BaseLayout>
-
-<style>
-  .page-hero {
-    position: relative;
-    padding: 11rem 0 5rem;
-    overflow: hidden;
-  }
-  .page-hero h1 { font-size: 2.75rem; margin-bottom: 1rem; }
-  .page-hero .lead { font-size: 1.125rem; color: var(--color-text-light); max-width: 560px; }
-
-  .links-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
-  }
-
-  .link-gruppe { display: flex; flex-direction: column; gap: 1rem; }
-
-  .gruppe-titel {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--color-primary);
-    margin-bottom: 0.5rem;
-  }
-  .gruppe-icon { font-size: 1.4rem; }
-
-  .link-liste { display: flex; flex-direction: column; gap: 0.75rem; }
-
-  .link-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
-    border-radius: var(--border-radius);
-    border: 1px solid #f1f5f9;
-    background: var(--color-background);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-  }
-  .link-card:hover {
-    border-color: var(--color-primary);
-    box-shadow: var(--shadow-md);
-    transform: translateX(4px);
-  }
-  .link-card-content { display: flex; flex-direction: column; gap: 0.2rem; overflow: hidden; }
-  .link-title { font-weight: 600; color: var(--color-secondary); font-size: 0.95rem; }
-  .link-desc { font-size: 0.85rem; color: var(--color-text-light); }
-  .link-url {
-    font-size: 0.75rem;
-    color: var(--color-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .link-arrow {
-    font-size: 1.1rem;
-    color: var(--color-primary);
-    flex-shrink: 0;
-    transition: var(--transition);
-  }
-  .link-card:hover .link-arrow { transform: translateX(4px); }
-
-  @media (max-width: 768px) {
-    .links-grid { grid-template-columns: 1fr; gap: 2rem; }
-  }
-</style>

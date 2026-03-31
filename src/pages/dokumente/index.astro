@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const alle = await getCollection('dokumente');
+
+const kategorien = ['Statuten', 'Formulare', 'Sachtexte', 'Protokolle & Jahresberichte'] as const;
+const kategorieIcons: Record<string, string> = {
+  'Statuten': '📋',
+  'Formulare': '📝',
+  'Sachtexte': '📰',
+  'Protokolle & Jahresberichte': '📁',
+};
+
+const grouped = Object.fromEntries(
+  kategorien.map(kat => [
+    kat,
+    alle
+      .filter(d => d.data.kategorie === kat)
+      .sort((a, b) => {
+        const ra = a.data.reihenfolge ?? 99;
+        const rb = b.data.reihenfolge ?? 99;
+        if (ra !== rb) return ra - rb;
+        return b.data.datum.getTime() - a.data.datum.getTime();
+      }),
+  ])
+);
+
+function formatDatum(d: Date, kat: string) {
+  if (kat === 'Sachtexte' || kat === 'Statuten' || kat === 'Formulare') {
+    return d.getFullYear().toString();
+  }
+  return d.getFullYear().toString();
+}
+---
+<BaseLayout title="Dokumente" description="Dokumente des Vereins solarbonstetten – Statuten, Formulare, Sachtexte und Protokolle zum Herunterladen.">
+
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">Der Verein</span>
+      <h1>Dokumente</h1>
+      <p class="text-lg text-slate-500 max-w-xl mt-3">
+        Statuten, Formulare, Sachtexte und Protokolle zum Herunterladen –
+        insgesamt {alle.length} Dokumente.
+      </p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="flex flex-col gap-14">
+        {kategorien.map(kat => (
+          <div>
+            <!-- Kategorie-Header -->
+            <div class="flex items-center gap-3 mb-6">
+              <span class="text-2xl">{kategorieIcons[kat]}</span>
+              <h2 class="m-0">{kat}</h2>
+              <span class="ml-2 text-xs font-semibold bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full">
+                {grouped[kat].length}
+              </span>
+            </div>
+
+            <!-- Dokument-Liste -->
+            <div class="flex flex-col divide-y divide-slate-100 rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              {grouped[kat].length === 0 ? (
+                <p class="px-6 py-4 text-slate-400 text-sm italic">Keine Dokumente vorhanden.</p>
+              ) : grouped[kat].map(doc => (
+                <a
+                  href={doc.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group flex items-center gap-4 px-6 py-4 bg-white hover:bg-amber-50 transition-colors"
+                >
+                  <!-- PDF-Icon -->
+                  <span class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-500 text-sm font-bold group-hover:bg-red-100 transition-colors">
+                    PDF
+                  </span>
+
+                  <!-- Titel & Quelle -->
+                  <div class="flex-1 min-w-0">
+                    <span class="block font-medium text-slate-800 group-hover:text-amber-700 transition-colors truncate">
+                      {doc.data.title}
+                    </span>
+                    {doc.data.quelle && (
+                      <span class="block text-xs text-slate-400 mt-0.5 truncate">{doc.data.quelle}</span>
+                    )}
+                  </div>
+
+                  <!-- Jahr -->
+                  <span class="shrink-0 text-sm text-slate-400 tabular-nums">
+                    {formatDatum(doc.data.datum, kat)}
+                  </span>
+
+                  <!-- Download-Pfeil -->
+                  <span class="shrink-0 text-slate-300 group-hover:text-amber-500 transition-colors text-lg">
+                    ↓
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

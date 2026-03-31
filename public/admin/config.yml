@@ -9,6 +9,8 @@ collections:
     label: News
     folder: src/content/news
     create: true
+    media_folder: public/images/news
+    public_folder: /images/news
     fields:
       - { label: Titel, name: title, widget: string }
       - { label: Datum, name: date, widget: datetime }
@@ -66,6 +68,25 @@ collections:
           - { label: Untertitel, name: untertitel, widget: string }
           - { label: Gründungsdatum, name: gruendungsdatum, widget: string }
           - { label: Inhalt, name: body, widget: markdown }
+  - name: dokumente
+    label: Dokumente
+    folder: src/content/dokumente
+    create: true
+    media_folder: /public/dokumente
+    public_folder: /dokumente
+    fields:
+      - { label: Titel, name: title, widget: string }
+      - label: Kategorie
+        name: kategorie
+        widget: select
+        options:
+          - Statuten
+          - Formulare
+          - Sachtexte
+          - "Protokolle & Jahresberichte"
+      - { label: Datum, name: datum, widget: datetime, format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false }
+      - { label: Dokument (PDF), name: url, widget: file, media_folder: /public/dokumente, public_folder: /dokumente, hint: "PDF hochladen oder Pfad angeben" }
+      - { label: Quelle / Autor, name: quelle, widget: string, required: false }
   - name: statuten
     label: Statuten
     files:
