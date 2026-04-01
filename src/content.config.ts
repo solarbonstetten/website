@@ -10,13 +10,6 @@ const news = defineCollection({
   }),
 });
 
-const projekte = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projekte' }),
-  schema: z.object({
-    title: z.string(),
-    image: z.string().optional(),
-  }),
-});
 
 const solaranlagen = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/solaranlagen' }),
@@ -75,4 +68,4 @@ const dokumente = defineCollection({
   }),
 });
 
-export const collections = { news, projekte, solaranlagen, links, statuten, derVerein, dokumente };
+export const collections = { news, solaranlagen, links, statuten, derVerein, dokumente };

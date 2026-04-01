@@ -16,13 +16,6 @@ collections:
       - { label: Datum, name: date, widget: datetime }
       - { label: Bild, name: image, widget: image, required: false }
       - { label: Text, name: body, widget: markdown }
-  - name: projekte
-    label: Projekte
-    folder: src/content/projekte
-    create: true
-    fields:
-      - { label: Titel, name: title, widget: string }
-      - { label: Beschreibung, name: body, widget: markdown }
   - name: solaranlagen
     label: Solaranlagen
     folder: src/content/solaranlagen
