@@ -14,7 +14,7 @@ FIELD_BG    = HexColor('#f8fafc')
 BORDER      = HexColor('#e2e8f0')
 CREAM       = HexColor('#fef9ee')
 
-OUTPUT = '/Users/Enrico/git/solarbonstetten-website/public/downloads/beitrittserklarung.pdf'
+OUTPUT = '/Users/Enrico/git/solarbonstetten-website/public/dokumente/vereinsbeitritt.pdf'
 
 import os
 os.makedirs(os.path.dirname(OUTPUT), exist_ok=True)
@@ -186,33 +186,37 @@ def mitglied_card(c, x, y, w, h, title, price, desc, group, value):
     # Orange Linie links
     c.setFillColor(ORANGE)
     c.roundRect(x, y, 2*mm, h, 1*mm, fill=1, stroke=0)
-    # Radio Button (exklusiv durch gemeinsame Gruppe)
+    # Radio Button
     radio_styled(c, group, value, x + 4*mm, y + h/2 - 2.25*mm)
-    # Titel
+    # Titel (erste Zeile)
     c.setFillColor(DARK)
-    c.setFont('Helvetica-Bold', 10)
+    c.setFont('Helvetica-Bold', 9.5)
     c.drawString(x + 13*mm, y + h - 6*mm, title)
-    # Preis
-    c.setFillColor(ORANGE)
-    c.setFont('Helvetica-Bold', 10)
-    c.drawRightString(x + w - 4*mm, y + h - 6*mm, price)
+    # Preis (zweite Zeile, orange)
+    c.setFillColor(ORANGE_DARK)
+    c.setFont('Helvetica-Bold', 9)
+    c.drawString(x + 13*mm, y + h - 12*mm, price + ' / Jahr')
     # Beschreibung
     c.setFillColor(GREY)
-    c.setFont('Helvetica', 8)
-    c.drawString(x + 13*mm, y + 4*mm, desc)
+    c.setFont('Helvetica', 7.5)
+    c.drawString(x + 13*mm, y + 3.5*mm, desc)
 
 y -= 9*mm
-mitglied_card(c, 18*mm, y - 16*mm, 85*mm, 20*mm,
-              'Aktivmitglied', 'CHF 40.– / Jahr',
-              'Mit Stimmberechtigung an der Generalversammlung',
+mitglied_card(c, 18*mm, y - 18*mm, 55*mm, 22*mm,
+              'Aktivmitglied', 'CHF 40.–',
+              'Mit Stimmberechtigung',
               group='mitgliedschaft', value='Aktivmitglied')
-mitglied_card(c, 108*mm, y - 16*mm, 84*mm, 20*mm,
-              'Gönnermitglied', 'CHF 100.– / Jahr',
-              'Unterstützung ohne Stimmberechtigung',
+mitglied_card(c, 77*mm, y - 18*mm, 55*mm, 22*mm,
+              'Familienmitglied', 'CHF 80.–',
+              'Für Familien, Stimmrecht',
+              group='mitgliedschaft', value='Familienmitglied')
+mitglied_card(c, 136*mm, y - 18*mm, 56*mm, 22*mm,
+              'Gönnermitglied', 'CHF 100.–',
+              'Ohne Stimmberechtigung',
               group='mitgliedschaft', value='Goennermitglied')
 
 # ── Optionale Angaben ─────────────────────────────────────────────────────────
-y -= 30*mm
+y -= 32*mm
 section_label(c, 18*mm, y, 'Optionale Angaben')
 
 y -= 10*mm
@@ -274,7 +278,7 @@ c.setFillColor(GREY)
 c.drawRightString(W - 18*mm, footer_h - 5*mm, 'Postkonto: 60-190129-1')
 c.drawRightString(W - 18*mm, footer_h - 10*mm, 'IBAN: CH03 0900 0000 6019 0129 1')
 c.setFillColor(ORANGE)
-c.drawRightString(W - 18*mm, footer_h - 15*mm, 'poc.solarbonstetten.ch/mitmachen')
+c.drawRightString(W - 18*mm, footer_h - 15*mm, 'solarbonstetten.ch/mitmachen')
 
 c.save()
 print(f'PDF erstellt: {OUTPUT}')
