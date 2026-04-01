@@ -6,7 +6,9 @@ const latestNews = (await getCollection('news'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
-const latestProjekte = (await getCollection('projekte')).slice(0, 3);
+const latestProjekte = (await getCollection('solaranlagen'))
+  .sort((a, b) => (a.data.reihenfolge ?? 99) - (b.data.reihenfolge ?? 99))
+  .slice(0, 3);
 const gradients = [
   'bg-gradient-to-br from-amber-100 to-amber-200',
   'bg-gradient-to-br from-sky-100 to-sky-200',
@@ -179,7 +181,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
               <div class={`h-[200px] w-full hidden sm:block ${gradients[i % 3]}`}></div>
               <div class="p-8 flex flex-col flex-1 gap-3">
                 <h3 class="text-slate-900 leading-snug">{projekt.data.title}</h3>
-                <a href={`${base}/projekte/${projekt.id}`} class="mt-auto pt-2 font-semibold text-sm text-slate-700 hover:text-amber-700 transition-colors">
+                <a href={`${base}/solaranlagen/${projekt.id}`} class="mt-auto pt-2 font-semibold text-sm text-slate-700 hover:text-amber-700 transition-colors">
                   Mehr erfahren →
                 </a>
               </div>
@@ -187,7 +189,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           ))}
         </div>
         <div class="text-center mt-10">
-          <a href={`${base}/projekte`} class="btn btn-secondary">Alle Projekte</a>
+          <a href={`${base}/solaranlagen`} class="btn btn-secondary">Alle Solaranlagen</a>
         </div>
       </div>
     </section>
