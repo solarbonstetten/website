@@ -1,6 +1,6 @@
 ---
 title: Nächster Energie-Stammtisch
-date: 2026-04-01
+date: 2026-04-01T19:00:00
 image: ''
 ---
 
