@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://poc.solarbonstetten.ch',
+  site: 'https://solarbonstetten.ch',
   integrations: [sitemap()],
 
   fonts: [{

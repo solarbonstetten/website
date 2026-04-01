@@ -1,8 +1,8 @@
-# solarbonstetten_poc
+# solarbonstetten Website
 
-POC for Solarbonstetten Hosting – built with [Astro](https://astro.build) and [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
+Website des Vereins solarbonstetten – gebaut mit [Astro](https://astro.build) und [Sveltia CMS](https://github.com/sveltia/sveltia-cms).
 
-**Live:** https://poc.solarbonstetten.ch
+**Live:** https://solarbonstetten.ch
 
 ## 🚀 Commands
 
@@ -17,7 +17,7 @@ POC for Solarbonstetten Hosting – built with [Astro](https://astro.build) and 
 
 Der Inhalt wird über [Sveltia CMS](https://github.com/sveltia/sveltia-cms) verwaltet.
 
-**Admin-URL:** https://poc.solarbonstetten.ch/admin/
+**Admin-URL:** https://solarbonstetten.ch/admin/
 
 ### Einloggen (GitHub Token)
 
@@ -27,14 +27,14 @@ Da die Site auf GitHub Pages gehostet wird (kein Netlify-OAuth-Server), erfolgt 
 
 - **Token name:** z. B. `sveltia-cms-solarbonstetten`
 - **Expiration:** nach Bedarf wählen
-- **Resource owner:** `enbieri`
-- **Repository access:** → **Only select repositories** → `solarbonstetten_poc` auswählen
+- **Resource owner:** `solarbonstetten`
+- **Repository access:** → **Only select repositories** → `website` auswählen
 - **Permissions → Repository permissions:**
   - `Contents` → **Read and write**
   - `Metadata` → **Read-only** (wird automatisch gesetzt)
 - Token generieren und kopieren
 
-**2. Admin öffnen:** https://poc.solarbonstetten.ch/admin/
+**2. Admin öffnen:** https://solarbonstetten.ch/admin/
 
 **3.** **„Sign In with GitHub Using Token"** klicken und Token einfügen.
 
@@ -42,8 +42,13 @@ Da die Site auf GitHub Pages gehostet wird (kein Netlify-OAuth-Server), erfolgt 
 
 ### Inhalte
 
-| Collection | Pfad                   | Beschreibung        |
-| :--------- | :--------------------- | :------------------ |
-| News       | `src/content/news/`    | Markdown-Artikel    |
-| Projekte   | `src/content/projekte/`| Markdown-Projekte   |
-| Bilder     | `public/images/`       | Medien-Uploads      |
+| Collection | Pfad                        | Beschreibung                    |
+| :--------- | :-------------------------- | :------------------------------ |
+| News       | `src/content/news/`         | Markdown-Artikel                |
+| Projekte   | `src/content/projekte/`     | Markdown-Projekte               |
+| Solaranlagen | `src/content/solaranlagen/` | Anlage-Daten                  |
+| Links      | `src/content/links/`        | Weiterführende Links            |
+| Dokumente  | `src/content/dokumente/`    | PDFs (Statuten, Protokolle etc.)|
+| Der Verein | `src/content/der-verein/`   | Vereinsseite                    |
+| Statuten   | `src/content/statuten/`     | Vereinsstatuten                 |
+| Bilder     | `public/images/`            | Medien-Uploads                  |
