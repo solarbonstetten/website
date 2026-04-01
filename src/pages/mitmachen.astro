@@ -16,7 +16,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <span class="badge">Dabei sein</span>
       <h1 class="mb-4">Mitglied werden</h1>
       <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
-        Unterstütze Solarenergie in Bonstetten – als Aktivmitglied oder Gönnermitglied.
+        Unterstütze Solarenergie in Bonstetten – als Aktivmitglied, Familienmitglied oder Gönnermitglied.
         Fülle das Formular aus und dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung.
       </p>
     </div>
@@ -71,7 +71,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Mitgliedschaft</legend>
-              <div class="grid grid-cols-2 gap-4 mt-4 max-sm:grid-cols-1">
+              <div class="grid grid-cols-3 gap-4 mt-4 max-sm:grid-cols-1">
                 <label class="cursor-pointer">
                   <input type="radio" name="mitgliedschaft" value="Aktivmitglied (CHF 40.– / Jahr)" required class="sr-only peer" />
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
@@ -80,6 +80,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                       <span class="font-bold text-amber-700 text-sm">CHF 40.– / Jahr</span>
                     </div>
                     <p class="text-xs text-slate-500 m-0">Mit Stimmberechtigung an der Generalversammlung</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="mitgliedschaft" value="Familienmitglied (CHF 80.– / Jahr)" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="font-semibold text-slate-900 text-sm">Familienmitglied</span>
+                      <span class="font-bold text-amber-700 text-sm">CHF 80.– / Jahr</span>
+                    </div>
+                    <p class="text-xs text-slate-500 m-0">Für Familien, mit Stimmberechtigung</p>
                   </div>
                 </label>
                 <label class="cursor-pointer">
