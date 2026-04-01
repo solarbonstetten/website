@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: enbieri/solarbonstetten_poc
+  repo: solarbonstetten/website
   branch: main
 media_folder: public/images
 public_folder: /images
