@@ -204,15 +204,15 @@ def mitglied_card(c, x, y, w, h, title, price, desc, group, value):
 y -= 9*mm
 mitglied_card(c, 18*mm, y - 18*mm, 55*mm, 22*mm,
               'Aktivmitglied', 'CHF 40.–',
-              'Mit Stimmberechtigung',
+              'Für Einzelpersonen',
               group='mitgliedschaft', value='Aktivmitglied')
 mitglied_card(c, 77*mm, y - 18*mm, 55*mm, 22*mm,
               'Familienmitglied', 'CHF 80.–',
-              'Für Familien, Stimmrecht',
+              'Für Familien',
               group='mitgliedschaft', value='Familienmitglied')
 mitglied_card(c, 136*mm, y - 18*mm, 56*mm, 22*mm,
               'Gönnermitglied', 'CHF 100.–',
-              'Ohne Stimmberechtigung',
+              'Für Unterstützer',
               group='mitgliedschaft', value='Goennermitglied')
 
 # ── Optionale Angaben ─────────────────────────────────────────────────────────
