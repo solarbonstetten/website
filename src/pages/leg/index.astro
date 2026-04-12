@@ -364,13 +364,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         setTimeout(() => {
           iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
         }, 600);
+        setTimeout(() => {
+          iframe?.contentWindow?.postMessage({ type: 'selectAddress', address: entry.address }, '*');
+        }, 1500);
       });
 
-      // Scroll to map section first, then zoom map after scroll animation completes
+      // Scroll to map, then zone zoom, then popup after zone animation
       document.getElementById('leg-zonen')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(() => {
         iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
       }, 600);
+      setTimeout(() => {
+        iframe?.contentWindow?.postMessage({ type: 'selectAddress', address: entry.address }, '*');
+      }, 1500);
     } else {
       resultBox.innerHTML = `
         <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-500 text-sm">
@@ -422,6 +428,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   });
 
   // Reset when input is cleared
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const firstItem = dropdown.querySelector('.addr-option');
+      if (firstItem) firstItem.click();
+    }
+  });
+
   searchInput?.addEventListener('search', () => {
     if (!searchInput.value) {
       dropdown.classList.add('hidden');
