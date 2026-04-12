@@ -2,17 +2,19 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const zonen = [
-  'Dorf-Mitte',
-  'Schule-Breitenacher',
-  'Isenbachstrasse-Aumülistrasse',
-  'Chapfstrasse-Friedhofstrasse',
-  'Buechenegg und Wolfen',
-  'Lochenweiher',
-  'Ligusterweg',
-  'Heumoos',
-  'Bruggematt',
-  'Lätten',
-  'Lüttenberg',
+  { name: 'Dorfstrasse – Chüeweid',        color: '#e6194b' },
+  { name: 'Dorfstrasse – im Vorderdorf',   color: '#46f0f0' },
+  { name: 'Schule-Breitenacher',           color: '#f58231' },
+  { name: 'Im Schachenhof',               color: '#ffe119' },
+  { name: 'Chapfstrasse-Friedhofstrasse',  color: '#3cb44b' },
+  { name: 'Buechenegg und Wolfen',         color: '#911eb4' },
+  { name: 'Lochenweiher',                  color: '#e6beff' },
+  { name: 'Ligusterweg',                   color: '#bcf60c' },
+  { name: 'Heumoos',                       color: '#008080' },
+  { name: 'Bruggematt',                    color: '#4363d8' },
+  { name: 'Lätten',                        color: '#fabebe' },
+  { name: 'Lüttenberg',                    color: '#f032e6' },
+  { name: 'Stockenweg',                    color: '#9a6324' },
 ];
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -160,8 +162,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {zonen.map((zone, i) => (
           <div class="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-3 flex items-center gap-3">
-            <span class="w-7 h-7 bg-amber-100 text-amber-700 font-bold text-xs rounded-full flex items-center justify-center shrink-0">{i + 1}</span>
-            <p class="font-semibold text-slate-900 text-sm m-0">{zone}</p>
+            <span class="w-7 h-7 font-bold text-xs rounded-full flex items-center justify-center shrink-0 text-white" style={`background:${zone.color}`}>{i + 1}</span>
+            <p class="font-semibold text-slate-900 text-sm m-0">{zone.name}</p>
           </div>
         ))}
       </div>
