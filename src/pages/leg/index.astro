@@ -359,12 +359,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>`;
       resultBox.classList.remove('hidden');
 
-      // Highlight zone card + map
+      // Highlight zone card
       cards.forEach(c => c.classList.toggle('active', parseInt(c.dataset.legId ?? '-1') === legId));
-      iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
 
-      // Scroll to map section so user sees the map zoom first
+      // "Zur Zone" button: intercept click to also trigger map zoom after scroll
+      document.getElementById('zone-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('leg-zonen')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+          iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
+        }, 600);
+      });
+
+      // Scroll to map section first, then zoom map after scroll animation completes
       document.getElementById('leg-zonen')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
+      }, 600);
     } else {
       resultBox.innerHTML = `
         <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-500 text-sm">
