@@ -20,8 +20,11 @@ collections:
     label: Solaranlagen
     folder: src/content/solaranlagen
     create: true
+    media_folder: public/images/solaranlagen
+    public_folder: /images/solaranlagen
     fields:
       - { label: Titel, name: title, widget: string }
+      - { label: Bild, name: bild, widget: image, required: false, hint: "Foto der Anlage – wird auf der Startseite und der Solaranlagen-Seite angezeigt" }
       - { label: Kategorie, name: badge, widget: string, hint: "z.B. Schulanlage oder Privathaus" }
       - { label: Reihenfolge, name: reihenfolge, widget: number, default: 99 }
       - { label: Finanzierung, name: finanzierung, widget: string }

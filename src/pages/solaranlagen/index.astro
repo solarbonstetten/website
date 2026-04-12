@@ -57,14 +57,25 @@ const icons: Record<string, string> = { Schulanlage: '🏫', Privathaus: '🏠' 
           return (
             <article id={anlage.id} class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 scroll-mt-28">
 
-              <!-- Header mit Gradient -->
-              <div class={`flex items-center gap-6 px-10 py-8 ${gradients[i % 3]}`}>
-                <span class="text-4xl">{icon}</span>
-                <div>
-                  <span class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1 block">{anlage.data.badge}</span>
-                  <h2 class="text-2xl font-bold m-0">{anlage.data.title}</h2>
+              <!-- Header: Bild oder Gradient -->
+              {anlage.data.bild ? (
+                <div class="relative h-[240px] overflow-hidden">
+                  <img src={anlage.data.bild} alt={anlage.data.title} class="w-full h-full object-cover" loading="lazy" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+                  <div class="absolute bottom-0 left-0 px-10 py-6">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-white/70 mb-1 block">{anlage.data.badge}</span>
+                    <h2 class="text-2xl font-bold m-0 text-white">{anlage.data.title}</h2>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div class={`flex items-center gap-6 px-10 py-8 ${gradients[i % 3]}`}>
+                  <span class="text-4xl">{icon}</span>
+                  <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1 block">{anlage.data.badge}</span>
+                    <h2 class="text-2xl font-bold m-0">{anlage.data.title}</h2>
+                  </div>
+                </div>
+              )}
 
               <!-- Körper -->
               <div class="px-10 py-10 max-sm:px-6 max-sm:py-6">

@@ -25,6 +25,7 @@ const solaranlagen = defineCollection({
     module: z.string(),
     umsetzungspartner: z.string().optional(),
     monitoring_url: z.string().optional(),
+    bild: z.string().optional(),
   }),
 });
 
