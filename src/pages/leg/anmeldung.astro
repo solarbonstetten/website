@@ -1,0 +1,370 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const zonen = [
+  'Dorf-Mitte',
+  'Schule-Breitenacher',
+  'Isenbachstrasse-Aumülistrasse',
+  'Chapfstrasse-Friedhofstrasse',
+  'Buechenegg und Wolfen',
+  'Lochenweiher',
+  'Ligusterweg',
+  'Heumoos',
+  'Bruggematt',
+  'Lätten',
+  'Lüttenberg',
+];
+---
+<BaseLayout
+  title="LEG An-/Abmeldung"
+  description="Melde dich für eine Lokale Elektrizitätsgemeinschaft (LEG) in Bonstetten an oder ab."
+>
+
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container">
+      <span class="badge">LEG Bonstetten</span>
+      <h1 class="mb-4">An- / Abmeldung LEG</h1>
+      <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
+        Fülle das Formular aus – dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung.
+        <a href={`${base}/leg`} class="text-amber-700 hover:underline">Mehr zur LEG erfahren →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Inhalt -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12 items-start">
+
+        <!-- Formular -->
+        <div>
+          <form id="legform" novalidate class="flex flex-col gap-8">
+
+            <!-- Art der Meldung -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Art der Meldung</legend>
+              <div class="grid grid-cols-2 gap-4 mt-4 max-sm:grid-cols-1">
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="art" value="Anmeldung" required class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">✅ Anmeldung</span>
+                    <p class="text-xs text-slate-500 m-0">Ich möchte an einer LEG teilnehmen</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="art" value="Abmeldung" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">🚪 Abmeldung</span>
+                    <p class="text-xs text-slate-500 m-0">Ich möchte aus einer LEG austreten</p>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Rolle -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Meine Rolle</legend>
+              <div class="grid grid-cols-3 gap-4 mt-4 max-sm:grid-cols-1">
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="rolle" value="Konsumentin / Konsument" required class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">🏠 Konsumentin / Konsument</span>
+                    <p class="text-xs text-slate-500 m-0">Ich beziehe Strom</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="rolle" value="Produzentin / Produzent" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">☀️ Produzentin / Produzent</span>
+                    <p class="text-xs text-slate-500 m-0">Ich erzeuge Solarstrom</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="rolle" value="Produzentin/Produzent und Konsumentin/Konsument" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">⚡ Beides</span>
+                    <p class="text-xs text-slate-500 m-0">Ich produziere und beziehe</p>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- LEG-Zone -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">LEG-Zone</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="zone" class="text-sm font-medium text-slate-900">
+                  In welcher Zone liegt dein Gebäude? <span class="text-amber-700">*</span>
+                </label>
+                <select id="zone" name="zone" required class="input-field">
+                  <option value="" disabled selected>Bitte wählen…</option>
+                  {zonen.map((z, i) => <option value={z}>{i + 1}. {z}</option>)}
+                  <option value="Noch nicht sicher">Noch nicht sicher</option>
+                </select>
+              </div>
+            </fieldset>
+
+            <!-- Persönliche Angaben -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="vorname" class="text-sm font-medium text-slate-900">Vorname <span class="text-amber-700">*</span></label>
+                  <input type="text" id="vorname" name="vorname" required autocomplete="given-name" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-700">*</span></label>
+                  <input type="text" id="name" name="name" required autocomplete="family-name" class="input-field" />
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="strasse" class="text-sm font-medium text-slate-900">Strasse und Hausnummer <span class="text-amber-700">*</span></label>
+                <input type="text" id="strasse" name="strasse" required autocomplete="street-address" class="input-field" />
+              </div>
+              <div class="grid grid-cols-[100px_1fr] gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-700">*</span></label>
+                  <input type="text" id="plz" name="plz" required autocomplete="postal-code" maxlength="4" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-700">*</span></label>
+                  <input type="text" id="ort" name="ort" required autocomplete="address-level2" class="input-field" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Kontakt -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Kontakt</legend>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-700">*</span></label>
+                  <input type="email" id="email" name="email" required autocomplete="email" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="telefon" class="text-sm font-medium text-slate-900">Telefon</label>
+                  <input type="tel" id="telefon" name="telefon" autocomplete="tel" class="input-field" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- PV-Anlage (nur bei Produzent) -->
+            <fieldset id="pv-section" class="border border-slate-200 rounded-2xl px-7 py-6" hidden>
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">PV-Anlage</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="pv-adresse" class="text-sm font-medium text-slate-900">Adresse der PV-Anlage</label>
+                <input type="text" id="pv-adresse" name="pv_adresse" autocomplete="off" class="input-field" placeholder="Falls abweichend von Wohnadresse" />
+              </div>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="pv-leistung" class="text-sm font-medium text-slate-900">Leistung (kWp)</label>
+                  <input type="text" id="pv-leistung" name="pv_leistung" autocomplete="off" class="input-field" placeholder="z.B. 12.4" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="pv-jahr" class="text-sm font-medium text-slate-900">Inbetriebnahme­jahr</label>
+                  <input type="text" id="pv-jahr" name="pv_jahr" autocomplete="off" class="input-field" placeholder="z.B. 2022" maxlength="4" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Bestätigungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bestätigungen</legend>
+              <div class="flex flex-col gap-3 mt-4">
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="smartmeter" name="smartmeter" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich habe einen <strong>kommunikativen Smart Meter</strong> installiert oder bin bereit, einen zu installieren. <span class="text-amber-700">*</span></span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="bedingungen" name="bedingungen" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich akzeptiere die
+                    <a href="https://www.ekz.ch/dam/ekz/angebote/strom/produzenten-und-gemeinschaften/leg/LEG-Bedingungen-EKZ.pdf"
+                       target="_blank" rel="noopener noreferrer"
+                       class="text-amber-700 hover:underline">LEG-Teilnahmebedingungen von EKZ</a>.
+                    <span class="text-amber-700">*</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Bemerkungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bemerkungen</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="bemerkungen" class="text-sm font-medium text-slate-900">Fragen oder Anmerkungen (optional)</label>
+                <textarea id="bemerkungen" name="bemerkungen" rows="4" class="input-field resize-y"></textarea>
+              </div>
+            </fieldset>
+
+            <div id="form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden>
+              Bitte fülle alle Pflichtfelder aus und bestätige die Bedingungen.
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
+              📧 Meldung per E-Mail senden
+            </button>
+            <p class="text-xs text-slate-400 text-center -mt-6">
+              Dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung –
+              du kannst den Text vor dem Senden noch überprüfen.
+            </p>
+
+          </form>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="flex flex-col gap-5 lg:sticky top-24">
+
+          <div class="bg-amber-400 text-white rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-4 text-white">So funktioniert es</h3>
+            <ol class="list-none p-0 flex flex-col gap-2.5">
+              {[
+                'Formular ausfüllen',
+                '«Per E-Mail senden» klicken',
+                'E-Mail-Programm öffnet sich',
+                'Absenden – fertig!',
+              ].map((step, i) => (
+                <li class="flex items-start gap-3 text-sm opacity-95">
+                  <span class="w-6 h-6 bg-white/25 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-2 text-slate-900">Fragen?</h3>
+            <p class="text-sm text-slate-500 leading-relaxed mb-3">Bei Fragen zur LEG erreichst du uns unter:</p>
+            <a href="mailto:info@solarbonstetten.ch" class="text-amber-700 font-semibold text-sm break-all">info@solarbonstetten.ch</a>
+          </div>
+
+          <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
+            <h3 class="text-base font-bold mb-2 text-slate-900">Mehr zur LEG</h3>
+            <p class="text-sm text-slate-500 leading-relaxed mb-3">Alle Infos, Zonen und Bedingungen auf der Übersichtsseite.</p>
+            <a href={`${base}/leg`} class="text-amber-700 font-semibold text-sm hover:underline">LEG-Übersicht →</a>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .input-field {
+    width: 100%;
+    padding: 0.6rem 0.875rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    background: #fff;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(251, 168, 3, 0.15);
+  }
+  .input-field.invalid { border-color: #ef4444; }
+  select.input-field { cursor: pointer; }
+  textarea.input-field { min-height: 100px; }
+</style>
+
+<script>
+  const form = document.getElementById('legform') as HTMLFormElement;
+  const errorBox = document.getElementById('form-error') as HTMLElement;
+  const pvSection = document.getElementById('pv-section') as HTMLElement;
+
+  // Show/hide PV section based on role selection
+  form.querySelectorAll('input[name="rolle"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      const val = (form.elements.namedItem('rolle') as RadioNodeList).value;
+      pvSection.hidden = !val.toLowerCase().includes('produz');
+    });
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    errorBox.hidden = true;
+
+    const get = (id: string) => {
+      const el = form.elements.namedItem(id);
+      return el ? (el as HTMLInputElement).value.trim() : '';
+    };
+    const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement)?.checked ?? false;
+
+    const requiredFields = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email', 'zone'];
+    let valid = true;
+
+    requiredFields.forEach(id => {
+      const el = form.elements.namedItem(id) as HTMLInputElement;
+      if (!el || !el.value.trim()) {
+        el?.classList.add('invalid');
+        valid = false;
+      } else {
+        el.classList.remove('invalid');
+      }
+    });
+
+    const art = (form.elements.namedItem('art') as RadioNodeList).value;
+    const rolle = (form.elements.namedItem('rolle') as RadioNodeList).value;
+    if (!art || !rolle) valid = false;
+
+    if (!checked('smartmeter') || !checked('bedingungen')) valid = false;
+
+    if (!valid) {
+      errorBox.hidden = false;
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const pvZeilen: string[] = [];
+    if (!pvSection.hidden) {
+      pvZeilen.push('');
+      pvZeilen.push('PV-Anlage');
+      pvZeilen.push(`  Adresse:        ${get('pv_adresse') || '–'}`);
+      pvZeilen.push(`  Leistung:       ${get('pv_leistung') ? get('pv_leistung') + ' kWp' : '–'}`);
+      pvZeilen.push(`  Inbetriebnahme: ${get('pv_jahr') || '–'}`);
+    }
+
+    const bemerkungen = get('bemerkungen');
+
+    const body = [
+      `LEG ${art} – solarbonstetten`,
+      '─'.repeat(35),
+      '',
+      `Art:            ${art}`,
+      `Rolle:          ${rolle}`,
+      `LEG-Zone:       ${get('zone')}`,
+      '',
+      'Angaben zur Person',
+      `  Vorname:      ${get('vorname')}`,
+      `  Name:         ${get('name')}`,
+      `  Strasse:      ${get('strasse')}`,
+      `  PLZ / Ort:    ${get('plz')} ${get('ort')}`,
+      `  E-Mail:       ${get('email')}`,
+      `  Telefon:      ${get('telefon') || '–'}`,
+      ...pvZeilen,
+      ...(bemerkungen ? ['', 'Bemerkungen', `  ${bemerkungen}`] : []),
+      '',
+      '─'.repeat(35),
+      'Diese Meldung wurde über solarbonstetten.ch ausgefüllt.',
+    ].join('\n');
+
+    const subject = `LEG ${art} – ${get('vorname')} ${get('name')}`;
+    window.location.href =
+      `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
+  form.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('input', () => (el as HTMLElement).classList.remove('invalid'));
+  });
+</script>

@@ -1,0 +1,243 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const zonen = [
+  { name: 'Dorf-Mitte',                    info: 'Chüefeld, Chlieststr., Dorfstr.' },
+  { name: 'Schule-Breitenacher',            info: 'Schulhaus Schachenstr. 81–105' },
+  { name: 'Isenbachstrasse-Aumülistrasse',  info: 'Isenbach- und Aumülistrasse' },
+  { name: 'Chapfstrasse-Friedhofstrasse',   info: 'Chapfstr., Friedhofstr. 59' },
+  { name: 'Buechenegg und Wolfen',          info: 'Eichenmassstr. 1' },
+  { name: 'Lochenweiher',                   info: 'Aumülistr. 65' },
+  { name: 'Ligusterweg',                    info: 'Stationsstrasse 4' },
+  { name: 'Heumoos',                        info: 'Heumattstr. 2–4' },
+  { name: 'Bruggematt',                     info: 'Bruggematt' },
+  { name: 'Lätten',                         info: 'Ribacher 1–2' },
+  { name: 'Lüttenberg',                     info: 'Lüttenberg' },
+];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout
+  title="Lokale Elektrizitäts­gemeinschaft (LEG)"
+  description="Solarbonstetten verwaltet die Lokalen Elektrizitätsgemeinschaften in Bonstetten. Strom aus der Nachbarschaft – günstig und lokal."
+>
+
+  <!-- Hero -->
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+    </div>
+    <div class="container grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-16 items-center">
+      <div>
+        <span class="badge">Lokale Elektrizitäts­gemeinschaft</span>
+        <h1 class="mb-6">Strom aus der Nachbarschaft</h1>
+        <p class="text-lg text-slate-500 max-w-xl leading-relaxed mb-8">
+          Seit Januar 2026 ermöglicht das Schweizer Recht lokale Elektrizitätsgemeinschaften (LEG):
+          Solar­strom direkt zwischen Produzierenden und Konsumierenden im gleichen Quartier tauschen –
+          günstiger und nachhaltiger als je zuvor.
+        </p>
+        <a href={`${base}/leg/anmeldung`} class="btn btn-primary">Jetzt anmelden →</a>
+      </div>
+
+      <!-- Kennzahlen-Card -->
+      <div class="glass-card p-8 rounded-2xl flex flex-col gap-6">
+        <div class="flex items-start gap-4">
+          <span class="text-3xl">⚡</span>
+          <div>
+            <p class="font-bold text-slate-900 mb-1">Günstiger Strom</p>
+            <p class="text-sm text-slate-500 leading-relaxed">Konsumenten zahlen 11 Rp./kWh (Sommer) resp. 15 Rp./kWh (Winter) – deutlich unter dem normalen Tarif.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="text-3xl">🌞</span>
+          <div>
+            <p class="font-bold text-slate-900 mb-1">Bessere Vergütung</p>
+            <p class="text-sm text-slate-500 leading-relaxed">Produzenten erhalten mind. 10 Rp./kWh – mehr als die übliche Einspeisung ins Netz.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <span class="text-3xl">🏘️</span>
+          <div>
+            <p class="font-bold text-slate-900 mb-1">Lokal &amp; direkt</p>
+            <p class="text-sm text-slate-500 leading-relaxed">Strom bleibt in Bonstetten – kein langer Transport, maximale lokale Wertschöpfung.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Was ist eine LEG? -->
+  <section class="section bg-slate-50">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <span class="badge mb-4 inline-block">Hintergrund</span>
+          <h2 class="mb-6">Was ist eine LEG?</h2>
+          <p class="text-slate-500 leading-relaxed mb-4">
+            Eine Lokale Elektrizitäts­gemeinschaft (LEG) verbindet Solar-Produzenten und Strom-Konsumenten
+            im selben Quartier. Alle Teilnehmenden sind am gleichen Transformatoren­station angeschlossen
+            und tauschen Strom direkt untereinander aus – vermittelt durch den Netzbetreiber EKZ.
+          </p>
+          <p class="text-slate-500 leading-relaxed mb-4">
+            Verein solarbonstetten übernimmt die Verwaltung der LEGs in Bonstetten: Wir koordinieren
+            die Anmeldungen, vertreten die Gemeinschaft gegenüber EKZ und kümmern uns um die jährliche Abrechnung.
+          </p>
+          <p class="text-slate-500 leading-relaxed">
+            Es sind bis zu <strong class="text-slate-700">11 LEGs</strong> in Bonstetten geplant.
+            Jede LEG wird gegründet, sobald sich genug Interessentinnen und Interessenten aus dem jeweiligen Quartier angemeldet haben.
+          </p>
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h3 class="text-base font-bold text-slate-900 mb-3">Für Konsumentinnen &amp; Konsumenten</h3>
+            <ul class="flex flex-col gap-2 text-sm text-slate-500">
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Günstigerer Strom (11–15 Rp./kWh je Saison)</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Restliche Energie weiterhin via EKZ geliefert</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Kein Zusatzaufwand – jährliche Abrechnung</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Austritt mit 2 Monaten Frist jederzeit möglich</li>
+            </ul>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h3 class="text-base font-bold text-slate-900 mb-3">Für Produzentinnen &amp; Produzenten</h3>
+            <ul class="flex flex-col gap-2 text-sm text-slate-500">
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Höhere Vergütung (mind. 10 Rp./kWh)</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Direkter Verkauf im Quartier statt Einspeisung</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> 40% Rabatt auf Netzkosten im Verteilnetz</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Verwaltung durch solarbonstetten</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- So funktioniert's -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-14">
+        <h2 class="mb-4">So funktioniert die Teilnahme</h2>
+        <p class="text-lg text-slate-500 max-w-xl mx-auto">In drei Schritten zur lokalen Strom­gemeinschaft.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { nr: '1', titel: 'Interessieren &amp; Anmelden', text: 'Formular ausfüllen und Interesse bekunden. Je mehr Interessierte, desto schneller kann die LEG in deinem Quartier gegründet werden.' },
+          { nr: '2', titel: 'LEG wird gegründet', text: 'Sobald sich genug Teilnehmende aus dem gleichen Trafokreis gemeldet haben, gründen wir die LEG und registrieren sie im EKZ-Portal.' },
+          { nr: '3', titel: 'Strom tauschen &amp; profitieren', text: 'Ab Aktivierung fliesst lokaler Solarstrom direkt zu dir. Die Abrechnung erfolgt jährlich – automatisch durch solarbonstetten.' },
+        ].map(s => (
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 flex flex-col gap-4">
+            <span class="w-12 h-12 bg-amber-400 text-white font-bold text-xl rounded-full flex items-center justify-center">{s.nr}</span>
+            <h3 class="text-base font-bold text-slate-900" set:html={s.titel} />
+            <p class="text-sm text-slate-500 leading-relaxed">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 LEG-Zonen -->
+  <section class="section bg-slate-50">
+    <div class="container">
+      <div class="text-center mb-14">
+        <span class="badge mb-4 inline-block">Bonstetten</span>
+        <h2 class="mb-4">Die 11 LEG-Zonen</h2>
+        <p class="text-lg text-slate-500 max-w-xl mx-auto">
+          Jede Zone entspricht einem Trafokreis. Du kannst dich für die Zone anmelden,
+          in der dein Gebäude liegt – oder «Noch nicht sicher» wählen.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {zonen.map((zone, i) => (
+          <div class="bg-white rounded-xl border border-slate-100 shadow-sm px-5 py-4 flex items-start gap-3">
+            <span class="w-7 h-7 bg-amber-100 text-amber-700 font-bold text-xs rounded-full flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-slate-900 text-sm mb-0.5">{zone.name}</p>
+              <p class="text-xs text-slate-400">{zone.info}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Voraussetzungen + Bedingungen -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <h2 class="mb-6">Voraussetzungen</h2>
+          <ul class="flex flex-col gap-4">
+            {[
+              { icon: '📡', titel: 'Kommunikativer Smart Meter', text: 'Dein Stromanschluss benötigt einen intelligenten Zähler, der Daten aktiv an EKZ übermittelt. Falls noch nicht vorhanden, muss er installiert werden.' },
+              { icon: '🗺️', titel: 'Gleicher Trafokreis', text: 'Alle Mitglieder einer LEG müssen am selben Transformator angeschlossen sein – das entspricht in der Regel dem eigenen Quartier.' },
+              { icon: '☀️', titel: 'Mindest-Solaranteil', text: 'Die gesamte Solarleistung einer LEG muss mindestens 5% der Gesamtanschlussleistung aller Konsumenten erreichen.' },
+              { icon: '📋', titel: 'EKZ-Bedingungen', text: 'Alle Teilnehmenden akzeptieren die Teilnahmebedingungen von EKZ. Du findest sie im untenstehenden Dokument.' },
+            ].map(v => (
+              <li class="flex items-start gap-4">
+                <span class="text-2xl shrink-0">{v.icon}</span>
+                <div>
+                  <p class="font-semibold text-slate-900 text-sm mb-1">{v.titel}</p>
+                  <p class="text-sm text-slate-500 leading-relaxed">{v.text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 class="mb-6">Preismodell</h2>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
+            <h3 class="text-base font-bold text-slate-900 mb-4">LEG-Strompreise Bonstetten</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="bg-white rounded-xl p-4 text-center">
+                <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Sommer</p>
+                <p class="text-2xl font-bold text-amber-700">11 Rp.</p>
+                <p class="text-xs text-slate-400">pro kWh</p>
+              </div>
+              <div class="bg-white rounded-xl p-4 text-center">
+                <p class="text-xs text-slate-400 uppercase tracking-wider mb-1">Winter</p>
+                <p class="text-2xl font-bold text-amber-700">15 Rp.</p>
+                <p class="text-xs text-slate-400">pro kWh</p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mt-4 leading-relaxed">
+              Produzenten erhalten mind. 10 Rp./kWh. Der Restbedarf wird weiterhin über EKZ zum regulären Tarif geliefert.
+            </p>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-2xl p-6">
+            <h3 class="text-base font-bold text-slate-900 mb-2">Ein- &amp; Austritt</h3>
+            <p class="text-sm text-slate-500 leading-relaxed">
+              Der Eintritt in eine LEG ist nach Aktivierung (ca. 3 Monate nach Gründung) möglich.
+              Der Austritt ist mit <strong class="text-slate-700">2 Monaten Frist</strong> auf Monatsende jederzeit möglich.
+            </p>
+          </div>
+
+          <!-- Dokument -->
+          <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 mt-4">
+            <span class="text-2xl shrink-0">📄</span>
+            <div class="flex-1 min-w-0">
+              <strong class="block text-sm text-slate-900 mb-0.5">EKZ-Teilnahmebedingungen</strong>
+              <p class="text-xs text-slate-500 m-0">Offizielle Bedingungen für die Teilnahme an einer LEG im EKZ-Netz.</p>
+            </div>
+            <a href="https://www.ekz.ch/dam/ekz/angebote/strom/produzenten-und-gemeinschaften/leg/LEG-Bedingungen-EKZ.pdf"
+               target="_blank" rel="noopener noreferrer"
+               class="btn btn-outline text-sm shrink-0">PDF ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-amber-400">
+    <div class="container text-center">
+      <h2 class="mb-4 text-white">Interesse? Jetzt anmelden!</h2>
+      <p class="text-white/90 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+        Melde dich an – sobald sich genug Interessierte in deinem Quartier gefunden haben, gründen wir die LEG.
+      </p>
+      <a href={`${base}/leg/anmeldung`} class="btn bg-white text-amber-700 hover:bg-amber-50 font-bold px-8 py-4 text-base">
+        Zur Anmeldung →
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
