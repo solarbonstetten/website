@@ -483,6 +483,22 @@
                     selectedLegId = event.data.legId ?? -1;
                     selectedPointId = -1;
                     updateLayerOpacities();
+
+                    // Zoom to selected zone
+                    if (selectedLegId !== -1) {
+                        const feature = legFeatures.find(f => f.id == selectedLegId);
+                        if (feature) {
+                            const bounds = new maplibregl.LngLatBounds();
+                            const addCoords = (coords) => {
+                                if (Array.isArray(coords[0])) coords.forEach(addCoords);
+                                else bounds.extend(coords);
+                            };
+                            feature.geometry.coordinates.forEach(addCoords);
+                            if (!bounds.isEmpty()) {
+                                map.fitBounds(bounds, { padding: 60, maxZoom: 15, duration: 800 });
+                            }
+                        }
+                    }
                 }
             });
         });
