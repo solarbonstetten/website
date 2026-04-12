@@ -1,5 +1,5 @@
 ---
-title: neue Webseite
+title: Neue Webseite
 date: 2026-04-12T22:00:00
 image: ''
 ---
