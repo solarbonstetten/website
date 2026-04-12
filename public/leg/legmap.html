@@ -146,8 +146,8 @@
             } else {
                 try {
                     const [solarRes, polygonsRes] = await Promise.all([
-                        fetch('solar_data.json'),
-                        fetch('leg_polygons.json')
+                        fetch('data/solar_data.json'),
+                        fetch('data/leg_polygons.json')
                     ]);
                     rawSolarData = await solarRes.json();
                     rawLegPolygons = await polygonsRes.json();

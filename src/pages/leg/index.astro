@@ -69,6 +69,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
   </div>
 
+  <!-- Adress-Lookup -->
+  <section class="section">
+    <div class="container max-w-2xl">
+      <div class="text-center mb-8">
+        <span class="badge mb-4 inline-block">Schnellcheck</span>
+        <h2 class="mb-3">Finde deine LEG-Zone</h2>
+        <p class="text-slate-500 leading-relaxed">Gib deine Adresse ein und sieh sofort, in welcher Zone du bist.</p>
+      </div>
+      <div class="relative" id="lookup-wrapper">
+        <input
+          type="search"
+          id="addr-search"
+          placeholder="z. B. Dorfstrasse 24…"
+          autocomplete="off"
+          class="addr-input w-full px-5 py-4 text-base border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-amber-400 focus:shadow-[0_0_0_3px_rgba(251,168,3,0.15)] transition-all"
+        />
+        <!-- Dropdown -->
+        <ul id="addr-dropdown" class="hidden absolute z-50 mt-1 w-full bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden max-h-72 overflow-y-auto"></ul>
+        <!-- Ergebnis -->
+        <div id="addr-result" class="hidden mt-4"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- Was ist eine LEG? -->
   <section class="section bg-slate-50">
     <div class="container">
@@ -138,7 +162,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </section>
 
   <!-- 13 LEG-Zonen -->
-  <section class="section bg-slate-50">
+  <section class="section bg-slate-50 scroll-mt-20" id="leg-zonen">
     <div class="container">
       <div class="text-center mb-14">
         <span class="badge mb-4 inline-block">Bonstetten</span>
@@ -151,7 +175,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <!-- Karte -->
       <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm mb-8" style="height: 500px;">
         <iframe
-          src="/legmap.html"
+          src="/leg/legmap.html"
           width="100%"
           height="100%"
           style="border: none; display: block;"
@@ -263,9 +287,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   }
 </style>
 
-<script>
-  const iframe = document.querySelector('iframe[title="LEG-Zonen Karte Bonstetten"]') as HTMLIFrameElement;
-  const cards = document.querySelectorAll<HTMLElement>('.zone-card');
+<script define:vars={{ zonen }}>
+  const iframe = document.querySelector('iframe[title="LEG-Zonen Karte Bonstetten"]');
+  const cards = document.querySelectorAll('.zone-card');
 
   // Card click → select zone on map
   cards.forEach(card => {
@@ -292,7 +316,112 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       card.classList.toggle('active', parseInt(card.dataset.legId ?? '-1') === legId && legId !== -1);
     });
     // Scroll active card into view
-    const active = document.querySelector<HTMLElement>('.zone-card.active');
+    const active = document.querySelector('.zone-card.active');
     if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  // ── Address-Lookup ──────────────────────────────────────────
+  const searchInput = document.getElementById('addr-search');
+  const dropdown    = document.getElementById('addr-dropdown');
+  const resultBox   = document.getElementById('addr-result');
+
+  let addresses = null; // lazy loaded
+
+  async function loadAddresses() {
+    if (addresses) return addresses;
+    const res = await fetch('/leg/data/addresses.json');
+    addresses = await res.json();
+    return addresses;
+  }
+
+  function selectAddress(entry) {
+    // Close dropdown
+    dropdown.innerHTML = '';
+    dropdown.classList.add('hidden');
+    searchInput.value = entry.address;
+
+    // Lookup zone
+    const legId = entry.leg_index !== null ? entry.leg_index + 1 : null;
+    const zone  = legId !== null ? zonen.find(z => z.legId === legId) : null;
+
+    // Show result
+    if (zone) {
+      resultBox.innerHTML = `
+        <div class="flex items-center gap-4 bg-white border-2 rounded-2xl px-5 py-4" style="border-color: ${zone.color}">
+          <span class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white font-bold text-sm" style="background:${zone.color}">
+            ${zonen.indexOf(zone) + 1}
+          </span>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Deine LEG-Zone</p>
+            <p class="font-bold text-slate-900 text-base m-0">${zone.name}</p>
+          </div>
+          <a href="#leg-zonen" class="btn btn-outline text-sm shrink-0" id="zone-link">Zur Zone →</a>
+        </div>`;
+      resultBox.classList.remove('hidden');
+
+      // Highlight zone card + map
+      cards.forEach(c => c.classList.toggle('active', parseInt(c.dataset.legId ?? '-1') === legId));
+      iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
+
+      // Scroll to map section so user sees the map zoom first
+      document.getElementById('leg-zonen')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      resultBox.innerHTML = `
+        <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-500 text-sm">
+          <span class="text-xl">🔍</span>
+          <span>Diese Adresse liegt nicht in einer der 13 LEG-Zonen in Bonstetten.</span>
+        </div>`;
+      resultBox.classList.remove('hidden');
+      // Reset map + cards
+      cards.forEach(c => c.classList.remove('active'));
+      iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId: -1 }, '*');
+    }
+  }
+
+  searchInput?.addEventListener('input', async () => {
+    const q = searchInput.value.trim().toLowerCase();
+    resultBox.classList.add('hidden');
+    resultBox.innerHTML = '';
+
+    if (q.length < 2) {
+      dropdown.innerHTML = '';
+      dropdown.classList.add('hidden');
+      return;
+    }
+
+    const data = await loadAddresses();
+    const hits = data.filter(e => e.address.toLowerCase().includes(q)).slice(0, 8);
+
+    if (hits.length === 0) {
+      dropdown.innerHTML = '';
+      dropdown.classList.add('hidden');
+      return;
+    }
+
+    dropdown.innerHTML = hits.map((e, i) =>
+      `<li class="addr-option px-5 py-3 cursor-pointer hover:bg-amber-50 text-sm text-slate-700 border-b border-slate-100 last:border-0" data-idx="${i}">${e.address}</li>`
+    ).join('');
+    dropdown.classList.remove('hidden');
+
+    dropdown.querySelectorAll('.addr-option').forEach((li, i) => {
+      li.addEventListener('click', () => selectAddress(hits[i]));
+    });
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('lookup-wrapper')?.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  // Reset when input is cleared
+  searchInput?.addEventListener('search', () => {
+    if (!searchInput.value) {
+      dropdown.classList.add('hidden');
+      resultBox.classList.add('hidden');
+      cards.forEach(c => c.classList.remove('active'));
+      iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId: -1 }, '*');
+    }
   });
 </script>
