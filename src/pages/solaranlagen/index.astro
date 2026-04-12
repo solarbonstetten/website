@@ -61,10 +61,10 @@ const icons: Record<string, string> = { Schulanlage: '🏫', Privathaus: '🏠' 
               {anlage.data.bild ? (
                 <div class="relative h-[240px] overflow-hidden">
                   <img src={anlage.data.bild} alt={anlage.data.title} class="w-full h-full object-cover" loading="lazy" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
-                  <div class="absolute bottom-0 left-0 px-10 py-6">
-                    <span class="text-xs font-semibold uppercase tracking-widest text-white/70 mb-1 block">{anlage.data.badge}</span>
-                    <h2 class="text-2xl font-bold m-0 text-white">{anlage.data.title}</h2>
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-0 left-0 px-10 py-6" style="text-shadow: 0 1px 4px rgba(0,0,0,0.5)">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-white/80 mb-1 block">{anlage.data.badge}</span>
+                    <h2 class="text-2xl font-bold m-0" style="color: white">{anlage.data.title}</h2>
                   </div>
                 </div>
               ) : (

@@ -20,7 +20,7 @@ collections:
     label: Solaranlagen
     folder: src/content/solaranlagen
     create: true
-    media_folder: public/images/solaranlagen
+    media_folder: /public/images/solaranlagen
     public_folder: /images/solaranlagen
     fields:
       - { label: Titel, name: title, widget: string }

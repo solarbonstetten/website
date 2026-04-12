@@ -1,6 +1,6 @@
 ---
 title: Chapfstrasse 31, Bonstetten
-bild: images/solaranlagen/PV_Chapfstrasse_31.png
+bild: /images/solaranlagen/PV_Chapfstrasse_31.png
 badge: Privathaus
 reihenfolge: 3
 finanzierung: durch private Panelkäufer:innen
