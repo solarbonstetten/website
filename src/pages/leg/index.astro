@@ -2,19 +2,19 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const zonen = [
-  { name: 'Dorfstrasse – Chüeweid',        color: '#e6194b' },
-  { name: 'Dorfstrasse – im Vorderdorf',   color: '#46f0f0' },
-  { name: 'Schule-Breitenacher',           color: '#f58231' },
-  { name: 'Im Schachenhof',               color: '#ffe119' },
-  { name: 'Chapfstrasse-Friedhofstrasse',  color: '#3cb44b' },
-  { name: 'Buechenegg und Wolfen',         color: '#911eb4' },
-  { name: 'Lochenweiher',                  color: '#e6beff' },
-  { name: 'Ligusterweg',                   color: '#bcf60c' },
-  { name: 'Heumoos',                       color: '#008080' },
-  { name: 'Bruggematt',                    color: '#4363d8' },
-  { name: 'Lätten',                        color: '#fabebe' },
-  { name: 'Lüttenberg',                    color: '#f032e6' },
-  { name: 'Stockenweg',                    color: '#9a6324' },
+  { name: 'Dorfstrasse – Chüeweid',        color: '#e6194b', legId: 1  },
+  { name: 'Dorfstrasse – im Vorderdorf',   color: '#46f0f0', legId: 7  },
+  { name: 'Schule-Breitenacher',           color: '#f58231', legId: 5  },
+  { name: 'Im Schachenhof',               color: '#ffe119', legId: 3  },
+  { name: 'Chapfstrasse-Friedhofstrasse',  color: '#3cb44b', legId: 2  },
+  { name: 'Buechenegg und Wolfen',         color: '#911eb4', legId: 6  },
+  { name: 'Lochenweiher',                  color: '#e6beff', legId: 12 },
+  { name: 'Ligusterweg',                   color: '#bcf60c', legId: 9  },
+  { name: 'Heumoos',                       color: '#008080', legId: 11 },
+  { name: 'Bruggematt',                    color: '#4363d8', legId: 4  },
+  { name: 'Lätten',                        color: '#fabebe', legId: 10 },
+  { name: 'Lüttenberg',                    color: '#f032e6', legId: 8  },
+  { name: 'Stockenweg',                    color: '#9a6324', legId: 13 },
 ];
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -159,9 +159,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         ></iframe>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" id="zonen-grid">
         {zonen.map((zone, i) => (
-          <div class="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-3 flex items-center gap-3">
+          <div
+            class="zone-card bg-white rounded-xl border-2 border-slate-100 shadow-sm px-4 py-3 flex items-center gap-3 cursor-pointer transition-all hover:border-slate-300"
+            data-leg-id={zone.legId}
+            style={`--zone-color: ${zone.color}`}
+          >
             <span class="w-7 h-7 font-bold text-xs rounded-full flex items-center justify-center shrink-0 text-white" style={`background:${zone.color}`}>{i + 1}</span>
             <p class="font-semibold text-slate-900 text-sm m-0">{zone.name}</p>
           </div>
@@ -251,3 +255,44 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </section>
 
 </BaseLayout>
+
+<style>
+  .zone-card.active {
+    border-color: var(--zone-color) !important;
+    background-color: color-mix(in srgb, var(--zone-color) 10%, white);
+  }
+</style>
+
+<script>
+  const iframe = document.querySelector('iframe[title="LEG-Zonen Karte Bonstetten"]') as HTMLIFrameElement;
+  const cards = document.querySelectorAll<HTMLElement>('.zone-card');
+
+  // Card click → select zone on map
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const legId = parseInt(card.dataset.legId ?? '-1');
+      const isAlreadyActive = card.classList.contains('active');
+
+      cards.forEach(c => c.classList.remove('active'));
+
+      if (!isAlreadyActive) {
+        card.classList.add('active');
+        iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId }, '*');
+      } else {
+        iframe?.contentWindow?.postMessage({ type: 'selectLeg', legId: -1 }, '*');
+      }
+    });
+  });
+
+  // Map click → highlight matching card
+  window.addEventListener('message', (event) => {
+    if (event.data?.type !== 'legSelected') return;
+    const legId = event.data.legId;
+    cards.forEach(card => {
+      card.classList.toggle('active', parseInt(card.dataset.legId ?? '-1') === legId && legId !== -1);
+    });
+    // Scroll active card into view
+    const active = document.querySelector<HTMLElement>('.zone-card.active');
+    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

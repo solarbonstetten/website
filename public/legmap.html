@@ -397,6 +397,7 @@
                         selectedPointId = -1;
                     }
                     updateLayerOpacities();
+                    window.parent.postMessage({ type: 'legSelected', legId: selectedLegId }, '*');
 
                     if (targetFeature.layer.id === 'points-circle') {
                         popup.setLngLat(targetFeature.geometry.coordinates)
@@ -409,6 +410,7 @@
                     selectedLegId = -1;
                     selectedPointId = -1;
                     updateLayerOpacities();
+                    window.parent.postMessage({ type: 'legSelected', legId: -1 }, '*');
                     popup.remove();
                 }
             });
@@ -474,6 +476,15 @@
             
             // Trigger explicit initialization
             updateLayerOpacities();
+
+            // Listen for leg selection from parent page (must be inside load so updateLayerOpacities is in scope)
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'selectLeg') {
+                    selectedLegId = event.data.legId ?? -1;
+                    selectedPointId = -1;
+                    updateLayerOpacities();
+                }
+            });
         });
     </script>
 </body>
