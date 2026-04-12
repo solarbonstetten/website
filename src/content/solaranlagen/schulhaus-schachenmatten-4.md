@@ -1,6 +1,6 @@
 ---
 title: Schulhaus Schachenmatten 4
-bild: /images/solaranlagen/PV_Schachenmatten_4.png
+bild: /images/solaranlagen/PV_Schachenmatten_4.webp
 badge: Schulanlage
 reihenfolge: 2
 finanzierung: Vollständig durch private Darlehen

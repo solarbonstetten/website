@@ -1,6 +1,6 @@
 ---
 title: Schulhaus Schachenmatten 2
-bild: /images/solaranlagen/PV_Flachdach_1.png
+bild: /images/solaranlagen/PV_Flachdach_1.webp
 badge: Schulanlage
 reihenfolge: 1
 finanzierung: Vollständig durch private Darlehen
