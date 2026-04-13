@@ -1,21 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const zonen = [
-  { name: 'Dorfstrasse – Chüeweid',        color: '#e6194b', legId: 1  },
-  { name: 'Dorfstrasse – im Vorderdorf',   color: '#46f0f0', legId: 7  },
-  { name: 'Schule-Breitenacher',           color: '#f58231', legId: 5  },
-  { name: 'Im Schachenhof',               color: '#ffe119', legId: 3  },
-  { name: 'Chapfstrasse-Friedhofstrasse',  color: '#3cb44b', legId: 2  },
-  { name: 'Buechenegg und Wolfen',         color: '#911eb4', legId: 6  },
-  { name: 'Lochenweiher',                  color: '#e6beff', legId: 12 },
-  { name: 'Ligusterweg',                   color: '#bcf60c', legId: 9  },
-  { name: 'Heumoos',                       color: '#008080', legId: 11 },
-  { name: 'Bruggematt',                    color: '#4363d8', legId: 4  },
-  { name: 'Lätten',                        color: '#fabebe', legId: 10 },
-  { name: 'Lüttenberg',                    color: '#f032e6', legId: 8  },
-  { name: 'Stockenweg',                    color: '#9a6324', legId: 13 },
-];
+import legsData from '../../../public/leg/data/legs.json';
+
+const zonen = legsData.map((leg, index) => ({
+  name: leg.name,
+  color: leg.color,
+  legId: index + 1
+}));
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -110,7 +102,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             die Anmeldungen, vertreten die Gemeinschaft gegenüber EKZ und kümmern uns um die jährliche Abrechnung.
           </p>
           <p class="text-slate-500 leading-relaxed">
-            Es sind bis zu <strong class="text-slate-700">13 LEGs</strong> in Bonstetten geplant.
+            Es sind bis zu <strong class="text-slate-700">{zonen.length} LEGs</strong> in Bonstetten geplant.
             Jede LEG wird gegründet, sobald sich genug Interessentinnen und Interessenten aus dem jeweiligen Quartier angemeldet haben.
           </p>
         </div>
@@ -166,7 +158,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <div class="container">
       <div class="text-center mb-14">
         <span class="badge mb-4 inline-block">Bonstetten</span>
-        <h2 class="mb-4">Die 13 LEG-Zonen</h2>
+        <h2 class="mb-4">Die {zonen.length} LEG-Zonen</h2>
         <p class="text-lg text-slate-500 max-w-xl mx-auto">
           Jede Zone entspricht einem Trafokreis. Du kannst dich für die Zone anmelden,
           in der dein Gebäude liegt – oder «Noch nicht sicher» wählen.
@@ -381,7 +373,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       resultBox.innerHTML = `
         <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-500 text-sm">
           <span class="text-xl">🔍</span>
-          <span>Diese Adresse liegt nicht in einer der 13 LEG-Zonen in Bonstetten.</span>
+          <span>Diese Adresse liegt nicht in einer der {zonen.length} LEG-Zonen in Bonstetten.</span>
         </div>`;
       resultBox.classList.remove('hidden');
       // Reset map + cards

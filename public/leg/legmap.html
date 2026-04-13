@@ -94,8 +94,9 @@
 
 <body>
     <div id="map"></div>
-    
-    <div id="show-legend-btn" class="legend-toggle-btn" style="display: block;" onclick="toggleLegend()" title="Legende anzeigen">ℹ️</div>
+
+    <div id="show-legend-btn" class="legend-toggle-btn" style="display: block;" onclick="toggleLegend()"
+        title="Legende anzeigen">ℹ️</div>
     <div class="legend" id="main-legend" style="display: none;">
         <button class="hide-legend-btn" onclick="toggleLegend()" title="Legende ausblenden">✖</button>
         <h4>Solar-Status</h4>
@@ -105,7 +106,8 @@
         <br>
         <h4>Highlights</h4>
         <div class="legend-item"><span style="margin-right:8px; font-size:18px">⭐</span> Top 5 Anlagen</div>
-        <div class="legend-item"><span style="margin-right:8px; font-size:18px">🌙</span> Top 5 ungenutztes Potenzial</div>
+        <div class="legend-item"><span style="margin-right:8px; font-size:18px">🌙</span> Top 5 ungenutztes Potenzial
+        </div>
         <br>
         <h4>Interaktionen</h4>
         <div class="legend-item" style="font-size:12px">Klicken Sie auf eine Adresse, um die<br>elektrische
@@ -117,10 +119,10 @@
             <strong>Daten können ungenau oder falsch sein!</strong>
         </div>
     </div>
-    
+
 
     <script>
-        
+
         function toggleLegend() {
             const legend = document.getElementById('main-legend');
             const btn = document.getElementById('show-legend-btn');
@@ -132,48 +134,54 @@
                 btn.style.display = 'block';
             }
         }
-        
+
 
         const infographicMode = false;
         const singleFileMode = false;
 
         async function loadData() {
-            let rawSolarData, rawLegPolygons;
-            
+            let rawSolarData, rawLegPolygons, rawLegs;
+
             if (singleFileMode) {
                 rawSolarData = [];
                 rawLegPolygons = {};
+                rawLegs = [];
             } else {
                 try {
-                    const [solarRes, polygonsRes] = await Promise.all([
+                    const [solarRes, polygonsRes, legsRes] = await Promise.all([
                         fetch('data/solar_data.json'),
-                        fetch('data/leg_polygons.json')
+                        fetch('data/leg_polygons.json'),
+                        fetch('data/legs.json')
                     ]);
                     rawSolarData = await solarRes.json();
                     rawLegPolygons = await polygonsRes.json();
+                    rawLegs = await legsRes.json();
                 } catch (err) {
                     console.error("Error loading data:", err);
-                    alert("Fehler beim Laden der Daten. Bitte stellen Sie sicher, dass 'solar_data.json' und 'leg_polygons.json' im selben Verzeichnis liegen.");
+                    alert("Fehler beim Laden der Daten. Bitte stellen Sie sicher, dass die Dateien im 'data/'-Ordner vorhanden sind.");
                     return;
                 }
             }
-            
-            initMap(rawSolarData, rawLegPolygons);
+
+            initMap(rawSolarData, rawLegPolygons, rawLegs);
         }
 
-        function initMap(rawSolarData, rawLegPolygons) {
+        function initMap(rawSolarData, rawLegPolygons, rawLegs) {
             // 1. Data Conversion
-            
+
             // Polygons array
             const legFeatures = [];
             const legColorMap = {};
-            
-            // Build color map from solar logic
-            rawSolarData.forEach(d => {
-                if (d.leg_id && d.leg_color) {
-                    legColorMap[d.leg_id] = d.leg_color;
-                }
-            });
+            const legNameMap = {};
+
+            // Build maps from LEG info
+            if (rawLegs) {
+                rawLegs.forEach((l, i) => {
+                    const legId = i + 1;
+                    legColorMap[legId] = l.color || '#999';
+                    legNameMap[legId] = l.name || `LEG ${legId}`;
+                });
+            }
 
             if (rawLegPolygons) {
                 Object.keys(rawLegPolygons).forEach(legId => {
@@ -191,7 +199,7 @@
                     }
                 });
             }
-            
+
             const regionsGeoJson = {
                 type: 'FeatureCollection',
                 features: legFeatures
@@ -199,16 +207,16 @@
 
             // Points
             let bounds = new maplibregl.LngLatBounds();
-            
+
             const pointFeatures = rawSolarData.map((d, index) => {
                 let pot = Math.max(0, typeof d.potential === 'number' && !isNaN(d.potential) ? d.potential : 0);
                 let inst = Math.max(0, typeof d.installed === 'number' && !isNaN(d.installed) ? d.installed : 0);
                 let util = Math.max(0, typeof d.utilization === 'number' && !isNaN(d.utilization) ? d.utilization : 0);
-                
+
                 let radius = Math.max(Math.sqrt(pot) / 30, 4);
                 if (isNaN(radius)) radius = 4;
                 bounds.extend([d.lng, d.lat]);
-                
+
                 return {
                     type: 'Feature',
                     id: index, // numeric ID
@@ -236,7 +244,7 @@
                             Potenzial: ${Math.round(pot).toLocaleString()} kWh/Jahr<br>
                             Installiert: ${inst.toFixed(1)} kWp<br>
                             Nutzung: ${(util * 100).toFixed(1)}%<br>
-                            ${d.leg_id ? `LEG: ${typeof d.leg_name !== 'undefined' ? d.leg_name : ''}` : ''}
+                            ${d.leg_id ? `LEG: ${legNameMap[d.leg_id] || d.leg_name || ''}` : ''}
                             ${d.kev_active && d.kev_details ? `<br>${d.kev_details}` : ''}
                         `
                     }
@@ -257,11 +265,11 @@
                 preserveDrawingBuffer: infographicMode,
                 maxBounds: [[5.9, 45.8], [10.5, 47.8]] // [sw, ne] SW coords: lng, lat
             });
-            
+
             map.addControl(new maplibregl.AttributionControl({
                 customAttribution: '&copy; <a href="https://www.swisstopo.admin.ch/">swisstopo</a>'
             }));
-            
+
             map.addControl(new maplibregl.NavigationControl());
 
             // Setup Export Plugin in Infographic mode
@@ -343,7 +351,7 @@
                         el.style.transform = 'translate(0, -12px)';
                         el.style.pointerEvents = 'none'; // Let clicks pass through
                         el.style.transition = 'opacity 0.2s';
-                        const marker = new maplibregl.Marker({element: el}).setLngLat([d.lng, d.lat]).addTo(map);
+                        const marker = new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).addTo(map);
                         htmlMarkers.push({ marker, leg_id: d.leg_id || -1, id: index, type: 'star' });
                     }
                     if (d.is_top_potential) {
@@ -353,7 +361,7 @@
                         el.style.transform = 'translate(0, -12px)';
                         el.style.pointerEvents = 'none';
                         el.style.transition = 'opacity 0.2s';
-                        const marker = new maplibregl.Marker({element: el}).setLngLat([d.lng, d.lat]).addTo(map);
+                        const marker = new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).addTo(map);
                         htmlMarkers.push({ marker, leg_id: d.leg_id || -1, id: index, type: 'moon' });
                     }
                     if (d.kev_active) {
@@ -362,7 +370,7 @@
                         el.style.transform = 'translate(0, -15px)';
                         el.style.pointerEvents = 'none';
                         el.style.transition = 'opacity 0.2s';
-                        const marker = new maplibregl.Marker({element: el}).setLngLat([d.lng, d.lat]).addTo(map);
+                        const marker = new maplibregl.Marker({ element: el }).setLngLat([d.lng, d.lat]).addTo(map);
                         htmlMarkers.push({ marker, leg_id: d.leg_id || -1, id: index, type: 'kev' });
                     }
                 });
@@ -389,10 +397,10 @@
 
                 map.on('click', (e) => {
                     const features = map.queryRenderedFeatures(e.point, { layers: ['points-circle', 'regions-fill'] });
-                    
+
                     let clickedPoint = null;
                     let clickedRegion = null;
-                    
+
                     for (const feature of features) {
                         if (feature.layer.id === 'points-circle') {
                             clickedPoint = feature;
@@ -401,13 +409,13 @@
                             clickedRegion = feature;
                         }
                     }
-                    
+
                     const targetFeature = clickedPoint || clickedRegion;
 
                     if (targetFeature) {
                         const legId = targetFeature.properties.leg_id;
                         const pointId = targetFeature.properties.id;
-                        
+
                         if (legId && legId !== -1) {
                             selectedLegId = legId;
                             selectedPointId = -1;
@@ -424,8 +432,8 @@
 
                         if (targetFeature.layer.id === 'points-circle') {
                             popup.setLngLat(targetFeature.geometry.coordinates)
-                                 .setHTML(targetFeature.properties.popupContent)
-                                 .addTo(map);
+                                .setHTML(targetFeature.properties.popupContent)
+                                .addTo(map);
                         } else {
                             popup.remove();
                         }
@@ -448,7 +456,7 @@
 
                 function updateLayerOpacities() {
                     const isNothingSelected = selectedLegId === -1 && selectedPointId === -1;
-                    
+
                     ['points-circle'].forEach(layer => {
                         if (map.getLayer(layer)) {
                             const opacityProp = 'circle-opacity';
@@ -483,7 +491,7 @@
                             }
                         }
                     });
-                    
+
                     if (map.getLayer('regions-fill')) {
                         if (isNothingSelected) {
                             map.setPaintProperty('regions-fill', 'fill-opacity', 0.2);
@@ -496,7 +504,7 @@
                         }
                     }
                 } // end updateLayerOpacities
-                
+
                 // Trigger explicit initialization
                 updateLayerOpacities();
 
@@ -523,16 +531,6 @@
                             }
                         } else {
                             map.fitBounds(bounds, { padding: 50, maxZoom: 18, duration: 800 });
-                        }
-                    } else if (event.data && event.data.type === 'selectAddress') {
-                        // Only show popup – no zoom change (zone is already zoomed via selectLeg)
-                        const point = pointFeatures.find(f => f.properties.address === event.data.address);
-                        if (point) {
-                            selectedPointId = point.properties.id;
-                            updateLayerOpacities();
-                            popup.setLngLat(point.geometry.coordinates)
-                                 .setHTML(point.properties.popupContent)
-                                 .addTo(map);
                         }
                     }
                 });

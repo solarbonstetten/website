@@ -3,21 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const zonen = [
-  'Dorfstrasse – Chüeweid',
-  'Dorfstrasse – im Vorderdorf',
-  'Schule-Breitenacher',
-  'Im Schachenhof',
-  'Chapfstrasse-Friedhofstrasse',
-  'Buechenegg und Wolfen',
-  'Lochenweiher',
-  'Ligusterweg',
-  'Heumoos',
-  'Bruggematt',
-  'Lätten',
-  'Lüttenberg',
-  'Stockenweg',
-];
+import legsData from '../../../public/leg/data/legs.json';
+
+const zonen = legsData.map(l => l.name);
 ---
 <BaseLayout
   title="LEG An-/Abmeldung"
