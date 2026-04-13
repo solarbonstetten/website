@@ -532,6 +532,15 @@
                         } else {
                             map.fitBounds(bounds, { padding: 50, maxZoom: 18, duration: 800 });
                         }
+                    } else if (event.data && event.data.type === 'selectAddress') {
+                        const point = pointFeatures.find(f => f.properties.address === event.data.address);
+                        if (point) {
+                            selectedPointId = point.properties.id;
+                            updateLayerOpacities();
+                            popup.setLngLat(point.geometry.coordinates)
+                                 .setHTML(point.properties.popupContent)
+                                 .addTo(map);
+                        }
                     }
                 });
             });

@@ -372,7 +372,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       resultBox.innerHTML = `
         <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-500 text-sm">
           <span class="text-xl">🔍</span>
-          <span>Diese Adresse liegt nicht in einer der {zonen.length} LEG-Zonen in Bonstetten.</span>
+          <span>Diese Adresse liegt nicht in einer der ${zonen.length} LEG-Zonen in Bonstetten.</span>
         </div>`;
       resultBox.classList.remove('hidden');
       // Reset map + cards
