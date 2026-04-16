@@ -126,6 +126,16 @@ const zonen = legsData.map(l => l.name);
                   <input type="text" id="ort" name="ort" required autocomplete="address-level2" class="input-field" />
                 </div>
               </div>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="messpunkt" class="text-sm font-medium text-slate-900">
+                  Messpunktnummer <span class="text-amber-700">*</span>
+                </label>
+                <input type="text" id="messpunkt" name="messpunkt" required autocomplete="off" class="input-field"
+                  placeholder="z.B. CH0000000000000000000000000000000" />
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Die 33-stellige Messpunktnummer steht auf deiner EKZ-Rechnung oder im EKZ-Kundenportal.
+                </p>
+              </div>
             </fieldset>
 
             <!-- Kontakt -->
@@ -289,7 +299,7 @@ const zonen = legsData.map(l => l.name);
     };
     const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement)?.checked ?? false;
 
-    const requiredFields = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email', 'zone'];
+    const requiredFields = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email', 'zone', 'messpunkt'];
     let valid = true;
 
     requiredFields.forEach(id => {
@@ -340,6 +350,7 @@ const zonen = legsData.map(l => l.name);
       `  PLZ / Ort:    ${get('plz')} ${get('ort')}`,
       `  E-Mail:       ${get('email')}`,
       `  Telefon:      ${get('telefon') || '–'}`,
+      `  Messpunkt:    ${get('messpunkt') || '–'}`,
       ...pvZeilen,
       ...(bemerkungen ? ['', 'Bemerkungen', `  ${bemerkungen}`] : []),
       '',
