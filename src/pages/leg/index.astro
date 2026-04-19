@@ -5,8 +5,16 @@ import legsData from '../../../public/leg/data/legs.json';
 const zonen = legsData.map((leg, index) => ({
   name: leg.name,
   color: leg.color,
-  legId: index + 1
+  legId: index + 1,
+  status: leg.status || 'geplant'
 }));
+
+const statusMeta: Record<string, { label: string; dotClass: string; textClass: string }> = {
+  geplant:    { label: 'Geplant',      dotClass: 'bg-slate-300', textClass: 'text-slate-500' },
+  erfassung:  { label: 'In Erfassung', dotClass: 'bg-amber-400', textClass: 'text-amber-700' },
+  angemeldet: { label: 'Angemeldet',   dotClass: 'bg-blue-500',  textClass: 'text-blue-700'  },
+  aktiv:      { label: 'Aktiv',        dotClass: 'bg-green-500', textClass: 'text-green-700' },
+};
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -178,15 +186,30 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         ></iframe>
       </div>
 
+      <!-- Status-Legende -->
+      <div class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-slate-500 mb-6">
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Geplant</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span> In Erfassung</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Angemeldet bei EKZ</span>
+        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span> Aktiv</span>
+      </div>
+
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" id="zonen-grid">
         {zonen.map((zone, i) => (
           <div
             class="zone-card bg-white rounded-xl border-2 border-slate-100 shadow-sm px-4 py-3 flex items-center gap-3 cursor-pointer transition-all hover:border-slate-300"
             data-leg-id={zone.legId}
+            data-status={zone.status}
             style={`--zone-color: ${zone.color}`}
           >
             <span class="w-7 h-7 font-bold text-xs rounded-full flex items-center justify-center shrink-0 text-white" style={`background:${zone.color}`}>{i + 1}</span>
-            <p class="font-semibold text-slate-900 text-sm m-0">{zone.name}</p>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-slate-900 text-sm m-0 leading-tight">{zone.name}</p>
+              <p class={`text-[10px] m-0 mt-0.5 flex items-center gap-1 uppercase tracking-wider font-semibold ${statusMeta[zone.status].textClass}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${statusMeta[zone.status].dotClass}`}></span>
+                {statusMeta[zone.status].label}
+              </p>
+            </div>
           </div>
         ))}
       </div>

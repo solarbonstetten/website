@@ -173,6 +173,7 @@
             const legFeatures = [];
             const legColorMap = {};
             const legNameMap = {};
+            const legStatusMap = {};
 
             // Build maps from LEG info
             if (rawLegs) {
@@ -180,6 +181,7 @@
                     const legId = i + 1;
                     legColorMap[legId] = l.color || '#999';
                     legNameMap[legId] = l.name || `LEG ${legId}`;
+                    legStatusMap[legId] = l.status || 'geplant';
                 });
             }
 
@@ -192,6 +194,7 @@
                                 f.properties = f.properties || {};
                                 f.properties.leg_id = parseInt(legId);
                                 f.properties.color = legColorMap[legId] || '#999';
+                                f.properties.status = legStatusMap[legId] || 'geplant';
                                 f.id = parseInt(legId);
                                 legFeatures.push(f);
                             });
@@ -199,6 +202,16 @@
                     }
                 });
             }
+
+            // Opacity by status (when no zone is selected)
+            const statusOpacityExpr = [
+                'match',
+                ['get', 'status'],
+                'aktiv', 0.5,
+                'angemeldet', 0.35,
+                'erfassung', 0.2,
+                0.08 // geplant / default
+            ];
 
             const regionsGeoJson = {
                 type: 'FeatureCollection',
@@ -306,7 +319,7 @@
                     source: 'regions-source',
                     paint: {
                         'fill-color': ['get', 'color'],
-                        'fill-opacity': 0.2 // Default
+                        'fill-opacity': statusOpacityExpr
                     }
                 });
 
@@ -494,7 +507,7 @@
 
                     if (map.getLayer('regions-fill')) {
                         if (isNothingSelected) {
-                            map.setPaintProperty('regions-fill', 'fill-opacity', 0.2);
+                            map.setPaintProperty('regions-fill', 'fill-opacity', statusOpacityExpr);
                         } else {
                             map.setPaintProperty('regions-fill', 'fill-opacity', [
                                 'case',

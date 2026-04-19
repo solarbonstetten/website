@@ -3,7 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import legsData from '../../../public/leg/data/legs.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const zonen = legsData.map(l => l.name);
+const zonen = legsData.map(l => ({ name: l.name, status: l.status || 'geplant' }));
+
+const statusEmoji: Record<string, string> = {
+  geplant:    '⚪',
+  erfassung:  '🟡',
+  angemeldet: '🔵',
+  aktiv:      '🟢',
+};
 ---
 <BaseLayout
   title="LEG An-/Abmeldung"
@@ -93,9 +100,12 @@ const zonen = legsData.map(l => l.name);
                 </label>
                 <select id="zone" name="zone" required class="input-field">
                   <option value="" disabled selected>Bitte wählen…</option>
-                  {zonen.map((z, i) => <option value={z}>{i + 1}. {z}</option>)}
+                  {zonen.map((z, i) => <option value={z.name}>{statusEmoji[z.status]} {i + 1}. {z.name}</option>)}
                   <option value="Noch nicht sicher">Noch nicht sicher</option>
                 </select>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  ⚪ Geplant · 🟡 In Erfassung · 🔵 Angemeldet bei EKZ · 🟢 Aktiv
+                </p>
               </div>
             </fieldset>
 
