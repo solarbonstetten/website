@@ -1,7 +1,7 @@
 ---
 title: Info-Anlass zur LEG Bonstetten
 date: 2026-06-01T10:00:00
-image: ''
+image: /images/leg_infoanlass.webp
 ---
 
 Am Informationsanlass erfahren Interessierte, wie sie dank der Bonstetter LEG (lokale Elektrizitätsgemeinschaften) Stromkosten sparen oder eine bessere Vergütung für ihren Sonnenstrom erzielen können. Die Energiekommission und unser Verein solarbonstetten informieren gemeinsam darüber, wie man profitiert und wie die Anmeldung sowie die Verrechnung funktionieren.
