@@ -10,4 +10,4 @@ Am Informationsanlass erfahren Interessierte, wie sie dank der Bonstetter LEG (l
 
 **Ort:** Gemeindesaal Bonstetten 
 
-Alle Bonstetterinnen und Bonstetter seid ihr herzlich eingeladen, ob als reine Strombeziehende oder als Produzentinnen und Produzenten mit eigener Solaranlage. Der Anlass bietet eine hervorragende Möglichkeit, Fragen zu stellen, sich auszutauschen und gemeinsam die lokale Energieversorgung zu gestalten. Wer möchte, kann sich bei Interesse gerne bereits heute unter [www.leg-bonstetten.ch](https://www.leg-bonstetten.ch/ "www.leg-bonstetten.ch") eintragen.
+Alle Bonstetterinnen und Bonstetter sind herzlich eingeladen, ob als reine Strombeziehende oder als Produzentinnen und Produzenten mit eigener Solaranlage. Der Anlass bietet eine hervorragende Möglichkeit, Fragen zu stellen, sich auszutauschen und gemeinsam die lokale Energieversorgung zu gestalten. Wer möchte, kann sich bei Interesse gerne bereits heute unter [www.leg-bonstetten.ch](https://www.leg-bonstetten.ch/ "www.leg-bonstetten.ch") eintragen.
