@@ -1,7 +1,7 @@
 ---
 title: Neue Webseite
 date: 2026-04-12T22:00:00
-image: https://solarbonstetten.ch/_astro/logo.rYyGT6v__MpJF9.webp
+image: ''
 ---
 
 Wir haben unsere Webseite grundlegend neu gestaltet und sind gespannt auf Rückmeldungen dazu! Fehlen Inhalte oder ist etwas schwer auffindbar? Bitte unter info@solarbonstetten.ch melden, wir passen das gerne an.
