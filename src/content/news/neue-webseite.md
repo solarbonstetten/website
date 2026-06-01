@@ -1,7 +1,7 @@
 ---
 title: Neue Webseite
 date: 2026-04-12T22:00:00
-image: ''
+image: /images/SolarB_def_NEU.webp
 ---
 
 Wir haben unsere Webseite grundlegend neu gestaltet und sind gespannt auf Rückmeldungen dazu! Fehlen Inhalte oder ist etwas schwer auffindbar? Bitte unter info@solarbonstetten.ch melden, wir passen das gerne an.
