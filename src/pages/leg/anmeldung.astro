@@ -249,7 +249,7 @@ const statusEmoji: Record<string, string> = {
           <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
             <h3 class="text-base font-bold mb-2 text-slate-900">Fragen?</h3>
             <p class="text-sm text-slate-500 leading-relaxed mb-3">Bei Fragen zur LEG erreichst du uns unter:</p>
-            <a href="mailto:info@solarbonstetten.ch" class="text-amber-700 font-semibold text-sm break-all">info@solarbonstetten.ch</a>
+            <a href="mailto:leg@solarbonstetten.ch" class="text-amber-700 font-semibold text-sm break-all">leg@solarbonstetten.ch</a>
           </div>
 
           <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6">
@@ -370,7 +370,7 @@ const statusEmoji: Record<string, string> = {
 
     const subject = `LEG ${art} – ${get('vorname')} ${get('name')}`;
     window.location.href =
-      `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      `mailto:leg@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 
   form.querySelectorAll('input, select, textarea').forEach(el => {
