@@ -163,6 +163,26 @@ const statusEmoji: Record<string, string> = {
               </div>
             </fieldset>
 
+            <!-- Anlageninformation -->
+            <div class="bg-blue-50 border border-blue-200 rounded-2xl px-7 py-6">
+              <p class="text-sm font-bold text-blue-900 mb-1">📄 Anlageninformation als PDF mitsenden</p>
+              <p class="text-sm text-blue-700 leading-relaxed mb-3">
+                Bitte lade deine <strong>Anlageninformation</strong> aus dem EKZ-Kundenportal herunter und hänge
+                sie deiner E-Mail an. Das Dokument enthält Angaben zu Unterwerk und Netzebene, die wir für die
+                LEG-Konfiguration benötigen.
+              </p>
+              <p class="text-sm text-blue-700 leading-relaxed mb-3">
+                <strong>So geht's:</strong> Anmelden auf
+                <a href="https://www.myekz.ch" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-900">myEKZ.ch</a>
+                → Menü «Solar» → «Anlageninformationen» → PDF herunterladen.
+              </p>
+              <a href="https://www.ekz.ch/de/kundenservice/self-service/myEKZ/registrierung-leg.html"
+                 target="_blank" rel="noopener noreferrer"
+                 class="text-sm text-blue-800 font-semibold underline hover:text-blue-900">
+                Schritt-für-Schritt-Anleitung von EKZ →
+              </a>
+            </div>
+
             <!-- PV-Anlage (nur bei Produzent) -->
             <fieldset id="pv-section" class="border border-slate-200 rounded-2xl px-7 py-6" hidden>
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">PV-Anlage</legend>
@@ -236,6 +256,7 @@ const statusEmoji: Record<string, string> = {
                 'Formular ausfüllen',
                 '«Per E-Mail senden» klicken',
                 'E-Mail-Programm öffnet sich',
+                'Anlageninformation-PDF anhängen',
                 'Absenden – fertig!',
               ].map((step, i) => (
                 <li class="flex items-start gap-3 text-sm opacity-95">
@@ -364,6 +385,8 @@ const statusEmoji: Record<string, string> = {
       ...pvZeilen,
       ...(bemerkungen ? ['', 'Bemerkungen', `  ${bemerkungen}`] : []),
       '',
+      '─'.repeat(35),
+      'BITTE NOCH ANHÄNGEN: Anlageninformation-PDF aus dem EKZ-Portal (myEKZ.ch)',
       '─'.repeat(35),
       'Diese Meldung wurde über solarbonstetten.ch ausgefüllt.',
     ].join('\n');
