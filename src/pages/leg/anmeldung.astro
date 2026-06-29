@@ -312,6 +312,10 @@ const statusEmoji: Record<string, string> = {
   const errorBox = document.getElementById('form-error') as HTMLElement;
   const pvSection = document.getElementById('pv-section') as HTMLElement;
 
+  // LEG-Teilnahmebedingungen – bei Dokument-Update hier anpassen
+  const BEDINGUNGEN_VERSION = 'v1.3';
+  const BEDINGUNGEN_STAND = '23.06.2026';
+
   // Show/hide PV section based on role selection
   form.querySelectorAll('input[name="rolle"]').forEach(radio => {
     radio.addEventListener('change', () => {
@@ -384,6 +388,10 @@ const statusEmoji: Record<string, string> = {
       `  Messpunkt:    ${get('messpunkt') || '–'}`,
       ...pvZeilen,
       ...(bemerkungen ? ['', 'Bemerkungen', `  ${bemerkungen}`] : []),
+      '',
+      'Bestätigungen',
+      `  [x] LEG-Teilnahmebedingungen solarbonstetten ${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND}) akzeptiert`,
+      '  [x] Kommunikativer Smart Meter als Voraussetzung zur Kenntnis genommen',
       '',
       '─'.repeat(35),
       'BITTE NOCH ANHÄNGEN: Anlageninformation-PDF aus dem EKZ-Portal (myEKZ.ch)',
