@@ -1,6 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import solarData from '../../public/leg/data/solar_data.json';
+
+// PV-Kennzahlen dynamisch aus dem LEG-Karten-Datensatz (installed = installierte Leistung in kWp)
+const KWH_PRO_KWP = 950; // grober Jahresertrag Schweizer Mittelland (Umrechnung kWp -> kWh)
+const pvAnlagen = solarData.filter(d => d.installed > 0).length;
+const pvLeistungKwp = solarData.reduce((s, d) => s + d.installed, 0);
+const pvProduktionGwh = (pvLeistungKwp * KWH_PRO_KWP / 1_000_000).toFixed(1);
 
 const latestNews = (await getCollection('news'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
@@ -66,14 +73,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="glass-card widget-card">
           <div class="widget-icon">☀️</div>
           <div class="widget-data">
-            <h3 class="text-xl font-bold">1.68 GWh</h3>
+            <h3 class="text-xl font-bold">ca. {pvProduktionGwh} GWh</h3>
             <p class="text-sm text-slate-500">Lokal produzierter Strom im Jahr</p>
           </div>
         </div>
         <div class="glass-card widget-card widget-2">
           <div class="widget-icon">⚡</div>
           <div class="widget-data">
-            <h3 class="text-xl font-bold">116 Anlagen</h3>
+            <h3 class="text-xl font-bold">{pvAnlagen} Anlagen</h3>
             <p class="text-sm text-slate-500">PV-Anlagen in Bonstetten installiert</p>
           </div>
         </div>
