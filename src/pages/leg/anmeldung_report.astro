@@ -507,48 +507,107 @@ async function parsePdfFile(arrayBuffer) {
 // LEG zone detection
 // =====================================================================
 
-// Build a lookup: normalized address → zone name(s)
-const addressToZones = new Map();
+// Addresses are compared structurally (street / house number / suffix) rather
+// than as raw strings, because EKZ and the LEG data spell them differently:
+// EKZ writes "Stallikerstrasse 1 A" or "Stationsstrasse 4.1", the LEG data
+// "stallikerstrasse 1a" resp. "stationsstrasse 4". A character-prefix compare
+// also cannot tell "stallikerstrasse 1a" from "stallikerstrasse 18", which sit
+// in different zones.
+
+function normAddress(s) {
+  return (s || "").toLowerCase().replace(/\s+/g, " ").trim().replace(/[.,\s]+$/, "");
+}
+
+// "Stallikerstr." and "Stallikerstrasse" must land on the same key
+function normStreet(s) {
+  return normAddress(s)
+    .replace(/str\./g, "strasse")
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
+    .replace(/[^a-z0-9]+/g, "")
+    .replace(/str$/, "strasse");
+}
+
+// street, first number, and whatever follows it
+const ADDR_RE = /^(.*?)\s*(\d+)\s*(.*)$/;
+
+function parseAddress(raw) {
+  const m = ADDR_RE.exec(normAddress(raw));
+  if (!m || !m[1].trim()) return null;
+  const street = normStreet(m[1]);
+  const num = parseInt(m[2], 10);
+  const rest = m[3].trim();
+
+  // collective entries: "9-39", "24a-24b", "1a-e"
+  const range = /^([a-z]?)\s*-\s*(\d+)\s*[a-z]?$/.exec(rest);
+  if (range) {
+    return { street, num, suffix: range[1], rangeEnd: parseInt(range[2], 10) };
+  }
+
+  // single trailing letter is a house-number suffix ("1a"); a longer word is
+  // not ("252assek.", building-insurance numbers)
+  const suffix = /^([a-z])(?![a-z])/.exec(rest);
+  return { street, num, suffix: suffix ? suffix[1] : "", rangeEnd: null };
+}
+
+// Build lookups: exact string → zones, and street → house-number entries
+const exactZones = new Map();
+const streetIndex = new Map();
 for (const leg of legsData) {
   for (const addr of leg.members) {
-    const key = addr.toLowerCase().trim();
-    if (!addressToZones.has(key)) addressToZones.set(key, []);
-    addressToZones.get(key).push(leg.name);
+    const key = normAddress(addr);
+    if (!exactZones.has(key)) exactZones.set(key, new Set());
+    exactZones.get(key).add(leg.name);
+
+    const parsed = parseAddress(addr);
+    if (!parsed) continue;
+    if (!streetIndex.has(parsed.street)) streetIndex.set(parsed.street, []);
+    streetIndex.get(parsed.street).push({ ...parsed, zone: leg.name });
   }
 }
 
+const zonesOf = (entries) => [...new Set(entries.map(e => e.zone))];
+
 function detectZone(mpAdresse) {
   if (!mpAdresse || !mpAdresse.strasse) return [];
-  const key = mpAdresse.strasse.toLowerCase().trim();
 
-  // Exact match first
-  const exact = addressToZones.get(key);
-  if (exact && exact.length > 0) return exact;
+  // 1. verbatim match
+  const exact = exactZones.get(normAddress(mpAdresse.strasse));
+  if (exact && exact.size > 0) return [...exact];
 
-  // Longest common prefix match: find all addresses that share a prefix
-  // with the lookup key (e.g. "bahnhofstrasse 1-10" matches "bahnhofstrasse 1",
-  // "bahnhofstrasse 10", etc.). Collect zones from the longest shared prefix.
-  let bestPrefixLen = 0;
-  let prefixZones = new Set();
+  const q = parseAddress(mpAdresse.strasse);
+  if (!q) return [];
 
-  for (const [addr, zones] of addressToZones) {
-    // Find common prefix length
-    const minLen = Math.min(key.length, addr.length);
-    let common = 0;
-    while (common < minLen && key[common] === addr[common]) common++;
-    if (common > bestPrefixLen) {
-      bestPrefixLen = common;
-      prefixZones = new Set(zones);
-    } else if (common === bestPrefixLen && common > 0) {
-      for (const z of zones) prefixZones.add(z);
-    }
+  let candidates = streetIndex.get(q.street);
+  if (!candidates) {
+    // tolerate abbreviated or truncated street names, but only if exactly one
+    // known street is compatible
+    const compatible = [...streetIndex.keys()]
+      .filter(s => s.startsWith(q.street) || q.street.startsWith(s));
+    if (compatible.length !== 1) return [];
+    candidates = streetIndex.get(compatible[0]);
   }
 
-  // Only use prefix match if all matches point to exactly one zone
-  if (bestPrefixLen > 0 && prefixZones.size === 1) {
-    return [...prefixZones];
-  }
+  const houses = candidates.filter(e => e.rangeEnd === null);
 
+  // 2. same house number and same suffix
+  let zones = zonesOf(houses.filter(e => e.num === q.num && e.suffix === q.suffix));
+  if (zones.length) return zones;
+
+  // 3. same house number, suffix ignored ("1 A" → "1", "1a" → "1b")
+  zones = zonesOf(houses.filter(e => e.num === q.num));
+  if (zones.length) return zones;
+
+  // 4. covered by a collective entry ("Friedhofstrasse 9-39"), honouring the
+  //    odd/even side when the range has one
+  zones = zonesOf(candidates.filter(e =>
+    e.rangeEnd !== null &&
+    q.num >= e.num && q.num <= e.rangeEnd &&
+    !(e.num % 2 === e.rangeEnd % 2 && q.num % 2 !== e.num % 2)
+  ));
+  if (zones.length) return zones;
+
+  // Unknown house number: do not guess from the street alone – zone borders
+  // run between house numbers, and the user can pick the zone manually.
   return [];
 }
 
