@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EkzHinweis from '../../components/EkzHinweis.astro';
 import legsData from '../../../public/leg/data/legs.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -17,8 +18,10 @@ const statusEmoji: Record<string, string> = {
   description="Melde dich für eine Lokale Elektrizitätsgemeinschaft (LEG) in Bonstetten an oder ab."
 >
 
+  <EkzHinweis />
+
   <!-- Hero -->
-  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+  <div class="relative overflow-hidden" style="padding: 3.5rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
@@ -27,8 +30,7 @@ const statusEmoji: Record<string, string> = {
       <span class="badge">LEG Bonstetten</span>
       <h1 class="mb-4">An- / Abmeldung LEG</h1>
       <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
-        Fülle das Formular aus – dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung.
-        <a href={`${base}/leg`} class="text-amber-700 hover:underline">Mehr zur LEG erfahren →</a>
+        Fülle das Formular aus – dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung. <a href={`${base}/leg`} class="text-amber-700 hover:underline">Mehr zur LEG erfahren →</a>
       </p>
     </div>
   </div>
@@ -172,9 +174,7 @@ const statusEmoji: Record<string, string> = {
                 LEG-Konfiguration benötigen.
               </p>
               <p class="text-sm text-blue-700 leading-relaxed mb-3">
-                <strong>So geht's:</strong> Anmelden auf
-                <a href="https://www.myekz.ch" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-900">myEKZ.ch</a>
-                → Menü «Solar» → «Anlageninformationen» → PDF herunterladen.
+                <strong>So geht's:</strong> Anmelden auf <a href="https://www.myekz.ch" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-900">myEKZ.ch</a> → Menü «Solar» → «Anlageninformationen» → PDF herunterladen.
               </p>
               <a href="https://www.ekz.ch/de/kundenservice/self-service/myEKZ/registrierung-leg.html"
                  target="_blank" rel="noopener noreferrer"
@@ -212,8 +212,7 @@ const statusEmoji: Record<string, string> = {
                 </label>
                 <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
                   <input type="checkbox" id="bedingungen" name="bedingungen" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
-                  <span>Ich akzeptiere die
-                    <a href={`${base}/dokumente/Teilnahmebedingungen_LEG_solarbonstetten_v1.3.pdf`}
+                  <span>Ich akzeptiere die <a href={`${base}/dokumente/Teilnahmebedingungen_LEG_solarbonstetten_v1.3.pdf`}
                        target="_blank" rel="noopener noreferrer"
                        class="text-amber-700 hover:underline">LEG-Teilnahmebedingungen von solarbonstetten</a>.
                     <span class="text-amber-700">*</span>

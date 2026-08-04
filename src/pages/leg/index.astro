@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EkzHinweis from '../../components/EkzHinweis.astro';
 import legsData from '../../../public/leg/data/legs.json';
 
 const zonen = legsData.map((leg, index) => ({
@@ -23,8 +24,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   description="Solarbonstetten verwaltet die Lokalen Elektrizitätsgemeinschaften in Bonstetten. Strom aus der Nachbarschaft – günstig und lokal."
 >
 
+  <EkzHinweis />
+
   <!-- Hero -->
-  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+  <div class="relative overflow-hidden" style="padding: 3.5rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
