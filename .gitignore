@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# vendored pdf.js build (see scripts/vendor-pdfjs.mjs)
+public/leg/pdfjs/

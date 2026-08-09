@@ -1,8 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import legsData from '../../../public/leg/data/legs.json';
+import pdfjsPkg from 'pdfjs-dist/package.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// pdf.js is served from our own origin (see scripts/vendor-pdfjs.mjs)
+const pdfjsBase = `${base}/leg/pdfjs`;
+const pdfjsVersion = pdfjsPkg.version;
 const zonen = legsData.map(l => ({ name: l.name, status: l.status || 'geplant' }));
 
 const statusEmoji: Record<string, string> = {
@@ -75,27 +79,49 @@ const statusEmoji: Record<string, string> = {
               <input type="file" id="fileInput" accept="application/pdf,.pdf" class="hidden" />
             </div>
 
-            <div id="status" class="mt-3 text-sm text-slate-500"></div>
+            <div id="status" class="mt-3 text-sm text-slate-500 flex items-center gap-2" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="status-text"></span>
+            </div>
             <div id="errorBox" class="mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
           </div>
 
           <!-- Phase 2: Form (hidden until PDF parsed) -->
           <form id="legform" novalidate class="flex flex-col gap-8" hidden>
 
-            <!-- Parsed file info -->
-            <div class="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-5 py-3">
+            <!-- Fehlermeldung, wenn das PDF nicht gelesen werden konnte -->
+            <div id="manual-notice" class="bg-red-50 border border-red-200 rounded-2xl px-5 py-4" hidden>
+              <p class="text-sm text-red-800 leading-relaxed m-0">
+                Leider ist beim Verarbeiten des PDF ein Fehler aufgetreten:
+                <strong id="manual-notice-msg"></strong>
+              </p>
+              <p class="text-sm text-red-800 leading-relaxed mt-2 mb-0">
+                Kein Problem – bitte fülle die Angaben unten selber aus. Dein PDF wird mitgeschickt,
+                wir erfassen die Anmeldung dann von Hand.
+              </p>
+              <details class="mt-3">
+                <summary class="text-xs text-red-700 cursor-pointer">Technische Details (werden mitgeschickt)</summary>
+                <pre id="manual-diagnostics" class="text-xs text-red-700 whitespace-pre-wrap break-words mt-2 mb-0 font-mono"></pre>
+              </details>
+            </div>
+
+            <!-- Datei-Info -->
+            <div id="file-info" class="flex items-center justify-between gap-4 bg-green-50 border border-green-200 rounded-xl px-5 py-3">
               <span id="parsed-filename" class="text-sm text-green-800 font-medium"></span>
-              <button type="button" id="resetBtn" class="text-sm text-green-700 hover:text-green-900 underline">Andere Datei laden</button>
+              <button type="button" id="resetBtn" class="text-sm text-green-700 hover:text-green-900 underline shrink-0">Andere Datei laden</button>
             </div>
 
             <!-- Messpunkt-Auswahl -->
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
-              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Messpunkte auswählen</legend>
-              <p class="text-sm text-slate-500 mt-2 mb-4">
+              <legend id="mp-legend" class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Messpunkte auswählen</legend>
+              <p id="mp-hint" class="text-sm text-slate-500 mt-2 mb-4">
                 Wähle die Messpunkte aus, die du für die LEG anmelden möchtest.
                 Die Rolle (Konsument/Produzent) und LEG-Zone wurden automatisch erkannt.
               </p>
               <div id="mp-list" class="flex flex-col gap-3"></div>
+              <button type="button" id="addMpBtn" class="mt-3 text-sm text-amber-700 hover:text-amber-900 font-semibold" hidden>
+                + Weiteren Messpunkt hinzufügen
+              </button>
             </fieldset>
 
             <!-- Art der Meldung -->
@@ -122,7 +148,7 @@ const statusEmoji: Record<string, string> = {
             <!-- Persönliche Angaben (pre-filled) -->
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
-              <p class="text-xs text-slate-400 mt-2 mb-3">Aus dem PDF übernommen – bitte überprüfen und ggf. korrigieren.</p>
+              <p id="person-hint" class="text-xs text-slate-400 mt-2 mb-3">Aus dem PDF übernommen – bitte überprüfen und ggf. korrigieren.</p>
               <div class="flex flex-col gap-1.5 mt-2">
                 <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-700">*</span></label>
                 <input type="text" id="name" name="name" required autocomplete="name" class="input-field" />
@@ -182,7 +208,7 @@ const statusEmoji: Record<string, string> = {
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bemerkungen</legend>
               <div class="flex flex-col gap-1.5 mt-4">
                 <label for="bemerkungen" class="text-sm font-medium text-slate-900">Fragen oder Anmerkungen (optional)</label>
-                <textarea id="bemerkungen" name="bemerkungen" rows="4" class="input-field resize-y"></textarea>
+                <textarea id="bemerkungen" name="bemerkungen" rows="4" maxlength="4000" class="input-field resize-y"></textarea>
               </div>
             </fieldset>
 
@@ -296,6 +322,10 @@ const statusEmoji: Record<string, string> = {
     border-color: #f59e0b;
     background: #fffbeb;
   }
+  .mp-card.manual-row {
+    cursor: default;
+  }
+  .mp-card.manual-row:hover { border-color: #e2e8f0; }
   .mp-badge {
     display: inline-block;
     font-size: 0.7rem;
@@ -319,6 +349,20 @@ const statusEmoji: Record<string, string> = {
     background: #fef2f2;
     color: #991b1b;
   }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #e2e8f0;
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 3s; }
+  }
+
   .prefilled-hint {
     font-size: 0.7rem;
     color: #94a3b8;
@@ -331,15 +375,20 @@ const statusEmoji: Record<string, string> = {
   }
 </style>
 
-<script type="module" define:vars={{ legsData, statusEmoji }}>
+<script type="module" define:vars={{ legsData, statusEmoji, pdfjsBase, pdfjsVersion }}>
 // =====================================================================
 // PDF parsing logic (from leg_report_extractor prototype)
 // =====================================================================
-import * as pdfjsLib from "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.min.mjs";
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.1.200/build/pdf.worker.min.mjs";
 
-class LegReportParseError extends Error {}
+// A parse error we can show to the user as-is. `retryable` marks failures that
+// look like a broken pdf.js setup (rather than an unexpected document), which
+// is worth a second attempt without the Web Worker.
+class LegReportParseError extends Error {
+  constructor(message, { retryable = false } = {}) {
+    super(message);
+    this.retryable = retryable;
+  }
+}
 
 const TOP_LEVEL_LABELS = [
   "Politische Gemeinde:", "Adresse:", "Verteilnetzbetreiber:",
@@ -476,9 +525,10 @@ function parseLegReportText(fullText) {
   };
 }
 
-async function extractFullText(pdf) {
+async function extractFullText(pdf, onPhase) {
   let fullText = "";
   for (let i = 1; i <= pdf.numPages; i++) {
+    onPhase(`Lese Seite ${i} von ${pdf.numPages} …`);
     const page = await pdf.getPage(i);
     const tc = await page.getTextContent();
     let pageText = "";
@@ -492,14 +542,156 @@ async function extractFullText(pdf) {
   return fullText;
 }
 
-async function parsePdfFile(arrayBuffer) {
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+// =====================================================================
+// pdf.js loading
+//
+// pdf.js is served from our own origin – loading it from a CDN meant that an
+// ad blocker, a corporate proxy or a strict privacy setting could break the
+// upload in ways we cannot reproduce or debug. Everything below additionally
+// assumes that pdf.js may fail or hang anyway, so no step is awaited without a
+// timeout and every failure ends in a message the user can act on.
+// =====================================================================
+
+let pdfjsPromise = null;
+function loadPdfjs() {
+  if (!pdfjsPromise) {
+    pdfjsPromise = import(`${pdfjsBase}/pdf.min.mjs`)
+      .then((lib) => {
+        lib.GlobalWorkerOptions.workerSrc = `${pdfjsBase}/pdf.worker.min.mjs`;
+        return lib;
+      })
+      .catch((e) => {
+        pdfjsPromise = null;
+        throw new LegReportParseError(
+          `Die PDF-Bibliothek konnte nicht geladen werden (${e.message || e}).`);
+      });
+  }
+  return pdfjsPromise;
+}
+
+// Runs the pdf.js worker code on the main thread instead of in a Web Worker.
+// Some browsers and privacy setups refuse to start the module worker, and
+// pdf.js then simply never settles its promise.
+let mainThreadWorkerPromise = null;
+function useMainThreadWorker() {
+  if (!mainThreadWorkerPromise) {
+    mainThreadWorkerPromise = import(`${pdfjsBase}/pdf.worker.min.mjs`)
+      .then((mod) => { globalThis.pdfjsWorker = mod; })
+      .catch((e) => {
+        mainThreadWorkerPromise = null;
+        throw new LegReportParseError(
+          `Die PDF-Bibliothek konnte nicht geladen werden (${e.message || e}).`);
+      });
+  }
+  return mainThreadWorkerPromise;
+}
+
+// Recent JS features pdf.js relies on. The "legacy" build we serve polyfills
+// them, so this is checked *after* loading pdf.js – what matters is the
+// environment pdf.js actually ends up running in, not the bare browser.
+// Without the polyfills these blow up deep inside pdf.js, where the failure
+// never reaches our promise and the upload just appears to hang.
+const REQUIRED_FEATURES = {
+  "Promise.withResolvers": () => typeof Promise.withResolvers === "function",
+  "Map.getOrInsertComputed": () => typeof Map.prototype.getOrInsertComputed === "function",
+  "Object.hasOwn": () => typeof Object.hasOwn === "function",
+  "structuredClone": () => typeof structuredClone === "function",
+  "ReadableStream": () => typeof ReadableStream === "function",
+};
+
+// null = not checked yet
+let missingFeatures = null;
+
+function checkFeatures() {
+  missingFeatures = Object.keys(REQUIRED_FEATURES).filter((name) => {
+    try { return !REQUIRED_FEATURES[name](); } catch { return true; }
+  });
+  return missingFeatures;
+}
+
+// Safari < 14 has no File.arrayBuffer()
+function readFileBytes(file) {
+  if (typeof file.arrayBuffer === "function") return file.arrayBuffer();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("FileReader fehlgeschlagen"));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function withTimeout(promise, ms, describePhase) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new LegReportParseError(
+      `Zeitüberschreitung nach ${Math.round(ms / 1000)} Sekunden (${describePhase()}).`,
+      { retryable: true })), ms);
+  });
+  // A failure arriving after the timeout is still worth recording, but not
+  // worth an unhandled promise rejection.
+  promise.catch(e => noteError("verspätet", e?.message || e));
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function parsePdfFile(file, onPhase) {
+  const pdfjsLib = await loadPdfjs();
+
+  const missing = checkFeatures();
+  if (missing.length) {
+    throw new LegReportParseError(
+      `Dein Browser unterstützt ${missing.length === 1 ? "eine Funktion" : "einige Funktionen"} nicht, `
+      + `die zum Lesen des PDF nötig ${missing.length === 1 ? "ist" : "sind"} (${missing.join(", ")}). `
+      + "Mit einem aktuellen Browser würde es automatisch klappen.");
+  }
+
+  onPhase("Öffne PDF …");
+  // pdf.js detaches the buffer it is given, so read the file per attempt.
+  const loadingTask = pdfjsLib.getDocument({
+    data: await readFileBytes(file),
+    isEvalSupported: false,
+  });
   let pdf;
-  try { pdf = await loadingTask.promise; }
-  catch (e) { throw new LegReportParseError(`Fehler beim Öffnen des PDFs: ${e.message || e}`); }
   try {
-    return parseLegReportText(await extractFullText(pdf));
-  } finally { await loadingTask.destroy(); }
+    pdf = await loadingTask.promise;
+  } catch (e) {
+    // Password protected or damaged files are the user's problem to fix;
+    // anything else may well be a broken pdf.js setup.
+    const retryable = !/password/i.test(e?.name || "");
+    throw new LegReportParseError(`Fehler beim Öffnen des PDFs: ${e.message || e}`, { retryable });
+  }
+  try {
+    return parseLegReportText(await extractFullText(pdf, onPhase));
+  } finally {
+    // Deliberately not awaited: if pdf.js is wedged, so is destroy().
+    Promise.resolve(loadingTask.destroy()).catch(() => {});
+  }
+}
+
+const PARSE_TIMEOUT_MS = 20000;
+const FALLBACK_TIMEOUT_MS = 60000;
+
+// One attempt with the Web Worker, one on the main thread if that looked like
+// an infrastructure failure rather than a problem with the document.
+async function parsePdfFileWithFallback(file, onPhase) {
+  let phase = "Start";
+  const trackPhase = (msg) => { phase = msg; onPhase(msg); };
+
+  // No Web Workers at all – don't bother waiting for that attempt to fail
+  if (typeof Worker === "undefined" && !globalThis.pdfjsWorker) {
+    trackPhase("Verarbeite ohne Web Worker …");
+    await useMainThreadWorker();
+    return await withTimeout(parsePdfFile(file, trackPhase), FALLBACK_TIMEOUT_MS, () => phase);
+  }
+
+  try {
+    return await withTimeout(parsePdfFile(file, trackPhase), PARSE_TIMEOUT_MS, () => phase);
+  } catch (e) {
+    if (globalThis.pdfjsWorker || !(e instanceof LegReportParseError) || !e.retryable) throw e;
+    noteError("1. Versuch", e.message);
+    trackPhase("Zweiter Versuch ohne Web Worker …");
+    await useMainThreadWorker();
+    return await withTimeout(parsePdfFile(file, trackPhase), FALLBACK_TIMEOUT_MS, () => phase);
+  }
 }
 
 // =====================================================================
@@ -627,8 +819,17 @@ const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 const chooseBtn = document.getElementById("chooseBtn");
 const statusEl = document.getElementById("status");
+const statusText = document.getElementById("status-text");
 const errorBox = document.getElementById("errorBox");
+const manualNotice = document.getElementById("manual-notice");
+const manualNoticeMsg = document.getElementById("manual-notice-msg");
+const manualDiagnostics = document.getElementById("manual-diagnostics");
+const fileInfo = document.getElementById("file-info");
 const mpList = document.getElementById("mp-list");
+const mpLegend = document.getElementById("mp-legend");
+const mpHint = document.getElementById("mp-hint");
+const addMpBtn = document.getElementById("addMpBtn");
+const personHint = document.getElementById("person-hint");
 const parsedFilename = document.getElementById("parsed-filename");
 const resetBtn = document.getElementById("resetBtn");
 const formError = document.getElementById("form-error");
@@ -642,25 +843,76 @@ const BEDINGUNGEN_STAND = "23.06.2026";
 
 const API_URL = "https://api-test.solarbonstetten.ch/submit";
 
+// Must match the limit enforced by the API
+const MAX_PDF_BYTES = 1024 * 1024;
+const MESSPUNKT_ID_RE = /^CH\d{10,33}$/;
+const MAX_BEMERKUNGEN = 5000;
+
+const FILE_INFO_CLASSES = "flex items-center justify-between gap-4 rounded-xl px-5 py-3 border";
+
+// "parsed": data comes from the PDF · "manual": the user types it in
+let mode = "parsed";
 let parsedReport = null;
 let pdfFile = null;
 let selectedMps = new Set();
-// Per-MP zone overrides (index → zone name)
-let mpZoneOverrides = {};
+// { message, phase } when the PDF could not be read
+let parseFailure = null;
+let lastPhase = "";
 
-function setStatus(msg) { statusEl.textContent = msg || ""; }
+// Failures we do not catch ourselves (worker crashes, blocked scripts) so that
+// they end up in the diagnostics attached to a manual submission.
+const collectedErrors = [];
+function noteError(kind, detail) {
+  const entry = `${kind}: ${String(detail).slice(0, 300)}`;
+  if (!collectedErrors.includes(entry)) collectedErrors.push(entry);
+  if (collectedErrors.length > 6) collectedErrors.shift();
+}
+window.addEventListener("error", (e) => {
+  noteError("window.error", e.message || `Ressource konnte nicht geladen werden: ${e.filename || "?"}`);
+});
+window.addEventListener("unhandledrejection", (e) => {
+  noteError("unhandledrejection", e.reason?.message || e.reason);
+});
+
+function setStatus(msg) {
+  statusText.textContent = msg || "";
+  statusEl.hidden = !msg;
+}
 function showError(msg) { errorBox.textContent = msg; errorBox.hidden = false; }
 function clearError() { errorBox.hidden = true; errorBox.textContent = ""; }
+
+function buildDiagnostics() {
+  const lines = [
+    `Datei: ${pdfFile?.name || "?"} (${pdfFile?.size ?? "?"} Bytes, Typ ${pdfFile?.type || "unbekannt"})`,
+    `Fehler: ${parseFailure?.message || "?"}`,
+    `Phase: ${parseFailure?.phase || "–"}`,
+    `pdf.js: ${pdfjsVersion}${globalThis.pdfjsWorker ? " (ohne Web Worker)" : ""}`,
+    `Fehlende Funktionen: ${missingFeatures === null
+      ? "nicht geprüft"
+      : (missingFeatures.length ? missingFeatures.join(", ") : "keine")}`,
+    `Web Worker: ${typeof Worker === "undefined" ? "nicht verfügbar" : "verfügbar"}`,
+    `Browser: ${navigator.userAgent}`,
+  ];
+  for (const err of collectedErrors) lines.push(err);
+  return lines.join("\n");
+}
 
 function escHtml(s) {
   return String(s).replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
 
+function zoneOptionsHtml(selectedZone) {
+  return legsData.map(l => {
+    const sel = l.name === selectedZone ? "selected" : "";
+    const emoji = statusEmoji[l.status || "geplant"] || "";
+    return `<option value="${escHtml(l.name)}" ${sel}>${emoji} ${escHtml(l.name)}</option>`;
+  }).join("");
+}
+
 function renderMpCards(report) {
   mpList.innerHTML = "";
   selectedMps.clear();
-  mpZoneOverrides = {};
 
   report.measuring_points.forEach((mp, i) => {
     selectedMps.add(i);
@@ -689,11 +941,7 @@ function renderMpCards(report) {
     }
 
     // Zone select dropdown (for manual override or when ambiguous)
-    const zoneOptions = legsData.map(l => {
-      const sel = l.name === zoneMatch ? "selected" : "";
-      const emoji = statusEmoji[l.status || "geplant"] || "";
-      return `<option value="${escHtml(l.name)}" ${sel}>${emoji} ${escHtml(l.name)}</option>`;
-    }).join("");
+    const zoneOptions = zoneOptionsHtml(zoneMatch);
 
     card.innerHTML = `
       <div class="flex items-start gap-3">
@@ -737,7 +985,6 @@ function renderMpCards(report) {
     const zoneSelect = card.querySelector(".mp-zone-select");
     const zoneBadge = card.querySelector(".mp-zone-badge");
     zoneSelect.addEventListener("change", () => {
-      mpZoneOverrides[i] = zoneSelect.value;
       if (zoneSelect.value) {
         zoneBadge.textContent = zoneSelect.value;
         zoneBadge.className = "mp-badge mp-badge-zone mp-zone-badge";
@@ -764,27 +1011,130 @@ function prefillForm(report) {
   if (c.ort) ortField.value = c.ort;
 }
 
-function showForm(report, fileName) {
-  parsedReport = report;
+// ---------------------------------------------------------------------
+// Manual entry, for when the PDF could not be read
+// ---------------------------------------------------------------------
+
+function addManualRow() {
+  const row = document.createElement("div");
+  row.className = "mp-card manual-row";
+  row.innerHTML = `
+    <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Rolle <span class="text-amber-700">*</span></label>
+        <select class="input-field mp-role">
+          <option value="Konsument">Konsument – ich beziehe Strom</option>
+          <option value="Produzent">Produzent – ich erzeuge Solarstrom</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">LEG-Zone <span class="text-amber-700">*</span></label>
+        <select class="input-field mp-zone">
+          <option value="" selected>Bitte wählen…</option>
+          ${zoneOptionsHtml(null)}
+          <option value="Noch nicht sicher">Noch nicht sicher</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Messpunkt-ID (optional)</label>
+        <input type="text" class="input-field mp-id" placeholder="CH1003601234567890123456789012345" autocomplete="off" spellcheck="false" />
+        <span class="text-xs text-slate-400">Beginnt mit «CH», danach nur Ziffern. Steht im PDF und auf der EKZ-Rechnung – wenn du sie nicht findest, lass das Feld leer.</span>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Adresse des Messpunkts (optional)</label>
+        <input type="text" class="input-field mp-addr" placeholder="Nur falls abweichend von deiner Adresse" autocomplete="off" />
+      </div>
+    </div>
+    <div class="text-right mt-3">
+      <button type="button" class="mp-remove text-xs text-slate-400 hover:text-red-600 underline">Messpunkt entfernen</button>
+    </div>
+  `;
+  row.querySelector(".mp-remove").addEventListener("click", () => {
+    row.remove();
+    updateManualRows();
+  });
+  row.querySelectorAll("input, select").forEach(el =>
+    el.addEventListener("input", () => el.classList.remove("invalid")));
+  mpList.appendChild(row);
+  updateManualRows();
+  return row;
+}
+
+function manualRows() {
+  return [...mpList.querySelectorAll(".manual-row")];
+}
+
+// The last remaining row cannot be removed
+function updateManualRows() {
+  const rows = manualRows();
+  rows.forEach(row => { row.querySelector(".mp-remove").hidden = rows.length < 2; });
+}
+
+// ---------------------------------------------------------------------
+
+function showForm() {
   uploadPhase.hidden = true;
   form.hidden = false;
   resultPhase.hidden = true;
-  parsedFilename.textContent = `${fileName} — ${report.measuring_points.length} Messpunkt(e) erkannt`;
-  renderMpCards(report);
-  prefillForm(report);
   form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function showParsedForm(report, file) {
+  mode = "parsed";
+  parsedReport = report;
+  parseFailure = null;
+  manualNotice.hidden = true;
+  addMpBtn.hidden = true;
+  fileInfo.className = `${FILE_INFO_CLASSES} bg-green-50 border-green-200`;
+  parsedFilename.className = "text-sm text-green-800 font-medium";
+  resetBtn.className = "text-sm text-green-700 hover:text-green-900 underline shrink-0";
+  parsedFilename.textContent = `${file.name} — ${report.measuring_points.length} Messpunkt(e) erkannt`;
+  mpLegend.textContent = "Messpunkte auswählen";
+  mpHint.textContent = "Wähle die Messpunkte aus, die du für die LEG anmelden möchtest. "
+    + "Die Rolle (Konsument/Produzent) und LEG-Zone wurden automatisch erkannt.";
+  personHint.textContent = "Aus dem PDF übernommen – bitte überprüfen und ggf. korrigieren.";
+  renderMpCards(report);
+  prefillForm(report);
+  showForm();
+}
+
+function showManualForm(file, message) {
+  mode = "manual";
+  parsedReport = null;
+  selectedMps.clear();
+  parseFailure = { message, phase: lastPhase };
+  manualNoticeMsg.textContent = message;
+  manualDiagnostics.textContent = buildDiagnostics();
+  manualNotice.hidden = false;
+  addMpBtn.hidden = false;
+  fileInfo.className = `${FILE_INFO_CLASSES} bg-slate-50 border-slate-200`;
+  parsedFilename.className = "text-sm text-slate-600 font-medium";
+  resetBtn.className = "text-sm text-slate-600 hover:text-slate-900 underline shrink-0";
+  parsedFilename.textContent = `${file.name} — wird unverändert mitgeschickt`;
+  mpLegend.textContent = "Messpunkte erfassen";
+  mpHint.textContent = "Trage die Messpunkte ein, die du für die LEG anmelden möchtest. "
+    + "Bei mehreren Messpunkten (z. B. Bezug und Solaranlage) füge weitere Zeilen hinzu.";
+  personHint.textContent = "Bitte ausfüllen.";
+  mpList.innerHTML = "";
+  addManualRow();
+  showForm();
+}
+
 function resetUI() {
+  mode = "parsed";
   parsedReport = null;
   pdfFile = null;
+  parseFailure = null;
+  lastPhase = "";
   selectedMps.clear();
-  mpZoneOverrides = {};
   uploadPhase.hidden = false;
   form.hidden = true;
   form.reset();
   resultPhase.hidden = true;
+  manualNotice.hidden = true;
+  addMpBtn.hidden = true;
   mpList.innerHTML = "";
+  formError.hidden = true;
   clearError();
   setStatus("");
   fileInput.value = "";
@@ -796,20 +1146,39 @@ async function handleFile(file) {
     showError("Bitte eine PDF-Datei auswählen.");
     return;
   }
+  if (file.size === 0) {
+    showError("Die Datei ist leer. Bitte lade das PDF nochmals aus dem myEKZ-Portal herunter.");
+    return;
+  }
+  if (file.size > MAX_PDF_BYTES) {
+    showError(`Die Datei ist ${(file.size / 1024 / 1024).toFixed(1)} MB gross – wir können höchstens 1 MB `
+      + "entgegennehmen. Bitte schicke sie uns direkt an leg@solarbonstetten.ch.");
+    return;
+  }
+
+  pdfFile = file;
+  lastPhase = "Start";
   setStatus(`Verarbeite «${file.name}» …`);
+
   try {
-    const report = await parsePdfFile(await file.arrayBuffer());
+    const report = await parsePdfFileWithFallback(file, (phase) => {
+      lastPhase = phase;
+      setStatus(`«${file.name}» – ${phase}`);
+    });
     if (report.measuring_points.length === 0) {
-      showError("Es konnten keine Messpunkte im PDF gefunden werden.");
-      setStatus("");
-      return;
+      throw new LegReportParseError("Es konnten keine Messpunkte im PDF gefunden werden.");
     }
     setStatus("");
-    pdfFile = file;
-    showForm(report, file.name);
+    showParsedForm(report, file);
   } catch (e) {
+    // Not a dead end: the user can fill in the details by hand, and we get the
+    // PDF plus the diagnostics to enter the rest ourselves.
     setStatus("");
-    showError(e instanceof LegReportParseError ? e.message : `Fehler: ${e.message || e}`);
+    const message = e instanceof LegReportParseError
+      ? e.message
+      : `Unerwarteter Fehler: ${e?.message || e}`;
+    noteError("Abbruch", `${e?.name || "Error"} – ${message}`);
+    showManualForm(file, message);
   }
 }
 
@@ -828,6 +1197,9 @@ dropzone.addEventListener("drop", (e) => {
 });
 
 resetBtn.addEventListener("click", resetUI);
+addMpBtn.addEventListener("click", () => {
+  addManualRow().querySelector(".mp-role").focus();
+});
 backToFormBtn.addEventListener("click", () => {
   resultPhase.hidden = true;
   resultSuccess.hidden = true;
@@ -847,29 +1219,76 @@ form.addEventListener("submit", async (e) => {
   const checked = (id) => form.elements.namedItem(id)?.checked ?? false;
 
   // Validate
-  let errors = [];
-  if (selectedMps.size === 0) errors.push("Bitte wähle mindestens einen Messpunkt aus.");
+  const errors = [];
   if (!get("name")) errors.push("Name ist erforderlich.");
   if (!get("strasse")) errors.push("Strasse ist erforderlich.");
   if (!get("plz")) errors.push("PLZ ist erforderlich.");
   if (!get("ort")) errors.push("Ort ist erforderlich.");
   if (!get("email")) errors.push("E-Mail ist erforderlich.");
+  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(get("email"))) errors.push("Bitte gib eine gültige E-Mail-Adresse an.");
   if (!checked("smartmeter")) errors.push("Bitte bestätige die Smart-Meter-Voraussetzung.");
   if (!checked("bedingungen")) errors.push("Bitte akzeptiere die Teilnahmebedingungen.");
 
-  // Check zone selection for all selected MPs
-  for (const idx of selectedMps) {
-    const zoneSelect = mpList.querySelector(`.mp-zone-select[data-index="${idx}"]`);
-    if (!zoneSelect?.value) {
-      errors.push(`Bitte wähle eine LEG-Zone für Messpunkt ${idx + 1}.`);
+  // Collect the messpunkte – either from the PDF or from the manual rows
+  const messpunkte = [];
+  if (mode === "parsed") {
+    if (selectedMps.size === 0) errors.push("Bitte wähle mindestens einen Messpunkt aus.");
+    for (const idx of [...selectedMps].sort((a, b) => a - b)) {
+      const zoneSelect = mpList.querySelector(`.mp-zone-select[data-index="${idx}"]`);
+      if (!zoneSelect?.value) {
+        errors.push(`Bitte wähle eine LEG-Zone für Messpunkt ${idx + 1}.`);
+        continue;
+      }
+      const mp = parsedReport.measuring_points[idx];
+      messpunkte.push({
+        messpunkt_id: mp.messpunkt_id,
+        rolle: inferRole(mp),
+        leg_zone: zoneSelect.value,
+        adresse: mp.adresse,
+        netzebene: mp.netzebene,
+        anschlussleistung: mp.anschlussleistung,
+        verteilnetzbetreiber: mp.verteilnetzbetreiber,
+        unterwerk: mp.unterwerk,
+        trafostation: mp.trafostation,
+        politische_gemeinde: mp.politische_gemeinde,
+      });
     }
-  }
+  } else {
+    manualRows().forEach((row, i) => {
+      const zoneEl = row.querySelector(".mp-zone");
+      const idEl = row.querySelector(".mp-id");
+      const strasse = row.querySelector(".mp-addr").value.trim();
+      // Spaces are part of how the ID is printed, not part of the ID
+      const messpunktId = idEl.value.replace(/\s+/g, "").toUpperCase();
+      let rowOk = true;
 
-  if (errors.length) {
-    formError.innerHTML = errors.map(e => escHtml(e)).join("<br>");
-    formError.hidden = false;
-    formError.scrollIntoView({ behavior: "smooth", block: "center" });
-    return;
+      if (!zoneEl.value) {
+        errors.push(`Messpunkt ${i + 1}: Bitte wähle eine LEG-Zone.`);
+        zoneEl.classList.add("invalid");
+        rowOk = false;
+      }
+      if (messpunktId && !MESSPUNKT_ID_RE.test(messpunktId)) {
+        errors.push(`Messpunkt ${i + 1}: Die Messpunkt-ID muss mit «CH» beginnen, gefolgt von 10–33 Ziffern. `
+          + "Lass das Feld leer, wenn du sie nicht findest.");
+        idEl.classList.add("invalid");
+        rowOk = false;
+      }
+      if (!rowOk) return;
+
+      messpunkte.push({
+        messpunkt_id: messpunktId || null,
+        rolle: row.querySelector(".mp-role").value,
+        leg_zone: zoneEl.value,
+        adresse: {
+          strasse: strasse || get("strasse"),
+          plz: get("plz"),
+          ort: get("ort"),
+        },
+      });
+    });
+    if (messpunkte.length === 0 && errors.length === 0) {
+      errors.push("Bitte erfasse mindestens einen Messpunkt.");
+    }
   }
 
   // Mark invalid fields
@@ -878,24 +1297,22 @@ form.addEventListener("submit", async (e) => {
     if (el) el.classList.toggle("invalid", !el.value.trim());
   });
 
-  // Build payload
-  const messpunkte = [];
-  for (const idx of selectedMps) {
-    const mp = parsedReport.measuring_points[idx];
-    const zoneSelect = mpList.querySelector(`.mp-zone-select[data-index="${idx}"]`);
-    messpunkte.push({
-      messpunkt_id: mp.messpunkt_id,
-      rolle: inferRole(mp),
-      leg_zone: zoneSelect.value,
-      adresse: mp.adresse,
-      netzebene: mp.netzebene,
-      anschlussleistung: mp.anschlussleistung,
-      verteilnetzbetreiber: mp.verteilnetzbetreiber,
-      unterwerk: mp.unterwerk,
-      trafostation: mp.trafostation,
-      politische_gemeinde: mp.politische_gemeinde,
-    });
+  if (errors.length) {
+    formError.innerHTML = errors.map(e => escHtml(e)).join("<br>");
+    formError.hidden = false;
+    formError.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
   }
+
+  // Manual submissions carry the diagnostics along so we can chase down the
+  // parser failure afterwards.
+  let bemerkungen = get("bemerkungen");
+  if (mode === "manual") {
+    const note = "--- Automatisch angehängt: PDF konnte im Browser nicht gelesen werden ---\n"
+      + buildDiagnostics();
+    bemerkungen = bemerkungen ? `${bemerkungen}\n\n${note}` : note;
+  }
+  if (bemerkungen.length > MAX_BEMERKUNGEN) bemerkungen = `${bemerkungen.slice(0, MAX_BEMERKUNGEN - 1)}…`;
 
   const payload = {
     art: (form.elements.namedItem("art")).value,
@@ -914,7 +1331,7 @@ form.addEventListener("submit", async (e) => {
       smart_meter: true,
       teilnahmebedingungen: `${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND})`,
     },
-    bemerkungen: get("bemerkungen") || null,
+    bemerkungen: bemerkungen || null,
   };
 
   // Disable submit button while sending
