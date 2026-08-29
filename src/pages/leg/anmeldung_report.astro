@@ -31,7 +31,8 @@ const statusEmoji: Record<string, string> = {
       <span class="badge">LEG Bonstetten</span>
       <h1 class="mb-4">Anmeldung LEG</h1>
       <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
-        Lade dein <a href="https://my.ekz.ch/leg-anlageninformationen/" target="_blank" rel="noopener noreferrer" class="text-amber-700 hover:underline">Anlageninformations-PDF aus dem myEKZ-Portal</a> hoch – wir füllen das Formular automatisch für dich aus.
+        Für die Anmeldung benötigen wir einige Informationen. Am Einfachsten geht dies mit der PDF-Datei
+        <a href="https://my.ekz.ch/leg-anlageninformationen/" target="_blank" rel="noopener noreferrer" class="text-amber-700 hover:underline">Anlageninformationen vom EKZ</a>.
       </p>
     </div>
   </div>
@@ -73,9 +74,11 @@ const statusEmoji: Record<string, string> = {
             <!-- Dropzone -->
             <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center bg-white cursor-pointer transition-all hover:border-amber-400">
               <div class="text-4xl mb-3">📄</div>
-              <p class="font-semibold text-slate-900 mb-1">PDF hierher ziehen oder klicken</p>
-              <p class="text-sm text-slate-400 mb-4">Die Verarbeitung erfolgt vollständig im Browser – es wird nichts hochgeladen.</p>
-              <button type="button" id="chooseBtn" class="btn btn-primary">Datei auswählen</button>
+              <p class="font-semibold text-slate-900 mb-4">PDF hierher ziehen oder auswählen:</p>
+              <div class="flex flex-wrap gap-3 justify-center">
+                <button type="button" id="chooseBtn" class="btn btn-primary">Datei auswählen</button>
+                <button type="button" id="noPdfBtn" class="btn btn-secondary">Ich finde die PDF Datei nicht</button>
+              </div>
               <input type="file" id="fileInput" accept="application/pdf,.pdf" class="hidden" />
             </div>
 
@@ -85,6 +88,130 @@ const statusEmoji: Record<string, string> = {
             </div>
             <div id="errorBox" class="mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
           </div>
+
+          <!-- Phase 1b: Manuelle Erfassung, für alle die das PDF nicht finden -->
+          <form id="manualform" novalidate class="flex flex-col gap-8" hidden>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+              <p class="text-sm text-amber-900 leading-relaxed m-0">
+                Kein Problem – wir fragen die nötigen Angaben hier direkt ab.
+                Die restlichen Daten holen wir dann selber beim EKZ oder wir melden uns bei dir.
+              </p>
+              <button type="button" id="backToPdfBtn" class="btn btn-secondary mt-3">
+                Ich habe die PDF-Datei doch gefunden
+              </button>
+            </div>
+
+            <!-- Persönliche Angaben -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Deine Angaben</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-name" class="text-sm font-medium text-slate-900">Vor- und Nachname <span class="text-amber-700">*</span></label>
+                <input type="text" id="m-name" name="m-name" required autocomplete="name" class="input-field" />
+              </div>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-strasse" class="text-sm font-medium text-slate-900">Strasse und Hausnummer <span class="text-amber-700">*</span></label>
+                <input type="text" id="m-strasse" name="m-strasse" required autocomplete="street-address" class="input-field" />
+              </div>
+              <div class="grid grid-cols-[100px_1fr] gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-700">*</span></label>
+                  <input type="text" id="m-plz" name="m-plz" required autocomplete="postal-code" maxlength="4" inputmode="numeric" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-700">*</span></label>
+                  <input type="text" id="m-ort" name="m-ort" required autocomplete="address-level2" class="input-field" />
+                </div>
+              </div>
+
+              <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600 mt-5">
+                <input type="checkbox" id="m-abweichend" class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                <span>Das Gebäude, das ich für die LEG anmelden möchte, liegt an einer anderen Adresse.</span>
+              </label>
+
+              <div id="m-abweichend-wrap" class="flex flex-col gap-1.5 mt-4" hidden>
+                <label for="m-leg-strasse" class="text-sm font-medium text-slate-900">
+                  Strasse und Hausnummer des Gebäudes <span class="text-amber-700">*</span>
+                </label>
+                <input type="text" id="m-leg-strasse" name="m-leg-strasse" autocomplete="off" class="input-field" />
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Wir betreiben LEGs nur in 8906 Bonstetten – hier genügt darum Strasse und Hausnummer.
+                </p>
+              </div>
+            </fieldset>
+
+            <!-- LEG-Zone -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">LEG-Zone</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-zone" class="text-sm font-medium text-slate-900">
+                  In welcher Zone liegt dein Gebäude? <span class="text-amber-700">*</span>
+                </label>
+                <select id="m-zone" name="m-zone" required class="input-field">
+                  <option value="" selected>Bitte wählen…</option>
+                  {zonen.map((z, i) => <option value={z.name}>{statusEmoji[z.status]} {i + 1}. {z.name}</option>)}
+                  <option value="Noch nicht sicher">Noch nicht sicher</option>
+                </select>
+                <p id="m-zone-hint" class="text-xs text-slate-400 leading-relaxed"></p>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  ⚪ Geplant · 🟡 In Erfassung · 🔵 Angemeldet bei EKZ · 🟢 Aktiv ·
+                  <a href={`${base}/leg`} target="_blank" class="text-amber-700 hover:underline">Zonen ansehen →</a>
+                </p>
+              </div>
+            </fieldset>
+
+            <!-- Kontakt -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Kontakt</legend>
+              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-700">*</span></label>
+                  <input type="email" id="m-email" name="m-email" required autocomplete="email" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-telefon" class="text-sm font-medium text-slate-900">Telefon</label>
+                  <input type="tel" id="m-telefon" name="m-telefon" autocomplete="tel" class="input-field" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Bestätigungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bestätigungen</legend>
+              <div class="flex flex-col gap-3 mt-4">
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="m-smartmeter" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich nehme zur Kenntnis, dass ein <strong>kommunikativer Smart Meter</strong> Voraussetzung ist. Falls noch nicht vorhanden, wird er von EKZ installiert. <span class="text-amber-700">*</span></span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="m-bedingungen" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich akzeptiere die <a href={`${base}/dokumente/Teilnahmebedingungen_LEG_solarbonstetten_v1.3.pdf`}
+                       target="_blank" rel="noopener noreferrer"
+                       class="text-amber-700 hover:underline">LEG-Teilnahmebedingungen von solarbonstetten</a>.
+                    <span class="text-amber-700">*</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Bemerkungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bemerkungen</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-bemerkungen" class="text-sm font-medium text-slate-900">Fragen oder Anmerkungen (optional)</label>
+                <textarea id="m-bemerkungen" name="m-bemerkungen" rows="4" maxlength="4000" class="input-field resize-y"></textarea>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Zum Beispiel, was beim Suchen der PDF-Datei nicht geklappt hat – so können wir es beim nächsten Mal besser machen.
+                </p>
+              </div>
+            </fieldset>
+
+            <div id="manual-form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
+
+            <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
+              Anmeldung absenden
+            </button>
+          </form>
 
           <!-- Phase 2: Form (hidden until PDF parsed) -->
           <form id="legform" novalidate class="flex flex-col gap-8" hidden>
@@ -818,6 +945,7 @@ const resultPhase = document.getElementById("result-phase");
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("fileInput");
 const chooseBtn = document.getElementById("chooseBtn");
+const noPdfBtn = document.getElementById("noPdfBtn");
 const statusEl = document.getElementById("status");
 const statusText = document.getElementById("status-text");
 const errorBox = document.getElementById("errorBox");
@@ -837,6 +965,18 @@ const resultSuccess = document.getElementById("result-success");
 const resultError = document.getElementById("result-error");
 const resultErrorMsg = document.getElementById("result-error-msg");
 const backToFormBtn = document.getElementById("backToFormBtn");
+
+const manualForm = document.getElementById("manualform");
+const backToPdfBtn = document.getElementById("backToPdfBtn");
+const mAbweichend = document.getElementById("m-abweichend");
+const mAbweichendWrap = document.getElementById("m-abweichend-wrap");
+const mLegStrasse = document.getElementById("m-leg-strasse");
+const mStrasse = document.getElementById("m-strasse");
+const mPlz = document.getElementById("m-plz");
+const mOrt = document.getElementById("m-ort");
+const mZone = document.getElementById("m-zone");
+const mZoneHint = document.getElementById("m-zone-hint");
+const manualFormError = document.getElementById("manual-form-error");
 
 const BEDINGUNGEN_VERSION = "v1.3";
 const BEDINGUNGEN_STAND = "23.06.2026";
@@ -1184,7 +1324,7 @@ async function handleFile(file) {
 
 // Dropzone events
 chooseBtn.addEventListener("click", (e) => { e.stopPropagation(); fileInput.click(); });
-dropzone.addEventListener("click", (e) => { if (e.target !== chooseBtn) fileInput.click(); });
+dropzone.addEventListener("click", (e) => { if (!e.target.closest("button")) fileInput.click(); });
 fileInput.addEventListener("change", () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
 
 ["dragenter", "dragover"].forEach(evt =>
@@ -1204,8 +1344,58 @@ backToFormBtn.addEventListener("click", () => {
   resultPhase.hidden = true;
   resultSuccess.hidden = true;
   resultError.hidden = true;
-  form.hidden = false;
+  lastSubmittedForm.hidden = false;
 });
+
+// The form to return to from the error screen
+let lastSubmittedForm = form;
+
+// Sends the payload and switches to the result screen. `file` is optional –
+// the manual form has no PDF to send along.
+async function sendSubmission(payload, file, sourceForm) {
+  lastSubmittedForm = sourceForm;
+  const submitBtn = sourceForm.querySelector('button[type="submit"]');
+  const submitLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Wird gesendet\u2026";
+
+  try {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(payload));
+    if (file) formData.append("pdf", file);
+
+    const res = await fetch(API_URL, { method: "POST", body: formData });
+
+    sourceForm.hidden = true;
+    resultPhase.hidden = false;
+
+    if (res.ok) {
+      resultSuccess.hidden = false;
+      resultError.hidden = true;
+    } else if (res.status === 429) {
+      resultSuccess.hidden = true;
+      resultError.hidden = false;
+      resultErrorMsg.textContent =
+        "Zu viele Anfragen. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
+    } else {
+      resultSuccess.hidden = true;
+      resultError.hidden = false;
+      resultErrorMsg.textContent =
+        "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
+    }
+  } catch (err) {
+    sourceForm.hidden = true;
+    resultPhase.hidden = false;
+    resultSuccess.hidden = true;
+    resultError.hidden = false;
+    resultErrorMsg.textContent =
+      "Verbindungsfehler. Bitte prüfe deine Internetverbindung und versuche es erneut, oder kontaktiere uns unter leg@solarbonstetten.ch.";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = submitLabel;
+    resultPhase.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
 // Form submission
 form.addEventListener("submit", async (e) => {
@@ -1334,53 +1524,186 @@ form.addEventListener("submit", async (e) => {
     bemerkungen: bemerkungen || null,
   };
 
-  // Disable submit button while sending
-  const submitBtn = form.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Wird gesendet\u2026";
+  await sendSubmission(payload, pdfFile, form);
+});
 
-  try {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(payload));
-    formData.append("pdf", pdfFile);
+// =====================================================================
+// Manual entry, for everyone who cannot find the PDF
+// =====================================================================
 
-    const res = await fetch(API_URL, { method: "POST", body: formData });
+const mName = document.getElementById("m-name");
+const mEmail = document.getElementById("m-email");
+const mTelefon = document.getElementById("m-telefon");
+const mBedingungen = document.getElementById("m-bedingungen");
+const mSmartmeter = document.getElementById("m-smartmeter");
+const mBemerkungen = document.getElementById("m-bemerkungen");
 
-    form.hidden = true;
-    resultPhase.hidden = false;
+const LEG_PLZ = "8906";
+const LEG_ORT = "bonstetten";
 
-    if (res.ok) {
-      resultSuccess.hidden = false;
-      resultError.hidden = true;
-    } else if (res.status === 429) {
-      resultSuccess.hidden = true;
-      resultError.hidden = false;
-      resultErrorMsg.textContent =
-        "Zu viele Anfragen. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
-    } else {
-      resultSuccess.hidden = true;
-      resultError.hidden = false;
-      resultErrorMsg.textContent =
-        "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
-    }
+// Once the user sets these themselves we stop overriding their choice
+let abweichendTouched = false;
+let zoneTouched = false;
 
-    resultPhase.scrollIntoView({ behavior: "smooth", block: "start" });
-  } catch (err) {
-    form.hidden = true;
-    resultPhase.hidden = false;
-    resultSuccess.hidden = true;
-    resultError.hidden = false;
-    resultErrorMsg.textContent =
-      "Verbindungsfehler. Bitte prüfe deine Internetverbindung und versuche es erneut, oder kontaktiere uns unter leg@solarbonstetten.ch.";
-    resultPhase.scrollIntoView({ behavior: "smooth", block: "start" });
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Anmeldung absenden";
+function showManualEntry() {
+  uploadPhase.hidden = true;
+  form.hidden = true;
+  resultPhase.hidden = true;
+  manualForm.hidden = false;
+  updateZoneSuggestion();
+  manualForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showUploadPhase() {
+  manualForm.hidden = true;
+  uploadPhase.hidden = false;
+  uploadPhase.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// We only run LEGs in 8906 Bonstetten, so any other address means the building
+// being signed up cannot be the one the user just entered.
+function addressIsBonstetten() {
+  const plz = mPlz.value.trim();
+  const ort = mOrt.value.trim().toLowerCase();
+  if (plz && plz !== LEG_PLZ) return false;
+  if (ort && !ort.startsWith(LEG_ORT)) return false;
+  return true;
+}
+
+function syncAbweichend() {
+  if (!abweichendTouched) mAbweichend.checked = !addressIsBonstetten();
+  mAbweichendWrap.hidden = !mAbweichend.checked;
+  updateZoneSuggestion();
+}
+
+// The address the LEG membership is for – the building, not the mail address
+function legAddress() {
+  return (mAbweichend.checked ? mLegStrasse.value : mStrasse.value).trim();
+}
+
+function updateZoneSuggestion() {
+  const strasse = legAddress();
+  const zones = strasse ? detectZone({ strasse }) : [];
+
+  if (zones.length === 1) {
+    if (!zoneTouched) mZone.value = zones[0];
+    mZoneHint.textContent = mZone.value === zones[0]
+      ? "Anhand deiner Adresse automatisch ausgewählt – bitte kurz prüfen."
+      : `Zu deiner Adresse würde «${zones[0]}» passen.`;
+    return;
   }
+
+  if (!zoneTouched) mZone.value = "";
+  if (zones.length > 1) {
+    mZoneHint.textContent = "Zu deiner Adresse passen mehrere Zonen – bitte wähle die richtige aus.";
+  } else if (strasse) {
+    mZoneHint.textContent = "Wir konnten deine Adresse keiner Zone zuordnen – bitte wähle die Zone selber aus.";
+  } else {
+    mZoneHint.textContent = "";
+  }
+}
+
+noPdfBtn.addEventListener("click", (e) => { e.stopPropagation(); showManualEntry(); });
+backToPdfBtn.addEventListener("click", showUploadPhase);
+
+mAbweichend.addEventListener("change", () => {
+  abweichendTouched = true;
+  mAbweichendWrap.hidden = !mAbweichend.checked;
+  if (mAbweichend.checked) mLegStrasse.focus();
+  updateZoneSuggestion();
+});
+
+// "change" rather than "input": re-checking half-typed values would make the
+// checkbox and the zone flicker while the user is still writing.
+[mPlz, mOrt].forEach(el => el.addEventListener("change", syncAbweichend));
+[mStrasse, mLegStrasse].forEach(el => el.addEventListener("change", updateZoneSuggestion));
+mZone.addEventListener("change", () => { zoneTouched = true; updateZoneSuggestion(); });
+
+manualForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  manualFormError.hidden = true;
+
+  const errors = [];
+  const requireField = (el, message) => {
+    const ok = el.value.trim().length > 0;
+    el.classList.toggle("invalid", !ok);
+    if (!ok) errors.push(message);
+    return ok;
+  };
+
+  requireField(mName, "Bitte gib deinen Namen an.");
+  requireField(mStrasse, "Bitte gib Strasse und Hausnummer an.");
+  requireField(mPlz, "Bitte gib die PLZ an.");
+  requireField(mOrt, "Bitte gib den Ort an.");
+  if (mAbweichend.checked) {
+    requireField(mLegStrasse, "Bitte gib Strasse und Hausnummer des Gebäudes an, das du anmelden möchtest.");
+  }
+  if (requireField(mEmail, "Bitte gib deine E-Mail-Adresse an.")
+      && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mEmail.value.trim())) {
+    mEmail.classList.add("invalid");
+    errors.push("Bitte gib eine gültige E-Mail-Adresse an.");
+  }
+  if (!mZone.value) {
+    mZone.classList.add("invalid");
+    errors.push("Bitte wähle die LEG-Zone deines Gebäudes.");
+  }
+  if (!mSmartmeter.checked) errors.push("Bitte bestätige die Smart-Meter-Voraussetzung.");
+  if (!mBedingungen.checked) errors.push("Bitte akzeptiere die Teilnahmebedingungen.");
+
+  if (errors.length) {
+    manualFormError.innerHTML = errors.map(msg => escHtml(msg)).join("<br>");
+    manualFormError.hidden = false;
+    manualFormError.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const plz = mPlz.value.trim();
+  const ort = mOrt.value.trim();
+
+  // The note tells us why this submission has no PDF attached
+  const note = "--- Automatisch angehängt ---\n"
+    + "Über das Kurzformular ohne PDF erfasst – Messpunkt-Nummer und Rolle sind noch offen.";
+  const remarks = mBemerkungen.value.trim();
+  let bemerkungen = remarks ? `${remarks}\n\n${note}` : note;
+  if (bemerkungen.length > MAX_BEMERKUNGEN) bemerkungen = `${bemerkungen.slice(0, MAX_BEMERKUNGEN - 1)}…`;
+
+  const payload = {
+    art: "Anmeldung",
+    person: {
+      name: mName.value.trim(),
+      strasse: mStrasse.value.trim(),
+      plz,
+      ort,
+    },
+    kontakt: {
+      email: mEmail.value.trim(),
+      telefon: mTelefon.value.trim() || null,
+    },
+    // Without the PDF we know neither the messpunkt ID nor the role – we look
+    // both up ourselves once the request reaches us.
+    messpunkte: [{
+      messpunkt_id: null,
+      rolle: "Unbekannt",
+      leg_zone: mZone.value,
+      adresse: mAbweichend.checked
+        ? { strasse: legAddress(), plz: LEG_PLZ, ort: "Bonstetten" }
+        : { strasse: legAddress(), plz, ort },
+    }],
+    bestaetigungen: {
+      smart_meter: true,
+      teilnahmebedingungen: `${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND})`,
+    },
+    bemerkungen,
+  };
+
+  await sendSubmission(payload, null, manualForm);
 });
 
 // Remove invalid styling on input
 form.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => el.classList.remove("invalid"));
+});
+manualForm.querySelectorAll("input, select, textarea").forEach(el => {
   el.addEventListener("input", () => el.classList.remove("invalid"));
 });
 </script>
