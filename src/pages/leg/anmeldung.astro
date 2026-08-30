@@ -1,9 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import EkzHinweis from '../../components/EkzHinweis.astro';
 import legsData from '../../../public/leg/data/legs.json';
+import pdfjsPkg from 'pdfjs-dist/package.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// pdf.js is served from our own origin (see scripts/vendor-pdfjs.mjs)
+const pdfjsBase = `${base}/leg/pdfjs`;
+const pdfjsVersion = pdfjsPkg.version;
 const zonen = legsData.map(l => ({ name: l.name, status: l.status || 'geplant' }));
 
 const statusEmoji: Record<string, string> = {
@@ -14,82 +17,126 @@ const statusEmoji: Record<string, string> = {
 };
 ---
 <BaseLayout
-  title="LEG An-/Abmeldung"
-  description="Melde dich für eine Lokale Elektrizitätsgemeinschaft (LEG) in Bonstetten an oder ab."
+  title="LEG Anmeldung (mit PDF)"
+  description="Melde dich für eine Lokale Elektrizitätsgemeinschaft (LEG) in Bonstetten an – lade dein Anlageninformations-PDF hoch und wir füllen das Formular für dich aus."
 >
 
-  <EkzHinweis />
-
   <!-- Hero -->
-  <div class="relative overflow-hidden" style="padding: 3.5rem 0 5rem">
+  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
     </div>
     <div class="container">
       <span class="badge">LEG Bonstetten</span>
-      <h1 class="mb-4">An- / Abmeldung LEG</h1>
+      <h1 class="mb-4">Anmeldung LEG</h1>
       <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
-        Fülle das Formular aus – dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung. <a href={`${base}/leg`} class="text-amber-700 hover:underline">Mehr zur LEG erfahren →</a>
+        Für die Anmeldung benötigen wir einige Informationen. Am Einfachsten geht dies mit der PDF-Datei
+        <a href="https://my.ekz.ch/leg-anlageninformationen/" target="_blank" rel="noopener noreferrer" class="text-amber-700 hover:underline">Anlageninformationen vom EKZ</a>.
       </p>
     </div>
   </div>
 
-  <!-- Inhalt -->
+  <!-- Content -->
   <section class="section">
     <div class="container">
       <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-12 items-start">
 
-        <!-- Formular -->
         <div>
-          <form id="legform" novalidate class="flex flex-col gap-8">
+          <!-- Phase 1: Upload -->
+          <div id="upload-phase">
 
-            <!-- Art der Meldung -->
-            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
-              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Art der Meldung</legend>
-              <div class="grid grid-cols-2 gap-4 mt-4 max-sm:grid-cols-1">
-                <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="art" value="Anmeldung" required class="sr-only peer" />
-                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
-                    <span class="font-semibold text-slate-900 text-sm block mb-1">✅ Anmeldung</span>
-                    <p class="text-xs text-slate-500 m-0">Ich möchte an einer LEG teilnehmen</p>
-                  </div>
-                </label>
-                <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="art" value="Abmeldung" class="sr-only peer" />
-                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
-                    <span class="font-semibold text-slate-900 text-sm block mb-1">🚪 Abmeldung</span>
-                    <p class="text-xs text-slate-500 m-0">Ich möchte aus einer LEG austreten</p>
-                  </div>
-                </label>
+            <!-- Collapsible guide -->
+            <details class="border border-slate-200 rounded-2xl mb-6 overflow-hidden">
+              <summary class="px-7 py-5 cursor-pointer text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors">
+                Wo finde ich das Anlageninformations-PDF?
+              </summary>
+              <div class="px-7 pb-6">
+                <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                  Öffne die Seite <a href="https://my.ekz.ch/leg-anlageninformationen/" target="_blank" rel="noopener noreferrer" class="text-amber-700 underline font-semibold hover:text-amber-900">Anlageninformationen im myEKZ-Portal →</a> und lade das PDF herunter.
+                  Alternativ: Melde dich auf <a href="https://www.myekz.ch" target="_blank" rel="noopener noreferrer" class="text-amber-700 hover:underline">myEKZ.ch</a> an und navigiere zu <strong>«Solar»</strong> → <strong>«Anlageninformationen»</strong>.
+                </p>
+                <img
+                  src={`${base}/leg/guide/myekz_export_animation.gif`}
+                  alt="Anleitung: So findest du das Anlageninformations-PDF im myEKZ-Portal"
+                  class="rounded-xl border border-slate-200 w-full max-w-lg"
+                  loading="lazy"
+                />
+                <p class="text-xs text-slate-400 mt-3">
+                  Noch kein myEKZ-Konto?
+                  <a href="https://www.ekz.ch/de/kundenservice/self-service/myEKZ/registrierung-leg.html"
+                     target="_blank" rel="noopener noreferrer"
+                     class="text-amber-700 hover:underline">Schritt-für-Schritt-Anleitung von EKZ →</a>
+                </p>
               </div>
-            </fieldset>
+            </details>
 
-            <!-- Rolle -->
+            <!-- Dropzone -->
+            <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center bg-white cursor-pointer transition-all hover:border-amber-400">
+              <div class="text-4xl mb-3">📄</div>
+              <p class="font-semibold text-slate-900 mb-4">PDF hierher ziehen oder auswählen:</p>
+              <div class="flex flex-wrap gap-3 justify-center">
+                <button type="button" id="chooseBtn" class="btn btn-primary">Datei auswählen</button>
+                <button type="button" id="noPdfBtn" class="btn btn-secondary">Ich finde die PDF Datei nicht</button>
+              </div>
+              <input type="file" id="fileInput" accept="application/pdf,.pdf" class="hidden" />
+            </div>
+
+            <div id="status" class="mt-3 text-sm text-slate-500 flex items-center gap-2" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span id="status-text"></span>
+            </div>
+            <div id="errorBox" class="mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
+          </div>
+
+          <!-- Phase 1b: Manuelle Erfassung, für alle die das PDF nicht finden -->
+          <form id="manualform" novalidate class="flex flex-col gap-8" hidden>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+              <p class="text-sm text-amber-900 leading-relaxed m-0">
+                Kein Problem – wir fragen die nötigen Angaben hier direkt ab.
+                Die restlichen Daten holen wir dann selber beim EKZ oder wir melden uns bei dir.
+              </p>
+              <button type="button" id="backToPdfBtn" class="btn btn-secondary mt-3">
+                Ich habe die PDF-Datei doch gefunden
+              </button>
+            </div>
+
+            <!-- Persönliche Angaben -->
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
-              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Meine Rolle</legend>
-              <div class="grid grid-cols-3 gap-4 mt-4 max-sm:grid-cols-1">
-                <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="rolle" value="Konsumentin / Konsument" required class="sr-only peer" />
-                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
-                    <span class="font-semibold text-slate-900 text-sm block mb-1">🏠 Konsumentin / Konsument</span>
-                    <p class="text-xs text-slate-500 m-0">Ich beziehe Strom</p>
-                  </div>
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Deine Angaben</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-name" class="text-sm font-medium text-slate-900">Vor- und Nachname <span class="text-amber-700">*</span></label>
+                <input type="text" id="m-name" name="m-name" required autocomplete="name" class="input-field" />
+              </div>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-strasse" class="text-sm font-medium text-slate-900">Strasse und Hausnummer <span class="text-amber-700">*</span></label>
+                <input type="text" id="m-strasse" name="m-strasse" required autocomplete="street-address" class="input-field" />
+              </div>
+              <div class="grid grid-cols-[100px_1fr] gap-4 max-sm:grid-cols-1">
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-plz" class="text-sm font-medium text-slate-900">PLZ <span class="text-amber-700">*</span></label>
+                  <input type="text" id="m-plz" name="m-plz" required autocomplete="postal-code" maxlength="4" inputmode="numeric" class="input-field" />
+                </div>
+                <div class="flex flex-col gap-1.5 mt-4">
+                  <label for="m-ort" class="text-sm font-medium text-slate-900">Ort <span class="text-amber-700">*</span></label>
+                  <input type="text" id="m-ort" name="m-ort" required autocomplete="address-level2" class="input-field" />
+                </div>
+              </div>
+
+              <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600 mt-5">
+                <input type="checkbox" id="m-abweichend" class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                <span>Das Gebäude, das ich für die LEG anmelden möchte, liegt an einer anderen Adresse.</span>
+              </label>
+
+              <div id="m-abweichend-wrap" class="flex flex-col gap-1.5 mt-4" hidden>
+                <label for="m-leg-strasse" class="text-sm font-medium text-slate-900">
+                  Strasse und Hausnummer des Gebäudes <span class="text-amber-700">*</span>
                 </label>
-                <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="rolle" value="Produzentin / Produzent" class="sr-only peer" />
-                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
-                    <span class="font-semibold text-slate-900 text-sm block mb-1">☀️ Produzentin / Produzent</span>
-                    <p class="text-xs text-slate-500 m-0">Ich erzeuge Solarstrom</p>
-                  </div>
-                </label>
-                <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="rolle" value="Produzentin/Produzent und Konsumentin/Konsument" class="sr-only peer" />
-                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
-                    <span class="font-semibold text-slate-900 text-sm block mb-1">⚡ Beides</span>
-                    <p class="text-xs text-slate-500 m-0">Ich produziere und beziehe</p>
-                  </div>
-                </label>
+                <input type="text" id="m-leg-strasse" name="m-leg-strasse" autocomplete="off" class="input-field" />
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Wir betreiben LEGs nur in 8906 Bonstetten – hier genügt darum Strasse und Hausnummer.
+                </p>
               </div>
             </fieldset>
 
@@ -97,32 +144,141 @@ const statusEmoji: Record<string, string> = {
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">LEG-Zone</legend>
               <div class="flex flex-col gap-1.5 mt-4">
-                <label for="zone" class="text-sm font-medium text-slate-900">
+                <label for="m-zone" class="text-sm font-medium text-slate-900">
                   In welcher Zone liegt dein Gebäude? <span class="text-amber-700">*</span>
                 </label>
-                <select id="zone" name="zone" required class="input-field">
-                  <option value="" disabled selected>Bitte wählen…</option>
+                <select id="m-zone" name="m-zone" required class="input-field">
+                  <option value="" selected>Bitte wählen…</option>
                   {zonen.map((z, i) => <option value={z.name}>{statusEmoji[z.status]} {i + 1}. {z.name}</option>)}
                   <option value="Noch nicht sicher">Noch nicht sicher</option>
                 </select>
+                <p id="m-zone-hint" class="text-xs text-slate-400 leading-relaxed"></p>
                 <p class="text-xs text-slate-400 leading-relaxed">
-                  ⚪ Geplant · 🟡 In Erfassung · 🔵 Angemeldet bei EKZ · 🟢 Aktiv
+                  ⚪ Geplant · 🟡 In Erfassung · 🔵 Angemeldet bei EKZ · 🟢 Aktiv ·
+                  <a href={`${base}/leg`} target="_blank" class="text-amber-700 hover:underline">Zonen ansehen →</a>
                 </p>
               </div>
             </fieldset>
 
-            <!-- Persönliche Angaben -->
+            <!-- Kontakt -->
             <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
-              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Kontakt</legend>
               <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="vorname" class="text-sm font-medium text-slate-900">Vorname <span class="text-amber-700">*</span></label>
-                  <input type="text" id="vorname" name="vorname" required autocomplete="given-name" class="input-field" />
+                  <label for="m-email" class="text-sm font-medium text-slate-900">E-Mail <span class="text-amber-700">*</span></label>
+                  <input type="email" id="m-email" name="m-email" required autocomplete="email" class="input-field" />
                 </div>
                 <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-700">*</span></label>
-                  <input type="text" id="name" name="name" required autocomplete="family-name" class="input-field" />
+                  <label for="m-telefon" class="text-sm font-medium text-slate-900">Telefon</label>
+                  <input type="tel" id="m-telefon" name="m-telefon" autocomplete="tel" class="input-field" />
                 </div>
+              </div>
+            </fieldset>
+
+            <!-- Bestätigungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bestätigungen</legend>
+              <div class="flex flex-col gap-3 mt-4">
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="m-smartmeter" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich nehme zur Kenntnis, dass ein <strong>kommunikativer Smart Meter</strong> Voraussetzung ist. Falls noch nicht vorhanden, wird er von EKZ installiert. <span class="text-amber-700">*</span></span>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer text-sm text-slate-600">
+                  <input type="checkbox" id="m-bedingungen" required class="w-4 h-4 mt-0.5 accent-amber-400 shrink-0 cursor-pointer" />
+                  <span>Ich akzeptiere die <a href={`${base}/dokumente/Teilnahmebedingungen_LEG_solarbonstetten_v1.3.pdf`}
+                       target="_blank" rel="noopener noreferrer"
+                       class="text-amber-700 hover:underline">LEG-Teilnahmebedingungen von solarbonstetten</a>.
+                    <span class="text-amber-700">*</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Bemerkungen -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bemerkungen</legend>
+              <div class="flex flex-col gap-1.5 mt-4">
+                <label for="m-bemerkungen" class="text-sm font-medium text-slate-900">Fragen oder Anmerkungen (optional)</label>
+                <textarea id="m-bemerkungen" name="m-bemerkungen" rows="4" maxlength="4000" class="input-field resize-y"></textarea>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Zum Beispiel, was beim Suchen der PDF-Datei nicht geklappt hat – so können wir es beim nächsten Mal besser machen.
+                </p>
+              </div>
+            </fieldset>
+
+            <div id="manual-form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
+
+            <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
+              Anmeldung absenden
+            </button>
+          </form>
+
+          <!-- Phase 2: Form (hidden until PDF parsed) -->
+          <form id="legform" novalidate class="flex flex-col gap-8" hidden>
+
+            <!-- Fehlermeldung, wenn das PDF nicht gelesen werden konnte -->
+            <div id="manual-notice" class="bg-red-50 border border-red-200 rounded-2xl px-5 py-4" hidden>
+              <p class="text-sm text-red-800 leading-relaxed m-0">
+                Leider ist beim Verarbeiten des PDF ein Fehler aufgetreten:
+                <strong id="manual-notice-msg"></strong>
+              </p>
+              <p class="text-sm text-red-800 leading-relaxed mt-2 mb-0">
+                Kein Problem – bitte fülle die Angaben unten selber aus. Dein PDF wird mitgeschickt,
+                wir erfassen die Anmeldung dann von Hand.
+              </p>
+              <details class="mt-3">
+                <summary class="text-xs text-red-700 cursor-pointer">Technische Details (werden mitgeschickt)</summary>
+                <pre id="manual-diagnostics" class="text-xs text-red-700 whitespace-pre-wrap break-words mt-2 mb-0 font-mono"></pre>
+              </details>
+            </div>
+
+            <!-- Datei-Info -->
+            <div id="file-info" class="flex items-center justify-between gap-4 bg-green-50 border border-green-200 rounded-xl px-5 py-3">
+              <span id="parsed-filename" class="text-sm text-green-800 font-medium"></span>
+              <button type="button" id="resetBtn" class="text-sm text-green-700 hover:text-green-900 underline shrink-0">Andere Datei laden</button>
+            </div>
+
+            <!-- Messpunkt-Auswahl -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend id="mp-legend" class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Messpunkte auswählen</legend>
+              <p id="mp-hint" class="text-sm text-slate-500 mt-2 mb-4">
+                Wähle die Messpunkte aus, die du für die LEG anmelden möchtest.
+                Die Rolle (Konsument/Produzent) und LEG-Zone wurden automatisch erkannt.
+              </p>
+              <div id="mp-list" class="flex flex-col gap-3"></div>
+              <button type="button" id="addMpBtn" class="mt-3 text-sm text-amber-700 hover:text-amber-900 font-semibold" hidden>
+                + Weiteren Messpunkt hinzufügen
+              </button>
+            </fieldset>
+
+            <!-- Art der Meldung -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Art der Meldung</legend>
+              <div class="grid grid-cols-2 gap-4 mt-4 max-sm:grid-cols-1">
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="art" value="Anmeldung" required class="sr-only peer" checked />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">Anmeldung</span>
+                    <p class="text-xs text-slate-500 m-0">Ich möchte an einer LEG teilnehmen</p>
+                  </div>
+                </label>
+                <label class="cursor-pointer h-full flex flex-col">
+                  <input type="radio" name="art" value="Abmeldung" class="sr-only peer" />
+                  <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
+                    <span class="font-semibold text-slate-900 text-sm block mb-1">Abmeldung</span>
+                    <p class="text-xs text-slate-500 m-0">Ich möchte aus einer LEG austreten</p>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Persönliche Angaben (pre-filled) -->
+            <fieldset class="border border-slate-200 rounded-2xl px-7 py-6">
+              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Persönliche Angaben</legend>
+              <p id="person-hint" class="text-xs text-slate-400 mt-2 mb-3">Aus dem PDF übernommen – bitte überprüfen und ggf. korrigieren.</p>
+              <div class="flex flex-col gap-1.5 mt-2">
+                <label for="name" class="text-sm font-medium text-slate-900">Name <span class="text-amber-700">*</span></label>
+                <input type="text" id="name" name="name" required autocomplete="name" class="input-field" />
               </div>
               <div class="flex flex-col gap-1.5 mt-4">
                 <label for="strasse" class="text-sm font-medium text-slate-900">Strasse und Hausnummer <span class="text-amber-700">*</span></label>
@@ -138,16 +294,6 @@ const statusEmoji: Record<string, string> = {
                   <input type="text" id="ort" name="ort" required autocomplete="address-level2" class="input-field" />
                 </div>
               </div>
-              <div class="flex flex-col gap-1.5 mt-4">
-                <label for="messpunkt" class="text-sm font-medium text-slate-900">
-                  Messpunktnummer <span class="text-amber-700">*</span>
-                </label>
-                <input type="text" id="messpunkt" name="messpunkt" required autocomplete="off" class="input-field"
-                  placeholder="z.B. CH0000000000000000000000000000000" />
-                <p class="text-xs text-slate-400 leading-relaxed">
-                  Die 33-stellige Messpunktnummer steht auf deiner EKZ-Rechnung oder im EKZ-Kundenportal.
-                </p>
-              </div>
             </fieldset>
 
             <!-- Kontakt -->
@@ -161,43 +307,6 @@ const statusEmoji: Record<string, string> = {
                 <div class="flex flex-col gap-1.5 mt-4">
                   <label for="telefon" class="text-sm font-medium text-slate-900">Telefon</label>
                   <input type="tel" id="telefon" name="telefon" autocomplete="tel" class="input-field" />
-                </div>
-              </div>
-            </fieldset>
-
-            <!-- Anlageninformation -->
-            <div class="bg-blue-50 border border-blue-200 rounded-2xl px-7 py-6">
-              <p class="text-sm font-bold text-blue-900 mb-1">📄 Anlageninformation als PDF mitsenden</p>
-              <p class="text-sm text-blue-700 leading-relaxed mb-3">
-                Bitte lade deine <strong>Anlageninformation</strong> aus dem EKZ-Kundenportal herunter und hänge
-                sie deiner E-Mail an. Das Dokument enthält Angaben zu Unterwerk und Netzebene, die wir für die
-                LEG-Konfiguration benötigen.
-              </p>
-              <p class="text-sm text-blue-700 leading-relaxed mb-3">
-                <strong>So geht's:</strong> Anmelden auf <a href="https://www.myekz.ch" target="_blank" rel="noopener noreferrer" class="underline hover:text-blue-900">myEKZ.ch</a> → Menü «Solar» → «Anlageninformationen» → PDF herunterladen.
-              </p>
-              <a href="https://www.ekz.ch/de/kundenservice/self-service/myEKZ/registrierung-leg.html"
-                 target="_blank" rel="noopener noreferrer"
-                 class="text-sm text-blue-800 font-semibold underline hover:text-blue-900">
-                Schritt-für-Schritt-Anleitung von EKZ →
-              </a>
-            </div>
-
-            <!-- PV-Anlage (nur bei Produzent) -->
-            <fieldset id="pv-section" class="border border-slate-200 rounded-2xl px-7 py-6" hidden>
-              <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">PV-Anlage</legend>
-              <div class="flex flex-col gap-1.5 mt-4">
-                <label for="pv-adresse" class="text-sm font-medium text-slate-900">Adresse der PV-Anlage</label>
-                <input type="text" id="pv-adresse" name="pv_adresse" autocomplete="off" class="input-field" placeholder="Falls abweichend von Wohnadresse" />
-              </div>
-              <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
-                <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="pv-leistung" class="text-sm font-medium text-slate-900">Leistung (kWp)</label>
-                  <input type="text" id="pv-leistung" name="pv_leistung" autocomplete="off" class="input-field" placeholder="z.B. 12.4" />
-                </div>
-                <div class="flex flex-col gap-1.5 mt-4">
-                  <label for="pv-jahr" class="text-sm font-medium text-slate-900">Inbetriebnahme­jahr</label>
-                  <input type="text" id="pv-jahr" name="pv_jahr" autocomplete="off" class="input-field" placeholder="z.B. 2022" maxlength="4" />
                 </div>
               </div>
             </fieldset>
@@ -226,23 +335,42 @@ const statusEmoji: Record<string, string> = {
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Bemerkungen</legend>
               <div class="flex flex-col gap-1.5 mt-4">
                 <label for="bemerkungen" class="text-sm font-medium text-slate-900">Fragen oder Anmerkungen (optional)</label>
-                <textarea id="bemerkungen" name="bemerkungen" rows="4" class="input-field resize-y"></textarea>
+                <textarea id="bemerkungen" name="bemerkungen" rows="4" maxlength="4000" class="input-field resize-y"></textarea>
               </div>
             </fieldset>
 
-            <div id="form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden>
-              Bitte fülle alle Pflichtfelder aus und bestätige die Bedingungen.
-            </div>
+            <div id="form-error" class="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-red-600 text-sm" hidden></div>
 
             <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
-              📧 Meldung per E-Mail senden
+              Anmeldung absenden
             </button>
-            <p class="text-xs text-slate-400 text-center -mt-6">
-              Dein E-Mail-Programm öffnet sich mit der vorausgefüllten Meldung –
-              du kannst den Text vor dem Senden noch überprüfen.
-            </p>
-
           </form>
+
+          <!-- Phase 3: Result (hidden until submit) -->
+          <div id="result-phase" hidden>
+            <div id="result-success" hidden>
+              <div class="bg-green-50 border border-green-200 rounded-2xl px-7 py-8 text-center">
+                <div class="text-4xl mb-4">&#x2705;</div>
+                <h2 class="text-xl font-bold text-green-900 mb-3">Anmeldung erhalten</h2>
+                <p class="text-sm text-green-800 leading-relaxed max-w-md mx-auto mb-4">
+                  Vielen Dank! Wir haben deine Anmeldung erhalten und werden sie so bald wie möglich bearbeiten.
+                  Wenn alles passt, laden wir dich direkt über das myEKZ-Portal zur LEG ein –
+                  du erhältst dazu eine E-Mail von EKZ.
+                </p>
+                <p class="text-xs text-green-700">
+                  Bei Fragen erreichst du uns unter <a href="mailto:leg@solarbonstetten.ch" class="font-semibold underline">leg@solarbonstetten.ch</a>.
+                </p>
+              </div>
+            </div>
+            <div id="result-error" hidden>
+              <div class="bg-red-50 border border-red-200 rounded-2xl px-7 py-8 text-center">
+                <div class="text-4xl mb-4">&#x26A0;&#xFE0F;</div>
+                <h2 class="text-xl font-bold text-red-900 mb-3">Etwas ist schiefgelaufen</h2>
+                <p id="result-error-msg" class="text-sm text-red-800 leading-relaxed max-w-md mx-auto mb-4"></p>
+                <button type="button" id="backToFormBtn" class="btn btn-primary">Zurück zum Formular</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Sidebar -->
@@ -252,10 +380,9 @@ const statusEmoji: Record<string, string> = {
             <h3 class="text-base font-bold mb-4 text-white">So funktioniert es</h3>
             <ol class="list-none p-0 flex flex-col gap-2.5">
               {[
-                'Formular ausfüllen',
-                '«Per E-Mail senden» klicken',
-                'E-Mail-Programm öffnet sich',
-                'Anlageninformation-PDF anhängen',
+                'Anlageninformations-PDF aus myEKZ herunterladen',
+                'PDF hier hochladen',
+                'Angaben prüfen und ergänzen',
                 'Absenden – fertig!',
               ].map((step, i) => (
                 <li class="flex items-start gap-3 text-sm opacity-95">
@@ -304,106 +431,1279 @@ const statusEmoji: Record<string, string> = {
   .input-field.invalid { border-color: #ef4444; }
   select.input-field { cursor: pointer; }
   textarea.input-field { min-height: 100px; }
+
+  #dropzone.dragover {
+    border-color: var(--color-primary);
+    background: rgba(251, 168, 3, 0.04);
+  }
+
+  .mp-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .mp-card:hover { border-color: #fbbf24; }
+  .mp-card.selected {
+    border-color: #f59e0b;
+    background: #fffbeb;
+  }
+  .mp-card.manual-row {
+    cursor: default;
+  }
+  .mp-card.manual-row:hover { border-color: #e2e8f0; }
+  .mp-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+  }
+  .mp-badge-consumer {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  .mp-badge-producer {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .mp-badge-zone {
+    background: #f1f5f9;
+    color: #334155;
+  }
+  .mp-badge-zone-unknown {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #e2e8f0;
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation-duration: 3s; }
+  }
+
+  .prefilled-hint {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 0.05rem 0.35rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
 </style>
 
-<script>
-  const form = document.getElementById('legform') as HTMLFormElement;
-  const errorBox = document.getElementById('form-error') as HTMLElement;
-  const pvSection = document.getElementById('pv-section') as HTMLElement;
+<script type="module" define:vars={{ legsData, statusEmoji, pdfjsBase, pdfjsVersion }}>
+// =====================================================================
+// PDF parsing logic (from leg_report_extractor prototype)
+// =====================================================================
 
-  // LEG-Teilnahmebedingungen – bei Dokument-Update hier anpassen
-  const BEDINGUNGEN_VERSION = 'v1.3';
-  const BEDINGUNGEN_STAND = '23.06.2026';
+// A parse error we can show to the user as-is. `retryable` marks failures that
+// look like a broken pdf.js setup (rather than an unexpected document), which
+// is worth a second attempt without the Web Worker.
+class LegReportParseError extends Error {
+  constructor(message, { retryable = false } = {}) {
+    super(message);
+    this.retryable = retryable;
+  }
+}
 
-  // Show/hide PV section based on role selection
-  form.querySelectorAll('input[name="rolle"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-      const val = (form.elements.namedItem('rolle') as RadioNodeList).value;
-      pvSection.hidden = !val.toLowerCase().includes('produz');
-    });
+const TOP_LEVEL_LABELS = [
+  "Politische Gemeinde:", "Adresse:", "Verteilnetzbetreiber:",
+  "Unterwerksnummer:", "Trafostation:", "Netzebene:", "Anschlussleistung:",
+];
+
+const ZIP_CITY_RE = /^(\d{4})\s+(.+)$/;
+
+function firstNonEmptyLine(text) {
+  if (!text) return null;
+  for (const raw of text.split(/\r?\n/)) {
+    const l = raw.trim();
+    if (l) return l;
+  }
+  return null;
+}
+
+function sectionText(block, label) {
+  const idx = block.indexOf(label);
+  if (idx === -1) return null;
+  const start = idx + label.length;
+  let end = block.length;
+  for (const other of TOP_LEVEL_LABELS) {
+    if (other === label) continue;
+    const pos = block.indexOf(other, start);
+    if (pos !== -1 && pos < end) end = pos;
+  }
+  return block.slice(start, end);
+}
+
+function valueAfterLabel(text, label) {
+  if (text == null) return null;
+  const idx = text.indexOf(label);
+  if (idx === -1) return null;
+  return firstNonEmptyLine(text.slice(idx + label.length));
+}
+
+function splitPlzOrt(plzOrt) {
+  if (!plzOrt) return [null, null];
+  const m = ZIP_CITY_RE.exec(plzOrt);
+  if (m) return [m[1], m[2].trim()];
+  return [null, plzOrt];
+}
+
+function extractPersonalData(headerText) {
+  const empty = { name: null, street: null, plz: null, ort: null };
+  const anchor = "Persönliche Daten";
+  const idx = headerText.indexOf(anchor);
+  if (idx === -1) return empty;
+  const section = headerText.slice(idx + anchor.length);
+  const lines = section.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  let zipIdx = null;
+  lines.forEach((line, i) => { if (ZIP_CITY_RE.test(line)) zipIdx = i; });
+  if (zipIdx === null) return { ...empty, name: lines.length ? lines.join("\n") : null };
+  const m = ZIP_CITY_RE.exec(lines[zipIdx]);
+  const plz = m[1];
+  const ort = m[2].trim();
+  const street = zipIdx >= 1 ? lines[zipIdx - 1] : null;
+  const nameLines = zipIdx >= 1 ? lines.slice(0, zipIdx - 1) : [];
+  const name = nameLines.length ? nameLines.join("\n") : null;
+  return { name, street, plz, ort };
+}
+
+function extractMesspunktData(block) {
+  const mp = {
+    messpunkt_id: null,
+    politische_gemeinde: { nummer: null, name: null },
+    adresse: { strasse: null, plz: null, ort: null },
+    verteilnetzbetreiber: null,
+    unterwerk: { nummer: null, name: null, gemeinde: null },
+    trafostation: { nummer: null, name: null, gemeinde: null },
+    netzebene: null,
+    anschlussleistung: { typ: null, kw: null },
+  };
+
+  const mpMatch = block.match(/CH\d{10,}/);
+  mp.messpunkt_id = mpMatch ? mpMatch[0] : null;
+
+  const pgText = sectionText(block, "Politische Gemeinde:");
+  mp.politische_gemeinde = {
+    nummer: valueAfterLabel(pgText, "Nummer:"),
+    name: valueAfterLabel(pgText, "Name:"),
+  };
+
+  const addrText = sectionText(block, "Adresse:");
+  const [plz, ort] = splitPlzOrt(valueAfterLabel(addrText, "PLZ/Ort:"));
+  mp.adresse = {
+    strasse: valueAfterLabel(addrText, "Strasse/Hausnummer:"),
+    plz, ort,
+  };
+
+  mp.verteilnetzbetreiber = firstNonEmptyLine(sectionText(block, "Verteilnetzbetreiber:"));
+
+  const uwText = sectionText(block, "Unterwerksnummer:");
+  mp.unterwerk = {
+    nummer: valueAfterLabel(uwText, "Nummer:"),
+    name: valueAfterLabel(uwText, "Name:"),
+    gemeinde: valueAfterLabel(uwText, "Gemeinde:"),
+  };
+
+  const tsText = sectionText(block, "Trafostation:");
+  mp.trafostation = {
+    nummer: valueAfterLabel(tsText, "Nummer:"),
+    name: valueAfterLabel(tsText, "Name der Station:"),
+    gemeinde: valueAfterLabel(tsText, "Gemeinde:"),
+  };
+
+  const netzebeneLine = firstNonEmptyLine(sectionText(block, "Netzebene:"));
+  if (netzebeneLine && /^\d+$/.test(netzebeneLine)) {
+    mp.netzebene = parseInt(netzebeneLine, 10);
+  }
+
+  const alText = sectionText(block, "Anschlussleistung:") || "";
+  const alMatch = alText.match(/(Produktionsleistung|Anschlussleistung) in kW:\s*\n?\s*([\d.,]+)/);
+  mp.anschlussleistung = alMatch
+    ? { typ: alMatch[1], kw: parseFloat(alMatch[2].replace(",", ".")) }
+    : { typ: null, kw: null };
+
+  return mp;
+}
+
+function parseLegReportText(fullText) {
+  if (!fullText.trim()) {
+    throw new LegReportParseError("Kein Text extrahiert. Das PDF könnte gescannt/bildbasiert sein. Bitte benutze die PDF-Datei direkt von myEKZ unverändert.");
+  }
+  const blocks = fullText.split("Messpunktbezeichnung:");
+  if (blocks.length < 2) {
+    throw new LegReportParseError("Es konnten keine 'Messpunktbezeichnung:'-Anker im Dokument gefunden werden.");
+  }
+  const [headerBlock, ...mpBlocks] = blocks;
+  return {
+    customer: extractPersonalData(headerBlock),
+    measuring_points: mpBlocks.map(b => extractMesspunktData(b)),
+  };
+}
+
+async function extractFullText(pdf, onPhase) {
+  let fullText = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    onPhase(`Lese Seite ${i} von ${pdf.numPages} …`);
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    let pageText = "";
+    for (const item of tc.items) {
+      if (typeof item.str !== "string") continue;
+      pageText += item.str;
+      if (item.hasEOL) pageText += "\n";
+    }
+    fullText += pageText + "\n";
+  }
+  return fullText;
+}
+
+// =====================================================================
+// pdf.js loading
+//
+// pdf.js is served from our own origin – loading it from a CDN meant that an
+// ad blocker, a corporate proxy or a strict privacy setting could break the
+// upload in ways we cannot reproduce or debug. Everything below additionally
+// assumes that pdf.js may fail or hang anyway, so no step is awaited without a
+// timeout and every failure ends in a message the user can act on.
+// =====================================================================
+
+let pdfjsPromise = null;
+function loadPdfjs() {
+  if (!pdfjsPromise) {
+    pdfjsPromise = import(`${pdfjsBase}/pdf.min.mjs`)
+      .then((lib) => {
+        lib.GlobalWorkerOptions.workerSrc = `${pdfjsBase}/pdf.worker.min.mjs`;
+        return lib;
+      })
+      .catch((e) => {
+        pdfjsPromise = null;
+        throw new LegReportParseError(
+          `Die PDF-Bibliothek konnte nicht geladen werden (${e.message || e}).`);
+      });
+  }
+  return pdfjsPromise;
+}
+
+// Runs the pdf.js worker code on the main thread instead of in a Web Worker.
+// Some browsers and privacy setups refuse to start the module worker, and
+// pdf.js then simply never settles its promise.
+let mainThreadWorkerPromise = null;
+function useMainThreadWorker() {
+  if (!mainThreadWorkerPromise) {
+    mainThreadWorkerPromise = import(`${pdfjsBase}/pdf.worker.min.mjs`)
+      .then((mod) => { globalThis.pdfjsWorker = mod; })
+      .catch((e) => {
+        mainThreadWorkerPromise = null;
+        throw new LegReportParseError(
+          `Die PDF-Bibliothek konnte nicht geladen werden (${e.message || e}).`);
+      });
+  }
+  return mainThreadWorkerPromise;
+}
+
+// Recent JS features pdf.js relies on. The "legacy" build we serve polyfills
+// them, so this is checked *after* loading pdf.js – what matters is the
+// environment pdf.js actually ends up running in, not the bare browser.
+// Without the polyfills these blow up deep inside pdf.js, where the failure
+// never reaches our promise and the upload just appears to hang.
+const REQUIRED_FEATURES = {
+  "Promise.withResolvers": () => typeof Promise.withResolvers === "function",
+  "Map.getOrInsertComputed": () => typeof Map.prototype.getOrInsertComputed === "function",
+  "Object.hasOwn": () => typeof Object.hasOwn === "function",
+  "structuredClone": () => typeof structuredClone === "function",
+  "ReadableStream": () => typeof ReadableStream === "function",
+};
+
+// null = not checked yet
+let missingFeatures = null;
+
+function checkFeatures() {
+  missingFeatures = Object.keys(REQUIRED_FEATURES).filter((name) => {
+    try { return !REQUIRED_FEATURES[name](); } catch { return true; }
   });
+  return missingFeatures;
+}
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    errorBox.hidden = true;
+// Safari < 14 has no File.arrayBuffer()
+function readFileBytes(file) {
+  if (typeof file.arrayBuffer === "function") return file.arrayBuffer();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("FileReader fehlgeschlagen"));
+    reader.readAsArrayBuffer(file);
+  });
+}
 
-    const get = (id: string) => {
-      const el = form.elements.namedItem(id);
-      return el ? (el as HTMLInputElement).value.trim() : '';
-    };
-    const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement)?.checked ?? false;
+function withTimeout(promise, ms, describePhase) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new LegReportParseError(
+      `Zeitüberschreitung nach ${Math.round(ms / 1000)} Sekunden (${describePhase()}).`,
+      { retryable: true })), ms);
+  });
+  // A failure arriving after the timeout is still worth recording, but not
+  // worth an unhandled promise rejection.
+  promise.catch(e => noteError("verspätet", e?.message || e));
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
 
-    const requiredFields = ['vorname', 'name', 'strasse', 'plz', 'ort', 'email', 'zone', 'messpunkt'];
-    let valid = true;
+async function parsePdfFile(file, onPhase) {
+  const pdfjsLib = await loadPdfjs();
 
-    requiredFields.forEach(id => {
-      const el = form.elements.namedItem(id) as HTMLInputElement;
-      if (!el || !el.value.trim()) {
-        el?.classList.add('invalid');
-        valid = false;
+  const missing = checkFeatures();
+  if (missing.length) {
+    throw new LegReportParseError(
+      `Dein Browser unterstützt ${missing.length === 1 ? "eine Funktion" : "einige Funktionen"} nicht, `
+      + `die zum Lesen des PDF nötig ${missing.length === 1 ? "ist" : "sind"} (${missing.join(", ")}). `
+      + "Mit einem aktuellen Browser würde es automatisch klappen.");
+  }
+
+  onPhase("Öffne PDF …");
+  // pdf.js detaches the buffer it is given, so read the file per attempt.
+  const loadingTask = pdfjsLib.getDocument({
+    data: await readFileBytes(file),
+    isEvalSupported: false,
+  });
+  let pdf;
+  try {
+    pdf = await loadingTask.promise;
+  } catch (e) {
+    // Password protected or damaged files are the user's problem to fix;
+    // anything else may well be a broken pdf.js setup.
+    const retryable = !/password/i.test(e?.name || "");
+    throw new LegReportParseError(`Fehler beim Öffnen des PDFs: ${e.message || e}`, { retryable });
+  }
+  try {
+    return parseLegReportText(await extractFullText(pdf, onPhase));
+  } finally {
+    // Deliberately not awaited: if pdf.js is wedged, so is destroy().
+    Promise.resolve(loadingTask.destroy()).catch(() => {});
+  }
+}
+
+const PARSE_TIMEOUT_MS = 20000;
+const FALLBACK_TIMEOUT_MS = 60000;
+
+// One attempt with the Web Worker, one on the main thread if that looked like
+// an infrastructure failure rather than a problem with the document.
+async function parsePdfFileWithFallback(file, onPhase) {
+  let phase = "Start";
+  const trackPhase = (msg) => { phase = msg; onPhase(msg); };
+
+  // No Web Workers at all – don't bother waiting for that attempt to fail
+  if (typeof Worker === "undefined" && !globalThis.pdfjsWorker) {
+    trackPhase("Verarbeite ohne Web Worker …");
+    await useMainThreadWorker();
+    return await withTimeout(parsePdfFile(file, trackPhase), FALLBACK_TIMEOUT_MS, () => phase);
+  }
+
+  try {
+    return await withTimeout(parsePdfFile(file, trackPhase), PARSE_TIMEOUT_MS, () => phase);
+  } catch (e) {
+    if (globalThis.pdfjsWorker || !(e instanceof LegReportParseError) || !e.retryable) throw e;
+    noteError("1. Versuch", e.message);
+    trackPhase("Zweiter Versuch ohne Web Worker …");
+    await useMainThreadWorker();
+    return await withTimeout(parsePdfFile(file, trackPhase), FALLBACK_TIMEOUT_MS, () => phase);
+  }
+}
+
+// =====================================================================
+// LEG zone detection
+// =====================================================================
+
+// Addresses are compared structurally (street / house number / suffix) rather
+// than as raw strings, because EKZ and the LEG data spell them differently:
+// EKZ writes "Stallikerstrasse 1 A" or "Stationsstrasse 4.1", the LEG data
+// "stallikerstrasse 1a" resp. "stationsstrasse 4". A character-prefix compare
+// also cannot tell "stallikerstrasse 1a" from "stallikerstrasse 18", which sit
+// in different zones.
+
+function normAddress(s) {
+  return (s || "").toLowerCase().replace(/\s+/g, " ").trim().replace(/[.,\s]+$/, "");
+}
+
+// "Stallikerstr." and "Stallikerstrasse" must land on the same key
+function normStreet(s) {
+  return normAddress(s)
+    .replace(/str\./g, "strasse")
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
+    .replace(/[^a-z0-9]+/g, "")
+    .replace(/str$/, "strasse");
+}
+
+// street, first number, and whatever follows it
+const ADDR_RE = /^(.*?)\s*(\d+)\s*(.*)$/;
+
+function parseAddress(raw) {
+  const m = ADDR_RE.exec(normAddress(raw));
+  if (!m || !m[1].trim()) return null;
+  const street = normStreet(m[1]);
+  const num = parseInt(m[2], 10);
+  const rest = m[3].trim();
+
+  // collective entries: "9-39", "24a-24b", "1a-e"
+  const range = /^([a-z]?)\s*-\s*(\d+)\s*[a-z]?$/.exec(rest);
+  if (range) {
+    return { street, num, suffix: range[1], rangeEnd: parseInt(range[2], 10) };
+  }
+
+  // single trailing letter is a house-number suffix ("1a"); a longer word is
+  // not ("252assek.", building-insurance numbers)
+  const suffix = /^([a-z])(?![a-z])/.exec(rest);
+  return { street, num, suffix: suffix ? suffix[1] : "", rangeEnd: null };
+}
+
+// Build lookups: exact string → zones, and street → house-number entries
+const exactZones = new Map();
+const streetIndex = new Map();
+for (const leg of legsData) {
+  for (const addr of leg.members) {
+    const key = normAddress(addr);
+    if (!exactZones.has(key)) exactZones.set(key, new Set());
+    exactZones.get(key).add(leg.name);
+
+    const parsed = parseAddress(addr);
+    if (!parsed) continue;
+    if (!streetIndex.has(parsed.street)) streetIndex.set(parsed.street, []);
+    streetIndex.get(parsed.street).push({ ...parsed, zone: leg.name });
+  }
+}
+
+const zonesOf = (entries) => [...new Set(entries.map(e => e.zone))];
+
+function detectZone(mpAdresse) {
+  if (!mpAdresse || !mpAdresse.strasse) return [];
+
+  // 1. verbatim match
+  const exact = exactZones.get(normAddress(mpAdresse.strasse));
+  if (exact && exact.size > 0) return [...exact];
+
+  const q = parseAddress(mpAdresse.strasse);
+  if (!q) return [];
+
+  let candidates = streetIndex.get(q.street);
+  if (!candidates) {
+    // tolerate abbreviated or truncated street names, but only if exactly one
+    // known street is compatible
+    const compatible = [...streetIndex.keys()]
+      .filter(s => s.startsWith(q.street) || q.street.startsWith(s));
+    if (compatible.length !== 1) return [];
+    candidates = streetIndex.get(compatible[0]);
+  }
+
+  const houses = candidates.filter(e => e.rangeEnd === null);
+
+  // 2. same house number and same suffix
+  let zones = zonesOf(houses.filter(e => e.num === q.num && e.suffix === q.suffix));
+  if (zones.length) return zones;
+
+  // 3. same house number, suffix ignored ("1 A" → "1", "1a" → "1b")
+  zones = zonesOf(houses.filter(e => e.num === q.num));
+  if (zones.length) return zones;
+
+  // 4. covered by a collective entry ("Friedhofstrasse 9-39"), honouring the
+  //    odd/even side when the range has one
+  zones = zonesOf(candidates.filter(e =>
+    e.rangeEnd !== null &&
+    q.num >= e.num && q.num <= e.rangeEnd &&
+    !(e.num % 2 === e.rangeEnd % 2 && q.num % 2 !== e.num % 2)
+  ));
+  if (zones.length) return zones;
+
+  // Unknown house number: do not guess from the street alone – zone borders
+  // run between house numbers, and the user can pick the zone manually.
+  return [];
+}
+
+function inferRole(mp) {
+  const typ = mp.anschlussleistung?.typ;
+  if (typ === "Produktionsleistung") return "Produzent";
+  return "Konsument";
+}
+
+// =====================================================================
+// UI
+// =====================================================================
+
+const uploadPhase = document.getElementById("upload-phase");
+const form = document.getElementById("legform");
+const resultPhase = document.getElementById("result-phase");
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("fileInput");
+const chooseBtn = document.getElementById("chooseBtn");
+const noPdfBtn = document.getElementById("noPdfBtn");
+const statusEl = document.getElementById("status");
+const statusText = document.getElementById("status-text");
+const errorBox = document.getElementById("errorBox");
+const manualNotice = document.getElementById("manual-notice");
+const manualNoticeMsg = document.getElementById("manual-notice-msg");
+const manualDiagnostics = document.getElementById("manual-diagnostics");
+const fileInfo = document.getElementById("file-info");
+const mpList = document.getElementById("mp-list");
+const mpLegend = document.getElementById("mp-legend");
+const mpHint = document.getElementById("mp-hint");
+const addMpBtn = document.getElementById("addMpBtn");
+const personHint = document.getElementById("person-hint");
+const parsedFilename = document.getElementById("parsed-filename");
+const resetBtn = document.getElementById("resetBtn");
+const formError = document.getElementById("form-error");
+const resultSuccess = document.getElementById("result-success");
+const resultError = document.getElementById("result-error");
+const resultErrorMsg = document.getElementById("result-error-msg");
+const backToFormBtn = document.getElementById("backToFormBtn");
+
+const manualForm = document.getElementById("manualform");
+const backToPdfBtn = document.getElementById("backToPdfBtn");
+const mAbweichend = document.getElementById("m-abweichend");
+const mAbweichendWrap = document.getElementById("m-abweichend-wrap");
+const mLegStrasse = document.getElementById("m-leg-strasse");
+const mStrasse = document.getElementById("m-strasse");
+const mPlz = document.getElementById("m-plz");
+const mOrt = document.getElementById("m-ort");
+const mZone = document.getElementById("m-zone");
+const mZoneHint = document.getElementById("m-zone-hint");
+const manualFormError = document.getElementById("manual-form-error");
+
+const BEDINGUNGEN_VERSION = "v1.3";
+const BEDINGUNGEN_STAND = "23.06.2026";
+
+const API_URL = "https://api-test.solarbonstetten.ch/submit";
+
+// Must match the limit enforced by the API
+const MAX_PDF_BYTES = 1024 * 1024;
+const MESSPUNKT_ID_RE = /^CH\d{10,33}$/;
+const MAX_BEMERKUNGEN = 5000;
+
+const FILE_INFO_CLASSES = "flex items-center justify-between gap-4 rounded-xl px-5 py-3 border";
+
+// "parsed": data comes from the PDF · "manual": the user types it in
+let mode = "parsed";
+let parsedReport = null;
+let pdfFile = null;
+let selectedMps = new Set();
+// { message, phase } when the PDF could not be read
+let parseFailure = null;
+let lastPhase = "";
+
+// Failures we do not catch ourselves (worker crashes, blocked scripts) so that
+// they end up in the diagnostics attached to a manual submission.
+const collectedErrors = [];
+function noteError(kind, detail) {
+  const entry = `${kind}: ${String(detail).slice(0, 300)}`;
+  if (!collectedErrors.includes(entry)) collectedErrors.push(entry);
+  if (collectedErrors.length > 6) collectedErrors.shift();
+}
+window.addEventListener("error", (e) => {
+  noteError("window.error", e.message || `Ressource konnte nicht geladen werden: ${e.filename || "?"}`);
+});
+window.addEventListener("unhandledrejection", (e) => {
+  noteError("unhandledrejection", e.reason?.message || e.reason);
+});
+
+function setStatus(msg) {
+  statusText.textContent = msg || "";
+  statusEl.hidden = !msg;
+}
+function showError(msg) { errorBox.textContent = msg; errorBox.hidden = false; }
+function clearError() { errorBox.hidden = true; errorBox.textContent = ""; }
+
+function buildDiagnostics() {
+  const lines = [
+    `Datei: ${pdfFile?.name || "?"} (${pdfFile?.size ?? "?"} Bytes, Typ ${pdfFile?.type || "unbekannt"})`,
+    `Fehler: ${parseFailure?.message || "?"}`,
+    `Phase: ${parseFailure?.phase || "–"}`,
+    `pdf.js: ${pdfjsVersion}${globalThis.pdfjsWorker ? " (ohne Web Worker)" : ""}`,
+    `Fehlende Funktionen: ${missingFeatures === null
+      ? "nicht geprüft"
+      : (missingFeatures.length ? missingFeatures.join(", ") : "keine")}`,
+    `Web Worker: ${typeof Worker === "undefined" ? "nicht verfügbar" : "verfügbar"}`,
+    `Browser: ${navigator.userAgent}`,
+  ];
+  for (const err of collectedErrors) lines.push(err);
+  return lines.join("\n");
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+function zoneOptionsHtml(selectedZone) {
+  return legsData.map(l => {
+    const sel = l.name === selectedZone ? "selected" : "";
+    const emoji = statusEmoji[l.status || "geplant"] || "";
+    return `<option value="${escHtml(l.name)}" ${sel}>${emoji} ${escHtml(l.name)}</option>`;
+  }).join("");
+}
+
+function renderMpCards(report) {
+  mpList.innerHTML = "";
+  selectedMps.clear();
+
+  report.measuring_points.forEach((mp, i) => {
+    selectedMps.add(i);
+    const role = inferRole(mp);
+    const zones = detectZone(mp.adresse);
+    const zoneMatch = zones.length === 1 ? zones[0] : null;
+
+    const card = document.createElement("label");
+    card.className = "mp-card selected block";
+
+    const addr = mp.adresse
+      ? [mp.adresse.strasse, [mp.adresse.plz, mp.adresse.ort].filter(Boolean).join(" ")].filter(Boolean).join(", ")
+      : "Adresse unbekannt";
+
+    const roleBadge = role === "Produzent"
+      ? `<span class="mp-badge mp-badge-producer">Produzent</span>`
+      : `<span class="mp-badge mp-badge-consumer">Konsument</span>`;
+
+    let zoneBadgeHtml;
+    if (zoneMatch) {
+      zoneBadgeHtml = `<span class="mp-badge mp-badge-zone mp-zone-badge">${escHtml(zoneMatch)}</span>`;
+    } else if (zones.length > 1) {
+      zoneBadgeHtml = `<span class="mp-badge mp-badge-zone-unknown mp-zone-badge">Mehrere Zonen möglich</span>`;
+    } else {
+      zoneBadgeHtml = `<span class="mp-badge mp-badge-zone-unknown mp-zone-badge">Zone nicht erkannt</span>`;
+    }
+
+    // Zone select dropdown (for manual override or when ambiguous)
+    const zoneOptions = zoneOptionsHtml(zoneMatch);
+
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <input type="checkbox" class="mp-check w-4 h-4 mt-1 accent-amber-400 shrink-0 cursor-pointer" data-index="${i}" checked />
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span class="font-mono text-xs text-slate-400">${escHtml(mp.messpunkt_id || "ID unbekannt")}</span>
+            ${roleBadge}
+            ${zoneBadgeHtml}
+          </div>
+          <div class="text-sm text-slate-700">${escHtml(addr)}</div>
+          <div class="mt-2">
+            <label class="text-xs text-slate-500">LEG-Zone:
+              <select class="mp-zone-select input-field text-xs py-1 px-2 mt-0.5" data-index="${i}" style="max-width:220px">
+                <option value="">Bitte wählen…</option>
+                ${zoneOptions}
+              </select>
+            </label>
+          </div>
+          <div class="mt-2 text-xs text-slate-400">
+            Netzebene: ${mp.netzebene ?? "–"} ·
+            ${mp.anschlussleistung?.kw != null ? `${mp.anschlussleistung.kw} kW` : "–"} ·
+            Unterwerk: ${escHtml(mp.unterwerk?.name || "–")} ·
+            Trafo: ${escHtml(mp.trafostation?.name || "–")}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const checkbox = card.querySelector(".mp-check");
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        selectedMps.add(i);
+        card.classList.add("selected");
       } else {
-        el.classList.remove('invalid');
+        selectedMps.delete(i);
+        card.classList.remove("selected");
       }
     });
 
-    const art = (form.elements.namedItem('art') as RadioNodeList).value;
-    const rolle = (form.elements.namedItem('rolle') as RadioNodeList).value;
-    if (!art || !rolle) valid = false;
+    const zoneSelect = card.querySelector(".mp-zone-select");
+    const zoneBadge = card.querySelector(".mp-zone-badge");
+    zoneSelect.addEventListener("change", () => {
+      if (zoneSelect.value) {
+        zoneBadge.textContent = zoneSelect.value;
+        zoneBadge.className = "mp-badge mp-badge-zone mp-zone-badge";
+      } else {
+        zoneBadge.textContent = "Zone nicht erkannt";
+        zoneBadge.className = "mp-badge mp-badge-zone-unknown mp-zone-badge";
+      }
+    });
 
-    if (!checked('smartmeter') || !checked('bedingungen')) valid = false;
+    mpList.appendChild(card);
+  });
+}
 
-    if (!valid) {
-      errorBox.hidden = false;
-      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
+function prefillForm(report) {
+  const c = report.customer;
+  const nameField = document.getElementById("name");
+  const strasseField = document.getElementById("strasse");
+  const plzField = document.getElementById("plz");
+  const ortField = document.getElementById("ort");
+
+  if (c.name) nameField.value = c.name;
+  if (c.street) strasseField.value = c.street;
+  if (c.plz) plzField.value = c.plz;
+  if (c.ort) ortField.value = c.ort;
+}
+
+// ---------------------------------------------------------------------
+// Manual entry, for when the PDF could not be read
+// ---------------------------------------------------------------------
+
+function addManualRow() {
+  const row = document.createElement("div");
+  row.className = "mp-card manual-row";
+  row.innerHTML = `
+    <div class="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Rolle <span class="text-amber-700">*</span></label>
+        <select class="input-field mp-role">
+          <option value="Konsument">Konsument – ich beziehe Strom</option>
+          <option value="Produzent">Produzent – ich erzeuge Solarstrom</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">LEG-Zone <span class="text-amber-700">*</span></label>
+        <select class="input-field mp-zone">
+          <option value="" selected>Bitte wählen…</option>
+          ${zoneOptionsHtml(null)}
+          <option value="Noch nicht sicher">Noch nicht sicher</option>
+        </select>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Messpunkt-ID (optional)</label>
+        <input type="text" class="input-field mp-id" placeholder="CH1003601234567890123456789012345" autocomplete="off" spellcheck="false" />
+        <span class="text-xs text-slate-400">Beginnt mit «CH», danach nur Ziffern. Steht im PDF und auf der EKZ-Rechnung – wenn du sie nicht findest, lass das Feld leer.</span>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium text-slate-900">Adresse des Messpunkts (optional)</label>
+        <input type="text" class="input-field mp-addr" placeholder="Nur falls abweichend von deiner Adresse" autocomplete="off" />
+      </div>
+    </div>
+    <div class="text-right mt-3">
+      <button type="button" class="mp-remove text-xs text-slate-400 hover:text-red-600 underline">Messpunkt entfernen</button>
+    </div>
+  `;
+  row.querySelector(".mp-remove").addEventListener("click", () => {
+    row.remove();
+    updateManualRows();
+  });
+  row.querySelectorAll("input, select").forEach(el =>
+    el.addEventListener("input", () => el.classList.remove("invalid")));
+  mpList.appendChild(row);
+  updateManualRows();
+  return row;
+}
+
+function manualRows() {
+  return [...mpList.querySelectorAll(".manual-row")];
+}
+
+// The last remaining row cannot be removed
+function updateManualRows() {
+  const rows = manualRows();
+  rows.forEach(row => { row.querySelector(".mp-remove").hidden = rows.length < 2; });
+}
+
+// ---------------------------------------------------------------------
+
+function showForm() {
+  uploadPhase.hidden = true;
+  form.hidden = false;
+  resultPhase.hidden = true;
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showParsedForm(report, file) {
+  mode = "parsed";
+  parsedReport = report;
+  parseFailure = null;
+  manualNotice.hidden = true;
+  addMpBtn.hidden = true;
+  fileInfo.className = `${FILE_INFO_CLASSES} bg-green-50 border-green-200`;
+  parsedFilename.className = "text-sm text-green-800 font-medium";
+  resetBtn.className = "text-sm text-green-700 hover:text-green-900 underline shrink-0";
+  parsedFilename.textContent = `${file.name} — ${report.measuring_points.length} Messpunkt(e) erkannt`;
+  mpLegend.textContent = "Messpunkte auswählen";
+  mpHint.textContent = "Wähle die Messpunkte aus, die du für die LEG anmelden möchtest. "
+    + "Die Rolle (Konsument/Produzent) und LEG-Zone wurden automatisch erkannt.";
+  personHint.textContent = "Aus dem PDF übernommen – bitte überprüfen und ggf. korrigieren.";
+  renderMpCards(report);
+  prefillForm(report);
+  showForm();
+}
+
+function showManualForm(file, message) {
+  mode = "manual";
+  parsedReport = null;
+  selectedMps.clear();
+  parseFailure = { message, phase: lastPhase };
+  manualNoticeMsg.textContent = message;
+  manualDiagnostics.textContent = buildDiagnostics();
+  manualNotice.hidden = false;
+  addMpBtn.hidden = false;
+  fileInfo.className = `${FILE_INFO_CLASSES} bg-slate-50 border-slate-200`;
+  parsedFilename.className = "text-sm text-slate-600 font-medium";
+  resetBtn.className = "text-sm text-slate-600 hover:text-slate-900 underline shrink-0";
+  parsedFilename.textContent = `${file.name} — wird unverändert mitgeschickt`;
+  mpLegend.textContent = "Messpunkte erfassen";
+  mpHint.textContent = "Trage die Messpunkte ein, die du für die LEG anmelden möchtest. "
+    + "Bei mehreren Messpunkten (z. B. Bezug und Solaranlage) füge weitere Zeilen hinzu.";
+  personHint.textContent = "Bitte ausfüllen.";
+  mpList.innerHTML = "";
+  addManualRow();
+  showForm();
+}
+
+function resetUI() {
+  mode = "parsed";
+  parsedReport = null;
+  pdfFile = null;
+  parseFailure = null;
+  lastPhase = "";
+  selectedMps.clear();
+  uploadPhase.hidden = false;
+  form.hidden = true;
+  form.reset();
+  resultPhase.hidden = true;
+  manualNotice.hidden = true;
+  addMpBtn.hidden = true;
+  mpList.innerHTML = "";
+  formError.hidden = true;
+  clearError();
+  setStatus("");
+  fileInput.value = "";
+}
+
+async function handleFile(file) {
+  clearError();
+  if (file.type && file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+    showError("Bitte eine PDF-Datei auswählen.");
+    return;
+  }
+  if (file.size === 0) {
+    showError("Die Datei ist leer. Bitte lade das PDF nochmals aus dem myEKZ-Portal herunter.");
+    return;
+  }
+  if (file.size > MAX_PDF_BYTES) {
+    showError(`Die Datei ist ${(file.size / 1024 / 1024).toFixed(1)} MB gross – wir können höchstens 1 MB `
+      + "entgegennehmen. Bitte schicke sie uns direkt an leg@solarbonstetten.ch.");
+    return;
+  }
+
+  pdfFile = file;
+  lastPhase = "Start";
+  setStatus(`Verarbeite «${file.name}» …`);
+
+  try {
+    const report = await parsePdfFileWithFallback(file, (phase) => {
+      lastPhase = phase;
+      setStatus(`«${file.name}» – ${phase}`);
+    });
+    if (report.measuring_points.length === 0) {
+      throw new LegReportParseError("Es konnten keine Messpunkte im PDF gefunden werden.");
     }
+    setStatus("");
+    showParsedForm(report, file);
+  } catch (e) {
+    // Not a dead end: the user can fill in the details by hand, and we get the
+    // PDF plus the diagnostics to enter the rest ourselves.
+    setStatus("");
+    const message = e instanceof LegReportParseError
+      ? e.message
+      : `Unerwarteter Fehler: ${e?.message || e}`;
+    noteError("Abbruch", `${e?.name || "Error"} – ${message}`);
+    showManualForm(file, message);
+  }
+}
 
-    const pvZeilen: string[] = [];
-    if (!pvSection.hidden) {
-      pvZeilen.push('');
-      pvZeilen.push('PV-Anlage');
-      pvZeilen.push(`  Adresse:        ${get('pv_adresse') || '–'}`);
-      pvZeilen.push(`  Leistung:       ${get('pv_leistung') ? get('pv_leistung') + ' kWp' : '–'}`);
-      pvZeilen.push(`  Inbetriebnahme: ${get('pv_jahr') || '–'}`);
+// Dropzone events
+chooseBtn.addEventListener("click", (e) => { e.stopPropagation(); fileInput.click(); });
+dropzone.addEventListener("click", (e) => { if (!e.target.closest("button")) fileInput.click(); });
+fileInput.addEventListener("change", () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+
+["dragenter", "dragover"].forEach(evt =>
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropzone.classList.add("dragover"); }));
+["dragleave", "drop"].forEach(evt =>
+  dropzone.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); dropzone.classList.remove("dragover"); }));
+dropzone.addEventListener("drop", (e) => {
+  const file = e.dataTransfer?.files?.[0];
+  if (file) handleFile(file);
+});
+
+resetBtn.addEventListener("click", resetUI);
+addMpBtn.addEventListener("click", () => {
+  addManualRow().querySelector(".mp-role").focus();
+});
+backToFormBtn.addEventListener("click", () => {
+  resultPhase.hidden = true;
+  resultSuccess.hidden = true;
+  resultError.hidden = true;
+  lastSubmittedForm.hidden = false;
+});
+
+// The form to return to from the error screen
+let lastSubmittedForm = form;
+
+// Sends the payload and switches to the result screen. `file` is optional –
+// the manual form has no PDF to send along.
+async function sendSubmission(payload, file, sourceForm) {
+  lastSubmittedForm = sourceForm;
+  const submitBtn = sourceForm.querySelector('button[type="submit"]');
+  const submitLabel = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Wird gesendet\u2026";
+
+  try {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(payload));
+    if (file) formData.append("pdf", file);
+
+    const res = await fetch(API_URL, { method: "POST", body: formData });
+
+    sourceForm.hidden = true;
+    resultPhase.hidden = false;
+
+    if (res.ok) {
+      resultSuccess.hidden = false;
+      resultError.hidden = true;
+    } else if (res.status === 429) {
+      resultSuccess.hidden = true;
+      resultError.hidden = false;
+      resultErrorMsg.textContent =
+        "Zu viele Anfragen. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
+    } else {
+      resultSuccess.hidden = true;
+      resultError.hidden = false;
+      resultErrorMsg.textContent =
+        "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut oder kontaktiere uns unter leg@solarbonstetten.ch.";
     }
+  } catch (err) {
+    sourceForm.hidden = true;
+    resultPhase.hidden = false;
+    resultSuccess.hidden = true;
+    resultError.hidden = false;
+    resultErrorMsg.textContent =
+      "Verbindungsfehler. Bitte prüfe deine Internetverbindung und versuche es erneut, oder kontaktiere uns unter leg@solarbonstetten.ch.";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = submitLabel;
+    resultPhase.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
-    const bemerkungen = get('bemerkungen');
+// Form submission
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  formError.hidden = true;
 
-    const body = [
-      `LEG ${art} – solarbonstetten`,
-      '─'.repeat(35),
-      '',
-      `Art:            ${art}`,
-      `Rolle:          ${rolle}`,
-      `LEG-Zone:       ${get('zone')}`,
-      '',
-      'Angaben zur Person',
-      `  Vorname:      ${get('vorname')}`,
-      `  Name:         ${get('name')}`,
-      `  Strasse:      ${get('strasse')}`,
-      `  PLZ / Ort:    ${get('plz')} ${get('ort')}`,
-      `  E-Mail:       ${get('email')}`,
-      `  Telefon:      ${get('telefon') || '–'}`,
-      `  Messpunkt:    ${get('messpunkt') || '–'}`,
-      ...pvZeilen,
-      ...(bemerkungen ? ['', 'Bemerkungen', `  ${bemerkungen}`] : []),
-      '',
-      'Bestätigungen',
-      `  [x] LEG-Teilnahmebedingungen solarbonstetten ${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND}) akzeptiert`,
-      '  [x] Kommunikativer Smart Meter als Voraussetzung zur Kenntnis genommen',
-      '',
-      '─'.repeat(35),
-      'BITTE NOCH ANHÄNGEN: Anlageninformation-PDF aus dem EKZ-Portal (myEKZ.ch)',
-      '─'.repeat(35),
-      'Diese Meldung wurde über solarbonstetten.ch ausgefüllt.',
-    ].join('\n');
+  const get = (id) => {
+    const el = form.elements.namedItem(id);
+    return el ? el.value.trim() : "";
+  };
+  const checked = (id) => form.elements.namedItem(id)?.checked ?? false;
 
-    const subject = `LEG ${art} – ${get('vorname')} ${get('name')}`;
-    window.location.href =
-      `mailto:leg@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // Validate
+  const errors = [];
+  if (!get("name")) errors.push("Name ist erforderlich.");
+  if (!get("strasse")) errors.push("Strasse ist erforderlich.");
+  if (!get("plz")) errors.push("PLZ ist erforderlich.");
+  if (!get("ort")) errors.push("Ort ist erforderlich.");
+  if (!get("email")) errors.push("E-Mail ist erforderlich.");
+  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(get("email"))) errors.push("Bitte gib eine gültige E-Mail-Adresse an.");
+  if (!checked("smartmeter")) errors.push("Bitte bestätige die Smart-Meter-Voraussetzung.");
+  if (!checked("bedingungen")) errors.push("Bitte akzeptiere die Teilnahmebedingungen.");
+
+  // Collect the messpunkte – either from the PDF or from the manual rows
+  const messpunkte = [];
+  if (mode === "parsed") {
+    if (selectedMps.size === 0) errors.push("Bitte wähle mindestens einen Messpunkt aus.");
+    for (const idx of [...selectedMps].sort((a, b) => a - b)) {
+      const zoneSelect = mpList.querySelector(`.mp-zone-select[data-index="${idx}"]`);
+      if (!zoneSelect?.value) {
+        errors.push(`Bitte wähle eine LEG-Zone für Messpunkt ${idx + 1}.`);
+        continue;
+      }
+      const mp = parsedReport.measuring_points[idx];
+      messpunkte.push({
+        messpunkt_id: mp.messpunkt_id,
+        rolle: inferRole(mp),
+        leg_zone: zoneSelect.value,
+        adresse: mp.adresse,
+        netzebene: mp.netzebene,
+        anschlussleistung: mp.anschlussleistung,
+        verteilnetzbetreiber: mp.verteilnetzbetreiber,
+        unterwerk: mp.unterwerk,
+        trafostation: mp.trafostation,
+        politische_gemeinde: mp.politische_gemeinde,
+      });
+    }
+  } else {
+    manualRows().forEach((row, i) => {
+      const zoneEl = row.querySelector(".mp-zone");
+      const idEl = row.querySelector(".mp-id");
+      const strasse = row.querySelector(".mp-addr").value.trim();
+      // Spaces are part of how the ID is printed, not part of the ID
+      const messpunktId = idEl.value.replace(/\s+/g, "").toUpperCase();
+      let rowOk = true;
+
+      if (!zoneEl.value) {
+        errors.push(`Messpunkt ${i + 1}: Bitte wähle eine LEG-Zone.`);
+        zoneEl.classList.add("invalid");
+        rowOk = false;
+      }
+      if (messpunktId && !MESSPUNKT_ID_RE.test(messpunktId)) {
+        errors.push(`Messpunkt ${i + 1}: Die Messpunkt-ID muss mit «CH» beginnen, gefolgt von 10–33 Ziffern. `
+          + "Lass das Feld leer, wenn du sie nicht findest.");
+        idEl.classList.add("invalid");
+        rowOk = false;
+      }
+      if (!rowOk) return;
+
+      messpunkte.push({
+        messpunkt_id: messpunktId || null,
+        rolle: row.querySelector(".mp-role").value,
+        leg_zone: zoneEl.value,
+        adresse: {
+          strasse: strasse || get("strasse"),
+          plz: get("plz"),
+          ort: get("ort"),
+        },
+      });
+    });
+    if (messpunkte.length === 0 && errors.length === 0) {
+      errors.push("Bitte erfasse mindestens einen Messpunkt.");
+    }
+  }
+
+  // Mark invalid fields
+  ["name", "strasse", "plz", "ort", "email"].forEach(id => {
+    const el = form.elements.namedItem(id);
+    if (el) el.classList.toggle("invalid", !el.value.trim());
   });
 
-  form.querySelectorAll('input, select, textarea').forEach(el => {
-    el.addEventListener('input', () => (el as HTMLElement).classList.remove('invalid'));
-  });
+  if (errors.length) {
+    formError.innerHTML = errors.map(e => escHtml(e)).join("<br>");
+    formError.hidden = false;
+    formError.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  // Manual submissions carry the diagnostics along so we can chase down the
+  // parser failure afterwards.
+  let bemerkungen = get("bemerkungen");
+  if (mode === "manual") {
+    const note = "--- Automatisch angehängt: PDF konnte im Browser nicht gelesen werden ---\n"
+      + buildDiagnostics();
+    bemerkungen = bemerkungen ? `${bemerkungen}\n\n${note}` : note;
+  }
+  if (bemerkungen.length > MAX_BEMERKUNGEN) bemerkungen = `${bemerkungen.slice(0, MAX_BEMERKUNGEN - 1)}…`;
+
+  const payload = {
+    art: (form.elements.namedItem("art")).value,
+    person: {
+      name: get("name"),
+      strasse: get("strasse"),
+      plz: get("plz"),
+      ort: get("ort"),
+    },
+    kontakt: {
+      email: get("email"),
+      telefon: get("telefon") || null,
+    },
+    messpunkte,
+    bestaetigungen: {
+      smart_meter: true,
+      teilnahmebedingungen: `${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND})`,
+    },
+    bemerkungen: bemerkungen || null,
+  };
+
+  await sendSubmission(payload, pdfFile, form);
+});
+
+// =====================================================================
+// Manual entry, for everyone who cannot find the PDF
+// =====================================================================
+
+const mName = document.getElementById("m-name");
+const mEmail = document.getElementById("m-email");
+const mTelefon = document.getElementById("m-telefon");
+const mBedingungen = document.getElementById("m-bedingungen");
+const mSmartmeter = document.getElementById("m-smartmeter");
+const mBemerkungen = document.getElementById("m-bemerkungen");
+
+const LEG_PLZ = "8906";
+const LEG_ORT = "bonstetten";
+
+// Once the user sets these themselves we stop overriding their choice
+let abweichendTouched = false;
+let zoneTouched = false;
+
+function showManualEntry() {
+  uploadPhase.hidden = true;
+  form.hidden = true;
+  resultPhase.hidden = true;
+  manualForm.hidden = false;
+  updateZoneSuggestion();
+  manualForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showUploadPhase() {
+  manualForm.hidden = true;
+  uploadPhase.hidden = false;
+  uploadPhase.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// We only run LEGs in 8906 Bonstetten, so any other address means the building
+// being signed up cannot be the one the user just entered.
+function addressIsBonstetten() {
+  const plz = mPlz.value.trim();
+  const ort = mOrt.value.trim().toLowerCase();
+  if (plz && plz !== LEG_PLZ) return false;
+  if (ort && !ort.startsWith(LEG_ORT)) return false;
+  return true;
+}
+
+function syncAbweichend() {
+  if (!abweichendTouched) mAbweichend.checked = !addressIsBonstetten();
+  mAbweichendWrap.hidden = !mAbweichend.checked;
+  updateZoneSuggestion();
+}
+
+// The address the LEG membership is for – the building, not the mail address
+function legAddress() {
+  return (mAbweichend.checked ? mLegStrasse.value : mStrasse.value).trim();
+}
+
+function updateZoneSuggestion() {
+  const strasse = legAddress();
+  const zones = strasse ? detectZone({ strasse }) : [];
+
+  if (zones.length === 1) {
+    if (!zoneTouched) mZone.value = zones[0];
+    mZoneHint.textContent = mZone.value === zones[0]
+      ? "Anhand deiner Adresse automatisch ausgewählt – bitte kurz prüfen."
+      : `Zu deiner Adresse würde «${zones[0]}» passen.`;
+    return;
+  }
+
+  if (!zoneTouched) mZone.value = "";
+  if (zones.length > 1) {
+    mZoneHint.textContent = "Zu deiner Adresse passen mehrere Zonen – bitte wähle die richtige aus.";
+  } else if (strasse) {
+    mZoneHint.textContent = "Wir konnten deine Adresse keiner Zone zuordnen – bitte wähle die Zone selber aus.";
+  } else {
+    mZoneHint.textContent = "";
+  }
+}
+
+noPdfBtn.addEventListener("click", (e) => { e.stopPropagation(); showManualEntry(); });
+backToPdfBtn.addEventListener("click", showUploadPhase);
+
+mAbweichend.addEventListener("change", () => {
+  abweichendTouched = true;
+  mAbweichendWrap.hidden = !mAbweichend.checked;
+  if (mAbweichend.checked) mLegStrasse.focus();
+  updateZoneSuggestion();
+});
+
+// "change" rather than "input": re-checking half-typed values would make the
+// checkbox and the zone flicker while the user is still writing.
+[mPlz, mOrt].forEach(el => el.addEventListener("change", syncAbweichend));
+[mStrasse, mLegStrasse].forEach(el => el.addEventListener("change", updateZoneSuggestion));
+mZone.addEventListener("change", () => { zoneTouched = true; updateZoneSuggestion(); });
+
+manualForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  manualFormError.hidden = true;
+
+  const errors = [];
+  const requireField = (el, message) => {
+    const ok = el.value.trim().length > 0;
+    el.classList.toggle("invalid", !ok);
+    if (!ok) errors.push(message);
+    return ok;
+  };
+
+  requireField(mName, "Bitte gib deinen Namen an.");
+  requireField(mStrasse, "Bitte gib Strasse und Hausnummer an.");
+  requireField(mPlz, "Bitte gib die PLZ an.");
+  requireField(mOrt, "Bitte gib den Ort an.");
+  if (mAbweichend.checked) {
+    requireField(mLegStrasse, "Bitte gib Strasse und Hausnummer des Gebäudes an, das du anmelden möchtest.");
+  }
+  if (requireField(mEmail, "Bitte gib deine E-Mail-Adresse an.")
+      && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mEmail.value.trim())) {
+    mEmail.classList.add("invalid");
+    errors.push("Bitte gib eine gültige E-Mail-Adresse an.");
+  }
+  if (!mZone.value) {
+    mZone.classList.add("invalid");
+    errors.push("Bitte wähle die LEG-Zone deines Gebäudes.");
+  }
+  if (!mSmartmeter.checked) errors.push("Bitte bestätige die Smart-Meter-Voraussetzung.");
+  if (!mBedingungen.checked) errors.push("Bitte akzeptiere die Teilnahmebedingungen.");
+
+  if (errors.length) {
+    manualFormError.innerHTML = errors.map(msg => escHtml(msg)).join("<br>");
+    manualFormError.hidden = false;
+    manualFormError.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const plz = mPlz.value.trim();
+  const ort = mOrt.value.trim();
+
+  // The note tells us why this submission has no PDF attached
+  const note = "--- Automatisch angehängt ---\n"
+    + "Über das Kurzformular ohne PDF erfasst – Messpunkt-Nummer und Rolle sind noch offen.";
+  const remarks = mBemerkungen.value.trim();
+  let bemerkungen = remarks ? `${remarks}\n\n${note}` : note;
+  if (bemerkungen.length > MAX_BEMERKUNGEN) bemerkungen = `${bemerkungen.slice(0, MAX_BEMERKUNGEN - 1)}…`;
+
+  const payload = {
+    art: "Anmeldung",
+    person: {
+      name: mName.value.trim(),
+      strasse: mStrasse.value.trim(),
+      plz,
+      ort,
+    },
+    kontakt: {
+      email: mEmail.value.trim(),
+      telefon: mTelefon.value.trim() || null,
+    },
+    // Without the PDF we know neither the messpunkt ID nor the role – we look
+    // both up ourselves once the request reaches us.
+    messpunkte: [{
+      messpunkt_id: null,
+      rolle: "Unbekannt",
+      leg_zone: mZone.value,
+      adresse: mAbweichend.checked
+        ? { strasse: legAddress(), plz: LEG_PLZ, ort: "Bonstetten" }
+        : { strasse: legAddress(), plz, ort },
+    }],
+    bestaetigungen: {
+      smart_meter: true,
+      teilnahmebedingungen: `${BEDINGUNGEN_VERSION} (Stand ${BEDINGUNGEN_STAND})`,
+    },
+    bemerkungen,
+  };
+
+  await sendSubmission(payload, null, manualForm);
+});
+
+// Remove invalid styling on input
+form.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => el.classList.remove("invalid"));
+});
+manualForm.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("input", () => el.classList.remove("invalid"));
+});
 </script>
