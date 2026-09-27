@@ -1,6 +1,7 @@
 ---
 title: Einladung zur Generalversammlung
 date: 2026-10-29T19:00:00
+image: /images/news/generalversammlung.webp
 ---
 
 Wir laden alle Mitglieder von solarbonstetten herzlich zur diesjährigen Generalversammlung ein. Wir blicken gemeinsam auf das vergangene Vereinsjahr zurück, informieren über laufende Projekte und freuen uns auf den Austausch mit euch.
