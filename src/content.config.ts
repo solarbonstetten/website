@@ -7,6 +7,8 @@ const news = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     image: z.string().optional(),
+    // Entwurf: Seite wird gebaut (Direktlink für Review), aber nirgends aufgelistet.
+    entwurf: z.boolean().default(false),
   }),
 });
 

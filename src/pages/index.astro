@@ -9,7 +9,7 @@ const pvAnlagen = solarData.filter(d => d.installed > 0).length;
 const pvLeistungKwp = solarData.reduce((s, d) => s + d.installed, 0);
 const pvProduktionGwh = (pvLeistungKwp * KWH_PRO_KWP / 1_000_000).toFixed(1);
 
-const latestNews = (await getCollection('news'))
+const latestNews = (await getCollection('news', ({ data }) => !data.entwurf))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
