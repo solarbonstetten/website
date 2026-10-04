@@ -18,6 +18,40 @@ const statusMeta: Record<string, { label: string; dotClass: string; textClass: s
 };
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// ── Preismodell ─────────────────────────────────────────────
+// LEG-Energiepreis gemäss Teilnahmebedingungen Ziff. 5.2, für Konsumenten und Produzenten gleich.
+const LEG_ENERGIE = 12;
+// Abschlag auf den EKZ-Netznutzungstarif für LEG-Strom (gleiche Netzebene).
+const LEG_NETZRABATT = 0.4;
+
+// EKZ-Tarife für Privatkunden in Rp./kWh inkl. MWST (Quelle: ekz.ch/tarife).
+// netz = EKZ Netz 400ST (Standardtarif), netzBasis = EKZ Netz 400F (Basistarif).
+// abgaben = SDL + Bundesabgaben + Stromreserve + solidarisierte Kosten + Förderung Energieeffizienz.
+const ekzTarife = [
+  { jahr: 2027, energieWinter: 14.05, energieSommer: 9.51, netz: 8.43, netzBasis: 7.95, abgaben: 0.21 + 2.49 + 0.18 + 0.21 + 0.17 },
+  { jahr: 2026, energieWinter: 14.38, energieSommer: 9.73, netz: 8.60, netzBasis: 8.11, abgaben: 0.29 + 2.49 + 0.44 + 0.05 + 0.17 },
+];
+
+const rp = (n: number) => n.toFixed(2);
+const preisTabellen = ekzTarife.map(t => {
+  const legNetz = t.netz * (1 - LEG_NETZRABATT);
+  return {
+    jahr: t.jahr,
+    zeilen: [
+      { label: 'Energie',     hinweis: 'LEG-Strom: an die LEG · EKZ-Strom: an EKZ', leg: LEG_ENERGIE, winter: t.energieWinter, sommer: t.energieSommer },
+      { label: 'Netznutzung', hinweis: 'an EKZ – für LEG-Strom mit 40% Rabatt',     leg: legNetz,     winter: t.netz,          sommer: t.netz },
+      { label: 'Abgaben',     hinweis: 'an EKZ – SDL, Bundesabgaben, Stromreserve u. a.', leg: t.abgaben, winter: t.abgaben,   sommer: t.abgaben },
+    ],
+    total: {
+      leg: LEG_ENERGIE + legNetz + t.abgaben,
+      winter: t.energieWinter + t.netz + t.abgaben,
+      sommer: t.energieSommer + t.netz + t.abgaben,
+    },
+    basisDiff: (t.netz - t.netzBasis) * (1 - LEG_NETZRABATT),
+    basisDiffEkz: t.netz - t.netzBasis,
+  };
+});
 ---
 <BaseLayout
   title="Lokale Elektrizitäts­gemeinschaft (LEG)"
@@ -49,21 +83,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="flex items-start gap-4">
           <span class="text-3xl">⚡</span>
           <div>
-            <p class="font-bold text-slate-900 mb-1">Günstiger Strom</p>
+            <p class="font-bold text-slate-900 mb-1">Stabiler Energiepreis</p>
             <p class="text-sm text-slate-500 leading-relaxed">
-              Konsumenten zahlen auf dem LEG-Strom <strong class="text-amber-700">20.31 Rp./kWh</strong> (inkl. Netz &amp; Abgaben) –
-              statt <span class="line-through text-slate-400">26.42 Rp.</span> EKZ-Standardtarif im Winter
-              <span class="inline-block bg-green-100 text-green-700 font-semibold text-xs rounded-full px-2 py-0.5 ml-1">−23%</span>
-              und statt <span class="line-through text-slate-400">21.77 Rp.</span> im Sommer
-              <span class="inline-block bg-green-100 text-green-700 font-semibold text-xs rounded-full px-2 py-0.5 ml-1">−7%</span>.
+              LEG-Strom kostet <strong class="text-amber-700">{LEG_ENERGIE} Rp./kWh</strong> – das ganze Jahr,
+              unabhängig von Saison und Strombörse. Dazu kommen 40% Rabatt auf die Netznutzung.
             </p>
           </div>
         </div>
         <div class="flex items-start gap-4">
           <span class="text-3xl">🌞</span>
           <div>
-            <p class="font-bold text-slate-900 mb-1">Bessere Vergütung</p>
-            <p class="text-sm text-slate-500 leading-relaxed">Produzenten erhalten 12 Rp./kWh – mehr als die übliche Einspeisung ins Netz.</p>
+            <p class="font-bold text-slate-900 mb-1">Faire Vergütung</p>
+            <p class="text-sm text-slate-500 leading-relaxed">Produzenten erhalten dieselben {LEG_ENERGIE} Rp./kWh – planbar statt schwankender Marktpreise.</p>
           </div>
         </div>
         <div class="flex items-start gap-4">
@@ -126,8 +157,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <h3 class="text-base font-bold text-slate-900 mb-3">Für Konsumentinnen &amp; Konsumenten</h3>
             <ul class="flex flex-col gap-2 text-sm text-slate-500">
-              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Günstigerer LEG-Strom (20.31 Rp./kWh, inkl. Netz &amp; Abgaben) – im Winter −23%, im Sommer −7% gegenüber EKZ-Standardtarif</li>
-              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> 40% Rabatt auf Netzkosten für intern bezogenen LEG-Strom – direkt im Gesamtpreis enthalten</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Stabiler LEG-Energiepreis von {LEG_ENERGIE} Rp./kWh – das ganze Jahr gleich</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> 40% Rabatt auf die Netznutzung für bezogenen LEG-Strom</li>
               <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Restliche Energie weiterhin via EKZ geliefert</li>
               <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Kein Zusatzaufwand – jährliche Abrechnung</li>
               <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Austritt mit 3 Monaten Frist jederzeit möglich</li>
@@ -136,7 +167,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <h3 class="text-base font-bold text-slate-900 mb-3">Für Produzentinnen &amp; Produzenten</h3>
             <ul class="flex flex-col gap-2 text-sm text-slate-500">
-              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Höhere Vergütung (12 Rp./kWh) – ermöglicht durch 40% Netzkosten-Rabatt in der LEG</li>
+              <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Stabile Vergütung von {LEG_ENERGIE} Rp./kWh für LEG-Strom – unabhängig vom Spot-Marktpreis</li>
               <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Direkter Verkauf im Quartier statt Einspeisung</li>
               <li class="flex items-start gap-2"><span class="text-amber-500 font-bold shrink-0">✓</span> Verwaltung durch solarbonstetten</li>
             </ul>
@@ -247,50 +278,44 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div>
           <h2 class="mb-6">Preismodell</h2>
           <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6">
-            <h3 class="text-base font-bold text-slate-900 mb-4">LEG-Strompreise Bonstetten</h3>
-            <!-- LEG-Preis (hervorgehoben) -->
-            <div class="bg-white border-2 border-amber-400 rounded-xl px-4 py-3 mb-3 flex items-center justify-between">
+            <h3 class="text-base font-bold text-slate-900 mb-4">LEG-Energiepreis Bonstetten</h3>
+            <div class="bg-white border-2 border-amber-400 rounded-xl px-4 py-3">
+              <p class="text-xs text-amber-600 uppercase tracking-wider font-semibold mb-0.5">Für Konsumenten und Produzenten</p>
+              <div class="flex items-center gap-3 flex-wrap">
+                <p class="text-3xl font-bold text-amber-700 m-0">{LEG_ENERGIE} Rp.</p>
+                <span class="bg-amber-400 text-white text-xs font-bold uppercase tracking-wider rounded-full px-3 py-1">nur Energie</span>
+              </div>
+              <p class="text-xs text-slate-400">pro kWh LEG-Strom – stabil, das ganze Jahr</p>
+            </div>
+            <!-- Was dazukommt -->
+            <div class="flex items-center gap-3 px-4 py-2 text-slate-400">
+              <span class="text-xl font-bold leading-none">+</span>
+              <span class="text-xs uppercase tracking-wider font-semibold">für Konsumenten zusätzlich</span>
+            </div>
+            <div class="bg-slate-100 rounded-xl px-4 py-3 mb-2 flex items-center justify-between gap-3">
               <div>
-                <p class="text-xs text-amber-600 uppercase tracking-wider font-semibold mb-0.5">Ihr LEG-Preis (Gesamtpreis Bezug)</p>
-                <p class="text-3xl font-bold text-amber-700">20.31 Rp.</p>
-                <p class="text-xs text-slate-400">pro kWh (inkl. Netz &amp; Abgaben)</p>
+                <p class="text-sm font-semibold text-slate-700 m-0">Netznutzung &amp; Abgaben</p>
+                <p class="text-xs text-slate-400 m-0">von EKZ verrechnet – Netznutzung mit 40% Rabatt</p>
               </div>
+              <p class="text-lg font-semibold text-slate-600 m-0 whitespace-nowrap tabular-nums">{rp(preisTabellen[0].total.leg - LEG_ENERGIE)} Rp.</p>
             </div>
-            <!-- Vergleich Winter / Sommer -->
-            <div class="flex flex-col gap-2 mb-3">
-              <div class="bg-slate-100 rounded-xl px-4 py-3 flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">EKZ Standardtarif Winter</p>
-                  <p class="text-xl font-semibold text-slate-400 line-through">26.42 Rp.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-slate-400">pro kWh</span>
-                  <span class="bg-green-500 text-white text-sm font-bold rounded-full px-3 py-1 shrink-0">−23%</span>
-                </div>
-              </div>
-              <div class="bg-slate-100 rounded-xl px-4 py-3 flex items-center justify-between">
-                <div>
-                  <p class="text-xs text-slate-400 uppercase tracking-wider mb-0.5">EKZ Standardtarif Sommer</p>
-                  <p class="text-xl font-semibold text-slate-400 line-through">21.77 Rp.</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-slate-400">pro kWh</span>
-                  <span class="bg-green-500 text-white text-sm font-bold rounded-full px-3 py-1 shrink-0">−7%</span>
-                </div>
-              </div>
+            <div class="flex items-center justify-between gap-3 px-4 mb-4">
+              <p class="text-sm font-bold text-slate-900 m-0">Total pro kWh LEG-Strom ({preisTabellen[0].jahr})</p>
+              <p class="text-lg font-bold text-slate-900 m-0 whitespace-nowrap tabular-nums">{rp(preisTabellen[0].total.leg)} Rp.</p>
             </div>
-            <!-- Hinweis EKZ-Solarstromtarif -->
-            <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2.5 mb-3">
-              <p class="text-xs text-blue-700 leading-relaxed">
-                💡 <strong>Zum Vergleich:</strong> EKZ-Tarife für lokal produzierten Solarstrom liegen <em>über</em> dem Standardtarif – der LEG-Preis liegt darunter.
-              </p>
-            </div>
-            <div class="flex flex-col gap-1.5 mt-1">
+            <p class="text-xs mb-3"><a href="#preise" class="text-amber-700 font-semibold underline">Zur detaillierten Preisübersicht ↓</a></p>
+            <div class="flex flex-col gap-1.5">
               <p class="text-xs text-slate-500 leading-relaxed">
-                Produzenten erhalten 12 Rp./kWh für den eingespeisten LEG-Strom.
+                Konsumenten bezahlen {LEG_ENERGIE} Rp./kWh für die Energie, Produzenten erhalten {LEG_ENERGIE} Rp./kWh –
+                die Einnahmen gehen vollständig an die Solarstromproduzenten der LEG.
               </p>
               <p class="text-xs text-slate-500 leading-relaxed">
-                Konsumenten beziehen nicht abgedeckten Restbedarf weiterhin über EKZ – die Versorgung ist jederzeit sichergestellt.
+                Unser Ziel ist ein stabiler Preis. Allfällige Preisanpassungen kündigen wir mindestens
+                drei Monate im Voraus an (Teilnahmebedingungen Ziff. 5.4).
+              </p>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                Netznutzung und Abgaben verrechnet weiterhin EKZ. Nicht abgedeckten Restbedarf liefert EKZ
+                zum gewohnten Tarif – die Versorgung ist jederzeit sichergestellt.
               </p>
             </div>
           </div>
@@ -315,6 +340,104 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Was bezahle ich effektiv? -->
+  <section class="section bg-slate-50 scroll-mt-20" id="preise">
+    <div class="container max-w-4xl">
+      <div class="text-center mb-10">
+        <span class="badge mb-4 inline-block">Preisübersicht</span>
+        <h2 class="mb-4">Was bezahle ich effektiv?</h2>
+        <p class="text-slate-500 leading-relaxed max-w-2xl mx-auto">
+          Der Strompreis besteht aus Energie, Netznutzung und Abgaben. In der LEG ändert sich die Energie
+          ({LEG_ENERGIE} Rp./kWh an die LEG) und die Netznutzung (40% Rabatt) – alles andere bleibt bei EKZ.
+        </p>
+      </div>
+
+      {preisTabellen.map((t, i) => (
+        <details class="preis-details bg-white rounded-2xl border border-slate-200 shadow-sm mb-4 overflow-hidden" open={i === 0}>
+          <summary class="cursor-pointer px-5 py-4 font-bold text-slate-900 text-sm flex items-center justify-between">
+            <span>Konsumenten – Tarife {t.jahr}</span>
+            <span class="text-xs font-normal text-slate-400">Rp./kWh inkl. MWST</span>
+          </summary>
+          <div class="overflow-x-auto border-t border-slate-100">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-xs uppercase tracking-wider text-slate-400">
+                  <th class="text-left font-semibold px-5 py-3"></th>
+                  <th class="text-right font-semibold px-4 py-3 bg-amber-50 text-amber-700 whitespace-nowrap">LEG-Strom</th>
+                  <th class="text-right font-semibold px-4 py-3 whitespace-nowrap">EKZ Winter<br /><span class="normal-case tracking-normal font-normal">Okt.–März</span></th>
+                  <th class="text-right font-semibold px-4 py-3 whitespace-nowrap">EKZ Sommer<br /><span class="normal-case tracking-normal font-normal">Apr.–Sept.</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {t.zeilen.map(z => (
+                  <tr class="border-t border-slate-100">
+                    <td class="px-5 py-3">
+                      <span class="font-semibold text-slate-900">{z.label}</span>
+                      <span class="block text-xs text-slate-400">{z.hinweis}</span>
+                    </td>
+                    <td class="text-right px-4 py-3 bg-amber-50 font-semibold text-amber-700 tabular-nums">{rp(z.leg)}</td>
+                    <td class="text-right px-4 py-3 text-slate-600 tabular-nums">{rp(z.winter)}</td>
+                    <td class="text-right px-4 py-3 text-slate-600 tabular-nums">{rp(z.sommer)}</td>
+                  </tr>
+                ))}
+                <tr class="border-t-2 border-slate-200 font-bold">
+                  <td class="px-5 py-3 text-slate-900">Total pro kWh</td>
+                  <td class="text-right px-4 py-3 bg-amber-50 text-amber-700 tabular-nums">{rp(t.total.leg)}</td>
+                  <td class="text-right px-4 py-3 text-slate-900 tabular-nums">{rp(t.total.winter)}</td>
+                  <td class="text-right px-4 py-3 text-slate-900 tabular-nums">{rp(t.total.sommer)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed px-5 py-3 border-t border-slate-100 m-0">
+            EKZ-Standardtarif (EKZ Energie Erneuerbar, EKZ Netz 400ST). Im Basistarif (EKZ Netz 400F) liegt das Total
+            für LEG-Strom {rp(t.basisDiff)} Rp. und für EKZ-Strom {rp(t.basisDiffEkz)} Rp. tiefer.
+            Grund- und Messtarif von EKZ bleiben unverändert.
+          </p>
+        </details>
+      ))}
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <p class="px-5 py-4 font-bold text-slate-900 text-sm m-0 flex items-center justify-between">
+          <span>Produzenten – Vergütung ab 2027</span>
+          <span class="text-xs font-normal text-slate-400">Rp./kWh</span>
+        </p>
+        <div class="overflow-x-auto border-t border-slate-100">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-xs uppercase tracking-wider text-slate-400">
+                <th class="text-left font-semibold px-5 py-3"></th>
+                <th class="text-right font-semibold px-4 py-3 bg-amber-50 text-amber-700 whitespace-nowrap">Verkauf in der LEG</th>
+                <th class="text-right font-semibold px-4 py-3 whitespace-nowrap">Rücklieferung an EKZ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t border-slate-100">
+                <td class="px-5 py-3 font-semibold text-slate-900">Energie</td>
+                <td class="text-right px-4 py-3 bg-amber-50 font-semibold text-amber-700 whitespace-nowrap">{rp(LEG_ENERGIE)}</td>
+                <td class="text-right px-4 py-3 text-slate-600">Spot-Marktpreis<span class="block text-xs text-slate-400">mind. 6.00 im Quartalsmittel (Anlagen bis 30 kW)</span></td>
+              </tr>
+              <tr class="border-t border-slate-100">
+                <td class="px-5 py-3 font-semibold text-slate-900">Herkunftsnachweis (HKN)</td>
+                <td class="text-right px-4 py-3 bg-amber-50 text-amber-700">–</td>
+                <td class="text-right px-4 py-3 text-slate-600">bis 3.00 im Winter<span class="block text-xs text-slate-400">bis 0.50 im Sommer</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed px-5 py-3 border-t border-slate-100 m-0">
+          Strom, der in der LEG keinen Abnehmer findet, wird weiterhin zum EKZ-Rückliefertarif vergütet.
+          Ab 2027 richtet sich dieser nach dem viertelstündlichen Spot-Marktpreis und kann auch negativ sein.
+        </p>
+      </div>
+
+      <p class="text-xs text-slate-400 text-center mt-6">
+        Quelle EKZ-Tarife: <a href="https://www.ekz.ch/de/angebote/strom/tarife/stromtarife-privatkunden.html" target="_blank" rel="noopener noreferrer" class="underline">Tarife für Privatkunden</a>
+        und <a href="https://www.ekz.ch/de/angebote/strom/tarife/rueckliefertarife.html" target="_blank" rel="noopener noreferrer" class="underline">Rückliefertarife</a>. Alle Angaben ohne Gewähr.
+      </p>
     </div>
   </section>
 
