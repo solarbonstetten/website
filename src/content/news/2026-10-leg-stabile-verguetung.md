@@ -1,8 +1,7 @@
 ---
 title: 12 Rappen für Solarstrom – die LEG Bonstetten belohnt Strom vom Dach
-date: 2026-10-04T10:00:00
+date: 2026-10-05T10:00:00
 image: /images/news/stock_solar_house.webp
-entwurf: true
 ---
 
 Solarstrom vom eigenen Dach lohnt sich – am meisten dort, wo er direkt verbraucht wird. Mit den Lokalen Elektrizitätsgemeinschaften (LEG) gilt das in Bonstetten neu auch für den Strom, den man selbst nicht braucht: Er geht an die Nachbarschaft, statt anonym ins Netz.
