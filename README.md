@@ -70,6 +70,21 @@ Seiten unter `/leg` und `/leg/anmeldung` für die LEG-Verwaltung der Gemeinde Bo
 
 > **Hinweis:** Nach Aktualisierung der JSON-Files durch das externe Script müssen diese nach `public/leg/data/` committed werden. Die Karte (`public/leg/legmap.html`) liest die Daten relativ via `data/solar_data.json` und `data/leg_polygons.json`.
 
+### Status und Kennzahlen je LEG (`src/data/leg-status.json`)
+
+Status und Zahlen der LEG-Zonen stammen aus **legmanager**, das sie direkt aus my.EKZ liest: LEG-Liste → «Status als JSON». Zum Aktualisieren die heruntergeladene Datei als `src/data/leg-status.json` speichern (überschreiben), bauen und committen. Das Feld `status` in `legs.json` wird nicht mehr gelesen.
+
+| Status auf der Website | legmanager-Status                       | Zahlen auf der Zonen-Karte                         |
+| :--------------------- | :-------------------------------------- | :------------------------------------------------- |
+| Aktiv                  | `aktiv`, `aufloesung_gemeldet`          | aktive Anschlüsse, dazu «+ N bestätigt»             |
+| Wird aktiviert         | `angemeldet` (3 Monate bis Aktivierung) | die bestätigten Anschlüsse                          |
+| In Erfassung           | jede andere LEG, die legmanager kennt   | keine                                              |
+| Geplant                | Zone ohne LEG in legmanager             | keine                                              |
+
+Die Logik steht in `src/data/leg-status.ts` und gilt für die Zonen-Karten, die Zonen-Auswahl der Anmeldung und die Karte (`legmap.html` lädt `/leg/data/zonen-status.json`, das beim Bauen daraus erzeugt wird).
+
+Die LEGs in legmanager heissen und nummerieren anders als hier; die Zuordnung steht als `LEGMANAGER_ID` in `src/data/leg-status.ts`. Eine neue LEG in legmanager erscheint erst, wenn sie dort eingetragen ist.
+
 ## 🐍 Python Scripts (`scripts/`)
 
 | Script                        | Beschreibung                                      |

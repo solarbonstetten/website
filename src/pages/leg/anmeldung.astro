@@ -2,18 +2,19 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import legsData from '../../../public/leg/data/legs.json';
 import pdfjsPkg from 'pdfjs-dist/package.json';
+import { alleZonenStatus } from '../../data/leg-status';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 // pdf.js is served from our own origin (see scripts/vendor-pdfjs.mjs)
 const pdfjsBase = `${base}/leg/pdfjs`;
 const pdfjsVersion = pdfjsPkg.version;
-const zonen = legsData.map(l => ({ name: l.name, status: l.status || 'geplant' }));
+const zonen = legsData.map((l, i) => ({ name: l.name, status: alleZonenStatus[i] }));
 
 const statusEmoji: Record<string, string> = {
-  geplant:    '⚪',
-  erfassung:  '🟡',
-  angemeldet: '🔵',
-  aktiv:      '🟢',
+  geplant:        '⚪',
+  erfassung:      '🟡',
+  wird_aktiviert: '🔵',
+  aktiv:          '🟢',
 };
 ---
 <BaseLayout
@@ -502,7 +503,7 @@ const statusEmoji: Record<string, string> = {
   }
 </style>
 
-<script type="module" define:vars={{ legsData, statusEmoji, pdfjsBase, pdfjsVersion }}>
+<script type="module" define:vars={{ legsData, alleZonenStatus, statusEmoji, pdfjsBase, pdfjsVersion }}>
 // =====================================================================
 // PDF parsing logic (from leg_report_extractor prototype)
 // =====================================================================
@@ -1043,9 +1044,9 @@ function escHtml(s) {
 }
 
 function zoneOptionsHtml(selectedZone) {
-  return legsData.map(l => {
+  return legsData.map((l, i) => {
     const sel = l.name === selectedZone ? "selected" : "";
-    const emoji = statusEmoji[l.status || "geplant"] || "";
+    const emoji = statusEmoji[alleZonenStatus[i]] || "";
     return `<option value="${escHtml(l.name)}" ${sel}>${emoji} ${escHtml(l.name)}</option>`;
   }).join("");
 }

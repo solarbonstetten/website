@@ -138,6 +138,8 @@
 
         const infographicMode = false;
         const singleFileMode = false;
+        // Zonen-Nr. → Status, beim Bauen erzeugt (src/pages/leg/data/zonen-status.json.ts).
+        let zonenStatus = {};
 
         async function loadData() {
             let rawSolarData, rawLegPolygons, rawLegs;
@@ -148,14 +150,16 @@
                 rawLegs = [];
             } else {
                 try {
-                    const [solarRes, polygonsRes, legsRes] = await Promise.all([
+                    const [solarRes, polygonsRes, legsRes, statusRes] = await Promise.all([
                         fetch('data/solar_data.json'),
                         fetch('data/leg_polygons.json'),
-                        fetch('data/legs.json')
+                        fetch('data/legs.json'),
+                        fetch('data/zonen-status.json')
                     ]);
                     rawSolarData = await solarRes.json();
                     rawLegPolygons = await polygonsRes.json();
                     rawLegs = await legsRes.json();
+                    zonenStatus = await statusRes.json();
                 } catch (err) {
                     console.error("Error loading data:", err);
                     alert("Fehler beim Laden der Daten. Bitte stellen Sie sicher, dass die Dateien im 'data/'-Ordner vorhanden sind.");
@@ -181,7 +185,8 @@
                     const legId = i + 1;
                     legColorMap[legId] = l.color || '#999';
                     legNameMap[legId] = l.name || `LEG ${legId}`;
-                    legStatusMap[legId] = l.status || 'geplant';
+                    // Status aus legmanager (src/data/leg-status.ts), nicht aus legs.json.
+                    legStatusMap[legId] = zonenStatus[legId] || 'geplant';
                 });
             }
 
@@ -208,7 +213,7 @@
                 'match',
                 ['get', 'status'],
                 'aktiv', 0.5,
-                'angemeldet', 0.35,
+                'wird_aktiviert', 0.35,
                 'erfassung', 0.2,
                 0.08 // geplant / default
             ];
