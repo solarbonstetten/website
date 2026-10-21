@@ -3,6 +3,16 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import legsData from '../../../public/leg/data/legs.json';
 import pdfjsPkg from 'pdfjs-dist/package.json';
 import { alleZonenStatus } from '../../data/leg-status';
+import { API_BASE } from '../../data/api';
+import VorschauHinweis from '../../components/VorschauHinweis.astro';
+
+interface Props {
+  // anmeldung-preview.astro: sendet an die neue API statt an api-test.
+  // Zum Umstellen die neue Adresse hier fest eintragen und die Vorschau löschen.
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+const apiUrl = preview ? `${API_BASE}/signup/leg` : 'https://api-test.solarbonstetten.ch/submit';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 // pdf.js is served from our own origin (see scripts/vendor-pdfjs.mjs)
@@ -20,10 +30,13 @@ const statusEmoji: Record<string, string> = {
 <BaseLayout
   title="LEG Anmeldung (mit PDF)"
   description="Melde dich für eine Lokale Elektrizitätsgemeinschaft (LEG) in Bonstetten an – lade dein Anlageninformations-PDF hoch und wir füllen das Formular für dich aus."
+  noindex={preview}
 >
 
+  {preview && <VorschauHinweis empfaenger="leg@solarbonstetten.ch" />}
+
   <!-- Hero -->
-  <div class="relative overflow-hidden" style="padding: 11rem 0 5rem">
+  <div class="relative overflow-hidden" style={`padding: ${preview ? '3.5rem' : '11rem'} 0 5rem`}>
     <div class="hero-bg-shapes">
       <div class="shape shape-1"></div>
       <div class="shape shape-2"></div>
@@ -503,7 +516,7 @@ const statusEmoji: Record<string, string> = {
   }
 </style>
 
-<script type="module" define:vars={{ legsData, alleZonenStatus, statusEmoji, pdfjsBase, pdfjsVersion }}>
+<script type="module" define:vars={{ legsData, alleZonenStatus, statusEmoji, pdfjsBase, pdfjsVersion, apiUrl }}>
 // =====================================================================
 // PDF parsing logic (from leg_report_extractor prototype)
 // =====================================================================
@@ -982,7 +995,7 @@ const manualFormError = document.getElementById("manual-form-error");
 const BEDINGUNGEN_VERSION = "v1.3";
 const BEDINGUNGEN_STAND = "24.06.2026";
 
-const API_URL = "https://api-test.solarbonstetten.ch/submit";
+const API_URL = apiUrl;
 
 // Must match the limit enforced by the API
 const MAX_PDF_BYTES = 1024 * 1024;

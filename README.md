@@ -85,6 +85,34 @@ Die Logik steht in `src/data/leg-status.ts` und gilt für die Zonen-Karten, die 
 
 Die LEGs in legmanager heissen und nummerieren anders als hier; die Zuordnung steht als `LEGMANAGER_ID` in `src/data/leg-status.ts`. Eine neue LEG in legmanager erscheint erst, wenn sie dort eingetragen ist.
 
+## 📨 Formulare und API
+
+Die LEG-Anmeldung und die Beitrittserklärung sollen künftig über die API auf
+`sonne.solarbonstetten.ch` gesendet werden (Repository `solarbonstetten-api`,
+Adresse in `src/data/api.ts`): `POST /api/signup/leg` geht an
+`leg@solarbonstetten.ch`, `POST /api/signup/verein` an `info@solarbonstetten.ch`.
+Absender ist `robots@solarbonstetten.ch`.
+
+Bis das getestet ist, gibt es Vorschau-Seiten. Sie sind nicht verlinkt, haben
+`noindex`, stehen nicht in der Sitemap und zeigen einen Vorschau-Hinweis:
+
+| Vorschau                  | Bisherige Seite   | Unterschied |
+| :------------------------ | :---------------- | :---------- |
+| `/leg/anmeldung-preview/` | `/leg/anmeldung/` | sendet an `/api/signup/leg` statt an `api-test` (Prop `preview` in `anmeldung.astro`) |
+| `/mitmachen-preview/`     | `/mitmachen/`     | sendet über `/api/signup/verein` statt per `mailto:`, mit `mailto:` als Ausweg, falls die API nicht antwortet |
+
+Testanmeldungen sind echte E-Mails. Die Beitrittserklärungen importiert
+clubmanager aus `info@`; Testeinträge dort ablehnen.
+
+Umstellen, wenn alles passt:
+
+- **LEG:** in `src/pages/leg/anmeldung.astro` `apiUrl` fest auf
+  `` `${API_BASE}/signup/leg` `` setzen, die Prop `preview` samt
+  Vorschau-Hinweis entfernen und `anmeldung-preview.astro` löschen.
+- **Mitmachen:** `git mv src/pages/mitmachen-preview.astro src/pages/mitmachen.astro`,
+  dann dort `noindex` und `<VorschauHinweis>` entfernen und den Hero-Abstand
+  wieder auf `11rem` setzen.
+
 ## 🐍 Python Scripts (`scripts/`)
 
 | Script                        | Beschreibung                                      |
