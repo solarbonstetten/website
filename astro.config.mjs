@@ -7,8 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 import { readdirSync, readFileSync } from 'node:fs';
 
-// News-Entwürfe (Frontmatter `entwurf: true`) und Vorschau-Seiten (`*-preview`) werden gebaut,
-// aber nicht in die Sitemap aufgenommen.
+// News-Entwürfe (Frontmatter `entwurf: true`) werden gebaut, aber nicht in die Sitemap aufgenommen.
 const newsDir = new URL('./src/content/news/', import.meta.url);
 const newsEntwuerfe = readdirSync(newsDir)
   .filter((f) => f.endsWith('.md') && /^entwurf:\s*true\s*$/m.test(readFileSync(new URL(f, newsDir), 'utf8')))
@@ -17,9 +16,7 @@ const newsEntwuerfe = readdirSync(newsDir)
 // https://astro.build/config
 export default defineConfig({
   site: 'https://solarbonstetten.ch',
-  integrations: [sitemap({
-    filter: (page) => !newsEntwuerfe.some((slug) => page.endsWith(slug)) && !page.endsWith('-preview/'),
-  })],
+  integrations: [sitemap({ filter: (page) => !newsEntwuerfe.some((slug) => page.endsWith(slug)) })],
 
   fonts: [{
     provider: fontProviders.fontsource(),

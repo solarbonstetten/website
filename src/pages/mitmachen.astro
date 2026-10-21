@@ -17,7 +17,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <h1 class="mb-4">Mitglied werden</h1>
       <p class="text-lg text-slate-500 max-w-xl leading-relaxed">
         Unterstütze Solarenergie in Bonstetten – als Aktivmitglied, Familienmitglied oder Gönnermitglied.
-        Fülle das Formular aus und dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung.
+        Fülle das Formular aus und sende uns deine Beitrittserklärung direkt hier ab.
       </p>
     </div>
   </div>
@@ -73,7 +73,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <legend class="text-xs font-bold uppercase tracking-widest text-slate-900 px-2">Mitgliedschaft</legend>
               <div class="grid grid-cols-3 gap-4 mt-4 max-sm:grid-cols-1">
                 <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="mitgliedschaft" value="Aktivmitglied (CHF 40.– / Jahr)" required class="sr-only peer" />
+                  <input type="radio" name="mitgliedschaft" value="aktiv" data-label="Aktivmitglied (CHF 40.– / Jahr)" required class="sr-only peer" />
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
                     <div class="flex justify-between items-baseline sm:flex-col mb-1">
                       <span class="font-semibold text-slate-900 text-sm">Aktivmitglied</span>
@@ -83,7 +83,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   </div>
                 </label>
                 <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="mitgliedschaft" value="Familienmitglied (CHF 80.– / Jahr)" class="sr-only peer" />
+                  <input type="radio" name="mitgliedschaft" value="familie" data-label="Familienmitglied (CHF 80.– / Jahr)" class="sr-only peer" />
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
                     <div class="flex justify-between items-baseline sm:flex-col mb-1">
                       <span class="font-semibold text-slate-900 text-sm">Familienmitglied</span>
@@ -93,7 +93,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   </div>
                 </label>
                 <label class="cursor-pointer h-full flex flex-col">
-                  <input type="radio" name="mitgliedschaft" value="Gönnermitglied (CHF 100.– / Jahr)" class="sr-only peer" />
+                  <input type="radio" name="mitgliedschaft" value="goenner" data-label="Gönnermitglied (CHF 100.– / Jahr)" class="sr-only peer" />
                   <div class="border-2 border-slate-200 rounded-xl p-4 transition-all hover:border-amber-400 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex-1">
                     <div class="flex justify-between items-baseline sm:flex-col mb-1">
                       <span class="font-semibold text-slate-900 text-sm">Gönnermitglied</span>
@@ -124,11 +124,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
 
             <button type="submit" class="btn btn-primary w-full justify-center text-base py-4">
-              📧 Beitrittserklärung per E-Mail senden
+              Beitrittserklärung senden
             </button>
             <p class="text-xs text-slate-400 text-center -mt-6">
-              Dein E-Mail-Programm öffnet sich mit der vorausgefüllten Beitrittserklärung –
-              du kannst den Text vor dem Senden noch überprüfen.
+              Deine Angaben gehen per E-Mail an <a href="mailto:info@solarbonstetten.ch" class="text-amber-700">info@solarbonstetten.ch</a>.
             </p>
 
             <div class="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4">
@@ -143,6 +142,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
 
           </form>
+
+          <div id="result-success" hidden>
+            <div class="bg-green-50 border border-green-200 rounded-2xl px-7 py-8 text-center">
+              <div class="text-4xl mb-4">&#x2705;</div>
+              <h2 class="text-xl font-bold text-green-900 mb-3">Beitrittserklärung erhalten</h2>
+              <p class="text-sm text-green-800 leading-relaxed max-w-md mx-auto mb-4">
+                Vielen Dank und herzlich willkommen! Wir haben deine Beitrittserklärung erhalten
+                und melden uns per E-Mail bei dir.
+              </p>
+              <p class="text-xs text-green-700">
+                Bei Fragen erreichst du uns unter <a href="mailto:info@solarbonstetten.ch" class="font-semibold underline">info@solarbonstetten.ch</a>.
+              </p>
+            </div>
+          </div>
+          <div id="result-error" hidden>
+            <div class="bg-red-50 border border-red-200 rounded-2xl px-7 py-8 text-center">
+              <div class="text-4xl mb-4">&#x26A0;&#xFE0F;</div>
+              <h2 class="text-xl font-bold text-red-900 mb-3">Etwas ist schiefgelaufen</h2>
+              <p id="result-error-msg" class="text-sm text-red-800 leading-relaxed max-w-md mx-auto mb-4"></p>
+              <p class="text-sm text-red-800 leading-relaxed max-w-md mx-auto mb-5">
+                Du kannst die Beitrittserklärung auch mit deinem E-Mail-Programm senden – sie ist schon ausgefüllt.
+              </p>
+              <div class="flex flex-wrap justify-center gap-3">
+                <a id="mailto-fallback" href="mailto:info@solarbonstetten.ch" class="btn btn-primary">Per E-Mail senden</a>
+                <button type="button" id="back-to-form" class="btn btn-outline">Zurück zum Formular</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Sidebar -->
@@ -154,9 +181,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <ol class="list-none p-0 flex flex-col gap-2.5">
               {[
                 'Formular ausfüllen',
-                '«Per E-Mail senden» klicken',
-                'E-Mail-Programm öffnet sich mit vorausgefüllter Beitrittserklärung',
-                'Absenden – fertig!',
+                'Mitgliedschaft wählen',
+                '«Beitrittserklärung senden» klicken',
+                'Fertig – wir melden uns per E-Mail bei dir!',
               ].map((step, i) => (
                 <li class="flex items-start gap-3 text-sm opacity-95">
                   <span class="w-6 h-6 bg-white/25 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
@@ -207,10 +234,67 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </style>
 
 <script>
+  import { API_BASE } from '../data/api';
+
   const form = document.getElementById('beitrittsform') as HTMLFormElement;
   const errorBox = document.getElementById('form-error') as HTMLElement;
+  const resultSuccess = document.getElementById('result-success') as HTMLElement;
+  const resultError = document.getElementById('result-error') as HTMLElement;
+  const resultErrorMsg = document.getElementById('result-error-msg') as HTMLElement;
+  const mailtoFallback = document.getElementById('mailto-fallback') as HTMLAnchorElement;
+  const backToForm = document.getElementById('back-to-form') as HTMLButtonElement;
+  const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
-  form.addEventListener('submit', (e) => {
+  const get = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).value.trim();
+  const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).checked;
+  const selectedType = () => form.querySelector<HTMLInputElement>('input[name="mitgliedschaft"]:checked');
+
+  // Falls die API nicht erreichbar ist: dieselbe Beitrittserklärung wie bisher per mailto:.
+  // clubmanager liest beide Varianten (Betreff und «Feld: Wert»-Zeilen nicht ändern).
+  function mailtoHref(): string {
+    const optionen: string[] = [];
+    if (checked('solarstrom')) optionen.push('Solarstrom beziehen: Ja');
+    if (checked('aktiv'))      optionen.push('Aktive Mitarbeit: Ja');
+
+    const body = [
+      'Beitrittserklärung solarbonstetten',
+      '─'.repeat(35),
+      '',
+      `Vorname:        ${get('vorname')}`,
+      `Name:           ${get('name')}`,
+      `Strasse:        ${get('strasse')}`,
+      `PLZ / Ort:      ${get('plz')} ${get('ort')}`,
+      `Telefon:        ${get('telefon') || '–'}`,
+      `E-Mail:         ${get('email')}`,
+      '',
+      `Mitgliedschaft: ${selectedType()?.dataset.label ?? ''}`,
+      ...(optionen.length ? ['', ...optionen] : []),
+      '',
+      '─'.repeat(35),
+      'Diese Beitrittserklärung wurde über solarbonstetten.ch ausgefüllt.',
+    ].join('\n');
+
+    const subject = 'Beitrittserklärung solarbonstetten';
+    return `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  function showResult(ok: boolean, message = '') {
+    form.hidden = true;
+    resultSuccess.hidden = !ok;
+    resultError.hidden = ok;
+    if (!ok) {
+      resultErrorMsg.textContent = message;
+      mailtoFallback.href = mailtoHref();
+    }
+    (ok ? resultSuccess : resultError).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  backToForm.addEventListener('click', () => {
+    resultError.hidden = true;
+    form.hidden = false;
+  });
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorBox.hidden = true;
 
@@ -227,8 +311,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
     });
 
-    const mitgliedschaft = (form.elements.namedItem('mitgliedschaft') as RadioNodeList).value;
-    if (!mitgliedschaft) valid = false;
+    const email = form.elements.namedItem('email') as HTMLInputElement;
+    if (email.value.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim())) {
+      email.classList.add('invalid');
+      valid = false;
+    }
+
+    const typ = selectedType();
+    if (!typ) valid = false;
 
     if (!valid) {
       errorBox.hidden = false;
@@ -236,34 +326,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       return;
     }
 
-    const get = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).value.trim();
-    const checked = (id: string) => (form.elements.namedItem(id) as HTMLInputElement).checked;
+    const submitLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Wird gesendet…';
 
-    const optionen: string[] = [];
-    if (checked('solarstrom')) optionen.push('Solarstrom beziehen: Ja');
-    if (checked('aktiv'))      optionen.push('Aktive Mitarbeit: Ja');
-
-    const body = [
-      'Beitrittserklärung solarbonstetten',
-      '─'.repeat(35),
-      '',
-      `Vorname:        ${get('vorname')}`,
-      `Name:           ${get('name')}`,
-      `Strasse:        ${get('strasse')}`,
-      `PLZ / Ort:      ${get('plz')} ${get('ort')}`,
-      `Telefon:        ${get('telefon') || '–'}`,
-      `E-Mail:         ${get('email')}`,
-      '',
-      `Mitgliedschaft: ${mitgliedschaft}`,
-      ...(optionen.length ? ['', ...optionen] : []),
-      '',
-      '─'.repeat(35),
-      'Diese Beitrittserklärung wurde über solarbonstetten.ch ausgefüllt.',
-    ].join('\n');
-
-    const subject = 'Beitrittserklärung solarbonstetten';
-    window.location.href =
-      `mailto:info@solarbonstetten.ch?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    try {
+      const res = await fetch(`${API_BASE}/signup/verein`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vorname: get('vorname'),
+          name: get('name'),
+          strasse: get('strasse'),
+          plz: get('plz'),
+          ort: get('ort'),
+          telefon: get('telefon'),
+          email: get('email'),
+          mitgliedschaft: typ!.value,
+          solarstrom: checked('solarstrom'),
+          aktiv: checked('aktiv'),
+        }),
+      });
+      if (res.ok) {
+        showResult(true);
+      } else if (res.status === 429) {
+        showResult(false, 'Zu viele Anfragen. Bitte versuche es später erneut.');
+      } else if (res.status === 400) {
+        showResult(false, 'Deine Angaben konnten nicht verarbeitet werden. Bitte prüfe sie, insbesondere die E-Mail-Adresse.');
+      } else {
+        showResult(false, 'Ein unerwarteter Fehler ist aufgetreten.');
+      }
+    } catch {
+      showResult(false, 'Verbindungsfehler. Bitte prüfe deine Internetverbindung.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = submitLabel;
+    }
   });
 
   form.querySelectorAll('input').forEach(input => {
