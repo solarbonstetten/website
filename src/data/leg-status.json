@@ -1,7 +1,7 @@
 {
   "format": 1,
-  "generated_at": "2026-10-20T20:44:09+00:00",
-  "as_of": "2026-10-20",
+  "generated_at": "2026-10-29T23:00:18+00:00",
+  "as_of": "2026-10-30",
   "legs": [
     {
       "id": 1,
@@ -60,7 +60,7 @@
         "producers": 4,
         "producers_peak_power_kw": 48.8,
         "producers_without_power": 0,
-        "consumers": 6
+        "consumers": 7
       }
     },
     {
@@ -77,10 +77,10 @@
         "consumers": 12
       },
       "confirmed": {
-        "producers": 2,
-        "producers_peak_power_kw": 30.09,
+        "producers": 3,
+        "producers_peak_power_kw": 44.89,
         "producers_without_power": 0,
-        "consumers": 8
+        "consumers": 11
       }
     },
     {
@@ -157,10 +157,10 @@
         "consumers": 23
       },
       "confirmed": {
-        "producers": 6,
-        "producers_peak_power_kw": 82.92,
+        "producers": 12,
+        "producers_peak_power_kw": 307.92,
         "producers_without_power": 0,
-        "consumers": 24
+        "consumers": 27
       }
     },
     {
