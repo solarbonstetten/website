@@ -4,9 +4,9 @@ date: 2026-10-30T10:00:00
 image: /images/news/stock_solar_house2.webp
 ---
 
-Die Lokalen Elektrizitätsgemeinschaften (LEG) in Bonstetten haben eine schöne Marke erreicht: In den neun LEGs sind inzwischen **über 1 Megawatt (MW) Solarleistung** zusammengeschlossen – genau 1'021 Kilowatt von 55 Produzenten. Rund die Hälfte davon, 522 kW, ist bereits aktiv und teilt ihren Strom mit der Nachbarschaft. Die übrigen 499 kW sind von EKZ bestätigt und kommen schrittweise dazu.
+Die Lokalen Elektrizitätsgemeinschaften (LEG) in Bonstetten haben eine schöne Marke erreicht: In neun LEGs sind inzwischen **über 1 Megawatt (MW) Solarleistung** zusammengeschlossen – genau 1'021 Kilowatt von 55 Produzenten. Rund die Hälfte davon, 522 kW, ist bereits aktiv und teilt ihren Strom mit der Nachbarschaft. Die übrigen 499 kW sind von EKZ bestätigt und kommen schrittweise dazu.
 
-Zur Einordnung: Im Mittelland liefert 1 kW Solarleistung pro Jahr rund 1'000 kWh. 1 MW ergibt also etwa eine Million Kilowattstunden Solarstrom – so viel, wie gut 200 Haushalte im Jahr verbrauchen.
+Zur Einordnung: Im Mittelland liefert 1 kW Solarleistung pro Jahr rund 1'000 kWh. 1 MW ergibt also etwa eine Million Kilowattstunden Solarstrom – so viel, wie über 220 Haushalte im Jahr verbrauchen.
 
 ### Die LEGs in Zahlen
 
@@ -19,6 +19,6 @@ Zur Einordnung: Im Mittelland liefert 1 kW Solarleistung pro Jahr rund 1'000 kWh
 
 Weitere Zusagen und Anfragen bringen gemäss Anmeldung nochmals rund 240 kW dazu, von EKZ noch nicht bestätigt. Für vier Zonen gibt es noch keine LEG: Lätten, Lochenweiher, Lüttenberg und Stocken.
 
-Mitmachen lohnt sich auf beiden Seiten: Wer eine Anlage hat, erhält in der LEG eine stabile Vergütung von 12 Rp./kWh für die Energie. Wer keine hat, bezieht Solarstrom vom Dach nebenan. Ob deine Adresse in einer LEG-Zone liegt und wie weit diese ist, siehst du auf unserer [LEG-Seite](/leg/).
+Mitmachen lohnt sich auf beiden Seiten: Wer eine Anlage hat, erhält in der LEG eine stabile Vergütung von 12 Rp./kWh für die Energie. Wer keine hat, bezieht hochwertigen Solarstrom vom Dach nebenan – und spart erst noch dabei. Ob deine Adresse in einer LEG-Zone liegt und wie weit diese ist, siehst du auf unserer [LEG-Seite](/leg/).
 
 _Anmeldung und Zonencheck:_ [_www.leg-bonstetten.ch_](https://www.leg-bonstetten.ch/) _|_ [_leg@solarbonstetten.ch_](mailto:leg@solarbonstetten.ch)
