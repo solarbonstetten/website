@@ -2,7 +2,6 @@
 title: 1 Megawatt Solarleistung – die LEGs in Bonstetten wachsen
 date: 2026-10-30T10:00:00
 image: /images/news/stock_solar_house2.webp
-entwurf: true
 ---
 
 Die Lokalen Elektrizitätsgemeinschaften (LEG) in Bonstetten haben eine schöne Marke erreicht: In den neun LEGs sind inzwischen **über 1 Megawatt (MW) Solarleistung** zusammengeschlossen – genau 1'021 Kilowatt von 55 Produzenten. Rund die Hälfte davon, 522 kW, ist bereits aktiv und teilt ihren Strom mit der Nachbarschaft. Die übrigen 499 kW sind von EKZ bestätigt und kommen schrittweise dazu.
