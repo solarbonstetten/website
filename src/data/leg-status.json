@@ -1,7 +1,7 @@
 {
   "format": 1,
-  "generated_at": "2026-10-29T23:00:18+00:00",
-  "as_of": "2026-10-30",
+  "generated_at": "2026-10-31T14:08:12+00:00",
+  "as_of": "2026-10-31",
   "legs": [
     {
       "id": 1,
@@ -46,9 +46,9 @@
     {
       "id": 3,
       "name": "Bonstetten - Schachen / Breitenacher",
-      "status": "erfasst",
-      "status_label": "my.EKZ erfasst",
-      "ekz_status": "ANGELEGT",
+      "status": "angemeldet",
+      "status_label": "my.EKZ angemeldet",
+      "ekz_status": "ANGEMELDET",
       "start_date": null,
       "active": {
         "producers": 0,
@@ -57,10 +57,10 @@
         "consumers": 0
       },
       "confirmed": {
-        "producers": 4,
-        "producers_peak_power_kw": 48.8,
+        "producers": 5,
+        "producers_peak_power_kw": 53.6,
         "producers_without_power": 0,
-        "consumers": 7
+        "consumers": 8
       }
     },
     {
@@ -86,9 +86,9 @@
     {
       "id": 5,
       "name": "Bonstetten - Dorf / Im Vorderdorf",
-      "status": "erfasst",
-      "status_label": "my.EKZ erfasst",
-      "ekz_status": "ANGELEGT",
+      "status": "angemeldet",
+      "status_label": "my.EKZ angemeldet",
+      "ekz_status": "ANGEMELDET",
       "start_date": null,
       "active": {
         "producers": 0,
@@ -100,7 +100,7 @@
         "producers": 3,
         "producers_peak_power_kw": 30.69,
         "producers_without_power": 0,
-        "consumers": 7
+        "consumers": 8
       }
     },
     {
@@ -140,7 +140,7 @@
         "producers": 0,
         "producers_peak_power_kw": 0.0,
         "producers_without_power": 0,
-        "consumers": 6
+        "consumers": 8
       }
     },
     {
